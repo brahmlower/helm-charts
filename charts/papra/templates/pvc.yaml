@@ -1,0 +1,17 @@
+{{- if not .Values.persistence.appData.existingClaimName }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "papra.appDataClaimName" . }}
+  labels:
+    {{- include "papra.labels" . | nindent 4 }}
+spec:
+  {{- with .Values.persistence.appData.storageClassName }}
+  storageClassName: {{ . }}
+  {{- end }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.persistence.appData.size }}
+{{- end }}

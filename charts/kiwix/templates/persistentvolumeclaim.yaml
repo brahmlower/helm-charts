@@ -1,0 +1,12 @@
+{{- range .Values.volumeClaimTemplates }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+{{- with .metadata }}
+metadata:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+spec:
+  {{- toYaml .spec | nindent 2 }}
+{{- else }}
+{{- end }}

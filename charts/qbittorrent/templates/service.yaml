@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "qbittorrent.fullname" . }}
+  labels:
+    {{- include "qbittorrent.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: webui
+      port: {{ .Values.qbittorrent.config.webui_port }}
+      targetPort: {{ .Values.qbittorrent.config.webui_port }}
+      protocol: TCP
+    - name: bt-tcp
+      port: {{ .Values.qbittorrent.config.torrent_port }}
+      targetPort: {{ .Values.qbittorrent.config.torrent_port }}
+      protocol: TCP
+    - name: bt-udp
+      port: {{ .Values.qbittorrent.config.torrent_port }}
+      targetPort: {{ .Values.qbittorrent.config.torrent_port }}
+      protocol: UDP
+  selector:
+    {{- include "qbittorrent.selectorLabels" . | nindent 4 }}

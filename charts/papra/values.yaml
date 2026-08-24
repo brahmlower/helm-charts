@@ -1,0 +1,222 @@
+# yaml-language-server: $schema=values.schema.json
+
+# Default values for papra.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Papra stores its database in a single SQLite file on the app-data PVC, so this must stay
+# at 1. Scaling beyond 1 replica risks corrupting the database from concurrent writers.
+replicaCount: 1
+
+# This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+imagePullSecrets: []
+# This is to override the chart name.
+nameOverride: ""
+fullnameOverride: ""
+
+image:
+  repository: ghcr.io/papra-hq/papra
+  # rootless variant runs as a non-root user; matches podSecurityContext/securityContext below.
+  tag: "26.6.1-rootless"
+  # digest pins to an immutable image reference. Prepend sha256: or omit the prefix.
+  digest: ""
+  pullPolicy: IfNotPresent
+
+# This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Automatically mount a ServiceAccount's API credentials?
+  automount: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+# This is for setting Kubernetes Annotations to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+podAnnotations: {}
+# This is for setting Kubernetes Labels to a Pod.
+# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+podLabels: {}
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+
+# readOnlyRootFilesystem is false because papra writes to /app/app-data at runtime.
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  capabilities:
+    drop: ["ALL"]
+
+# This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
+service:
+  type: ClusterIP
+  # port is the HTTP port papra listens on and the Service exposes.
+  port: 1221
+
+# This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    memory: 512Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# persistence configures the PVC that backs /app/app-data (SQLite DB + local document storage).
+persistence:
+  appData:
+    # existingClaimName uses a pre-existing PVC instead of creating one (e.g. one bound to a
+    # manually-provisioned PV). When set, storageClassName and size below are ignored.
+    existingClaimName: ""
+    # storageClassName is the Kubernetes storage class to use. Empty string uses the cluster default.
+    storageClassName: ""
+    # size is the PVC capacity. Ignored when existingClaimName is set.
+    size: 20Gi
+
+config:
+  # appBaseUrl is the full public URL of the Papra instance (required).
+  appBaseUrl: ""
+  auth:
+    # isRegistrationEnabled controls whether new users can self-register.
+    isRegistrationEnabled: false
+    # firstUserAsAdmin promotes the first registered user to admin.
+    firstUserAsAdmin: true
+    # ipAddressHeaders lists headers used to determine the client IP (for reverse proxy setups).
+    ipAddressHeaders: x-forwarded-for
+    # customOAuthProviders configures custom OAuth/OIDC providers (AUTH_PROVIDERS_CUSTOMS).
+    # Client secrets are provided via oidcSecret/oidcExternalSecret below.
+    # See https://www.better-auth.com/docs/plugins/generic-oauth#configuration for field details.
+    # Example:
+    #   - id: my-provider
+    #     name: "My Provider"
+    #     clientId: "my-client-id"
+    #     discoveryUrl: "https://auth.example.com/.well-known/openid-configuration"
+    #     scopes:
+    #       - openid
+    #       - profile
+    #       - email
+    customOAuthProviders: []
+  storage:
+    # driver is the document storage backend. One of: "filesystem", "s3".
+    driver: filesystem
+    # s3 settings are only used when driver=s3.
+    s3:
+      bucket: papra
+      region: us-east-1
+      # endpoint is the S3-compatible endpoint URL. Leave empty to use the default AWS endpoint.
+      endpoint: ""
+      # forcePathStyle enables path-style S3 addressing (required for MinIO and most self-hosted S3).
+      forcePathStyle: false
+
+# secret configures the AUTH_SECRET (and optional DATABASE_ENCRYPTION_KEY) credentials.
+secret:
+  # create controls whether the chart creates the Secret.
+  # Defaults to false — provide a pre-existing Secret via secretName instead (e.g. an
+  # ExternalSecret), or set create=true and supply values below only for local/dev use.
+  create: false
+  # secretName overrides the generated Secret name when set.
+  # When create=false, this must name the pre-existing Secret to use.
+  # Defaults to the chart fullname when empty.
+  secretName: ""
+  # authSecret is used when create=true. Must be at least 32 characters.
+  authSecret: ""
+  # encryptionKeyEnabled wires DATABASE_ENCRYPTION_KEY from the secret's
+  # "database-encryption-key" field. Encrypts the SQLite database at rest.
+  # WARNING: losing this key makes the database unrecoverable.
+  encryptionKeyEnabled: false
+  # databaseEncryptionKey is used when create=true and encryptionKeyEnabled is true.
+  databaseEncryptionKey: ""
+
+# s3Secret configures the S3 credentials (only used when config.storage.driver=s3).
+s3Secret:
+  # create controls whether the chart creates the S3 Secret.
+  # Defaults to false — provide a pre-existing Secret via secretName instead,
+  # or set create=true and supply values below only for local/dev use.
+  create: false
+  # secretName overrides the generated Secret name when set.
+  # Defaults to <fullname>-s3 when empty.
+  secretName: ""
+  accessKeyId: ""
+  secretAccessKey: ""
+
+# oidcSecret configures how custom OAuth provider client secrets are provided.
+# The generated Secret holds one key per provider: <providerId>-client-secret.
+oidcSecret:
+  # create controls whether the chart creates the OIDC Secret.
+  # Defaults to false — provide a pre-existing Secret via secretName instead,
+  # or set create=true and supply values below only for local/dev use.
+  create: false
+  # secretName overrides the generated Secret name when set.
+  # Defaults to <fullname>-oidc when empty.
+  secretName: ""
+  # clientSecrets is used when create=true. Map of providerId -> clientSecret.
+  clientSecrets: {}
+
+# ingestionFolder configures Papra's built-in ingestion folder feature.
+# Papra watches <mountPath>/<org-id>/ for files to automatically ingest.
+# Find your org ID in the Papra UI under Settings -> Organization.
+ingestionFolder:
+  enabled: false
+  # mountPath is the path inside the Papra container where the share is mounted.
+  mountPath: /app/ingestion
+  # existingClaimName uses a pre-existing PVC instead of creating one.
+  # When set, claim and volume below are ignored entirely.
+  existingClaimName: ""
+  # claim configures the PVC created by this chart. Ignored when existingClaimName is set.
+  claim:
+    storageClassName: ""
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi
+    # volumeName explicitly binds the PVC to a specific PV by name.
+    # Leave empty for dynamic provisioning.
+    # Automatically set to the chart-managed PV when volume.nfs.server is configured.
+    volumeName: ""
+  # volume creates a static PersistentVolume bound to the chart's PVC.
+  # Useful for NFS or other manually-provisioned shares.
+  # Set volume.nfs.server to enable PV creation; leave empty to skip.
+  volume:
+    nfs:
+      # server is the NFS server hostname or IP. Leave empty to skip PV creation.
+      server: ""
+      path: ""
+      mountOptions:
+        - hard
+        - nfsvers=4
+  # usePolling enables polling-based file watching instead of inotify.
+  # Must be true for NFS, SMB, and other network filesystems.
+  usePolling: true
+  pollingIntervalMs: 30000
+  # postProcessingStrategy controls what Papra does with files after ingestion.
+  # One of: "delete", "move"
+  postProcessingStrategy: delete

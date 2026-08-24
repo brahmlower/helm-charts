@@ -1,0 +1,203 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "qbittorrent.fullname" . }}
+  labels:
+    {{- include "qbittorrent.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "qbittorrent.selectorLabels" . | nindent 6 }}
+  volumeClaimTemplates:
+    - metadata:
+        name: configs
+        labels:
+          {{- include "qbittorrent.labels" . | nindent 10 }}
+      spec:
+        storageClassName: {{ .Values.persistence.configs.storageClassName }}
+        accessModes:
+          - ReadWriteOnce
+          # - ReadOnlyMany
+        resources:
+          requests:
+            storage: {{ .Values.persistence.configs.size }}
+    - metadata:
+        name: downloads
+        labels:
+          {{- include "qbittorrent.labels" . | nindent 10 }}
+      spec:
+        storageClassName: {{ .Values.persistence.downloads.storageClassName }}
+        accessModes:
+          - ReadWriteOnce
+          # - ReadOnlyMany
+        resources:
+          requests:
+            storage: {{ .Values.persistence.downloads.size }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "qbittorrent.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "qbittorrent.serviceAccountName" . }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      containers:
+        - name: qbtorrent
+          image: {{ .Values.qbittorrent.image }}
+          imagePullPolicy: {{ .Values.qbittorrent.imagepullPolicy }}
+          ports:
+            - name: webui
+              containerPort: {{ .Values.qbittorrent.config.webui_port }}
+            - name: bt-tcp
+              containerPort: {{ .Values.qbittorrent.config.torrent_port }}
+              protocol: TCP
+            - name: bt-udp
+              containerPort: {{ .Values.qbittorrent.config.torrent_port }}
+              protocol: UDP
+          env:
+            - name: PUID
+              value: {{ .Values.qbittorrent.config.puid | quote }}
+            - name: PGID
+              value: {{ .Values.qbittorrent.config.pgid | quote }}
+            - name: TZ
+              value: {{ .Values.qbittorrent.config.timezone | quote }}
+            - name: WEBUI_PORT
+              value: {{ .Values.qbittorrent.config.webui_port | quote }}
+            - name: TORRENTING_PORT
+              value: {{ .Values.qbittorrent.config.torrent_port | quote }}
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          readinessProbe:
+            exec:
+              command:
+                - "/bin/sh"
+                - "-c"
+                - "ip link show tun0 >/dev/null 2>&1 && nc -z 127.0.0.1 {{ .Values.qbittorrent.config.webui_port }}"
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: configs
+              mountPath: /config
+            - name: downloads
+              mountPath: /downloads
+          {{- with .Values.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+      initContainers:
+        - name: gluetun
+          restartPolicy: Always
+          securityContext:
+            capabilities:
+              add: ["NET_ADMIN"]
+          image: {{ .Values.gluetun.image }}
+          imagePullPolicy: {{ .Values.gluetun.imagePullPolicy }}
+          env:
+            # user/group to run as
+            - name: PUID
+              value: {{ .Values.gluetun.config.puid | quote }}
+            - name: PGID
+              value: {{ .Values.gluetun.config.pgid | quote}}
+            # VPN configs
+            - name: VPN_SERVICE_PROVIDER
+              value: {{ .Values.gluetun.config.vpn_service_provider | quote }}
+            - name: VPN_TYPE
+              value: {{ .Values.gluetun.config.vpn_type | quote }}
+            # Wireguard configs
+            - name: WIREGUARD_PRIVATE_KEY
+              value: {{ .Values.gluetun.config.wireguard_private_key | quote}}
+            - name: WIREGUARD_ADDRESSES
+              value: {{ .Values.gluetun.config.wireguard_address | quote}}
+            - name: WIREGUARD_MTU
+              value: {{ .Values.gluetun.config.wireguard_mtu | quote}}
+            # Allow inbound to qBittorrent through Gluetun's firewall
+            - name: FIREWALL_INPUT_PORTS
+              value: {{ .Values.gluetun.config.firewall_input_ports | quote }}
+            # Allow cluster/LAN subnets outbound (DNS, updates) without leaking public traffic
+            - name: FIREWALL_OUTBOUND_SUBNETS
+              value: {{ .Values.gluetun.config.firewall_outbound_subnets | quote }}
+            # DNS Configuration
+            - name: DNS_KEEP_NAMESERVER
+              value: {{ .Values.gluetun.config.dns_keep_nameserver | quote }}
+            - name: DNS_ADDRESS
+              value: {{ .Values.gluetun.config.dns_address | quote }}
+            # Disable problematic external checks
+            - name: UPDATE_PERIOD
+              value: {{ .Values.gluetun.config.update_period | quote }}
+            - name: VERSION_INFORMATION
+              value: {{ .Values.gluetun.config.version_information | quote }}
+            # DNS Block List Configuration - Disable if causing issues
+            - name: DNS_BLOCK_MALICIOUS
+              value: {{ .Values.gluetun.config.dns_block_malicious | quote }}
+            - name: DNS_BLOCK_SURVEILLANCE
+              value: {{ .Values.gluetun.config.dns_block_surveillance | quote }}
+            - name: DNS_BLOCK_ADS
+              value: {{ .Values.gluetun.config.dns_block_ads | quote }}
+
+            {{- if .Values.gluetun.config.vpn_port_forwarding.enabled }}
+            - name: VPN_PORT_FORWARDING
+              value: "on"
+            - name: VPN_PORT_FORWARDING_PROVIDER
+              value: {{ .Values.gluetun.config.vpn_port_forwarding.provider | quote }}
+            - name: VPN_PORT_FORWARDING_STATUS_FILE
+              value: {{ .Values.gluetun.config.vpn_port_forwarding.status_file | quote }}
+            - name: VPN_PORT_FORWARDING_LISTENING_PORT
+              value: {{ .Values.qbittorrent.config.torrent_port | quote }}
+            {{- end }}
+
+          {{- with .Values.gluetun.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          readinessProbe:
+            exec:
+              command: ["/bin/sh","-c","ip link show tun0"]
+          {{- with .Values.gluetun.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: tun
+              mountPath: /dev/net/tun
+
+      volumes:
+        - name: tun
+          hostPath:
+            path: /dev/net/tun
+            type: CharDevice
+      {{- with .Values.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

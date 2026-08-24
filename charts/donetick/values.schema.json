@@ -1,0 +1,611 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "affinity": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true,
+      "title": "affinity"
+    },
+    "autoscaling": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "enabled",
+          "default": false
+        },
+        "maxReplicas": {
+          "type": "number",
+          "title": "maxReplicas",
+          "default": 100
+        },
+        "minReplicas": {
+          "type": "number",
+          "title": "minReplicas",
+          "default": 1
+        },
+        "targetCPUUtilizationPercentage": {
+          "type": "number",
+          "title": "targetCPUUtilizationPercentage",
+          "default": 80,
+          "examples": [
+            "targetMemoryUtilizationPercentage: 80"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "autoscaling"
+    },
+    "config": {
+      "type": "object",
+      "properties": {
+        "database": {
+          "type": "object",
+          "properties": {
+            "host": {
+              "type": "string",
+              "title": "host",
+              "default": "donetick-cnpg.default.svc.cluster.local"
+            },
+            "migration": {
+              "type": "boolean",
+              "title": "migration",
+              "default": true
+            },
+            "name": {
+              "type": "string",
+              "title": "name",
+              "default": "donetick"
+            },
+            "password": {
+              "type": "string",
+              "title": "password",
+              "description": "The DT_DATABASE_PASSWORD environment variable should be used instead of this field."
+            },
+            "port": {
+              "type": "number",
+              "title": "port",
+              "default": 5432
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "sqlite",
+                "postgres"
+              ],
+              "title": "type",
+              "default": "sqlite"
+            },
+            "user": {
+              "type": "string",
+              "title": "user",
+              "default": "donetick"
+            }
+          },
+          "additionalProperties": false,
+          "title": "database"
+        },
+        "email": {
+          "type": "object",
+          "properties": {
+            "appHost": {
+              "type": "string",
+              "title": "appHost"
+            },
+            "email": {
+              "type": "string",
+              "title": "email"
+            },
+            "host": {
+              "type": "string",
+              "title": "host"
+            },
+            "key": {
+              "type": "string",
+              "title": "key",
+              "description": "The DT_EMAIL_KEY environment variable should be used instead of this field."
+            },
+            "port": {
+              "type": "number",
+              "title": "port",
+              "default": 0
+            }
+          },
+          "additionalProperties": false,
+          "title": "email"
+        },
+        "is_done_tick_dot_com": {
+          "type": "boolean",
+          "title": "is_done_tick_dot_com",
+          "default": false
+        },
+        "is_user_creation_disabled": {
+          "type": "boolean",
+          "title": "is_user_creation_disabled",
+          "default": false
+        },
+        "jwt": {
+          "type": "object",
+          "properties": {
+            "max_refresh": {
+              "type": "string",
+              "title": "max_refresh",
+              "default": "168h"
+            },
+            "secret": {
+              "type": "string",
+              "title": "secret",
+              "description": "The DT_JWT_SECRET environment variable should be used instead of this field."
+            },
+            "session_time": {
+              "type": "string",
+              "title": "session_time",
+              "default": "168h"
+            }
+          },
+          "additionalProperties": false,
+          "title": "jwt"
+        },
+        "logging": {
+          "type": "object",
+          "properties": {
+            "development": {
+              "type": "boolean",
+              "title": "development",
+              "default": false
+            },
+            "encoding": {
+              "type": "string",
+              "title": "encoding",
+              "default": "json"
+            },
+            "level": {
+              "type": "string",
+              "title": "level",
+              "default": "info"
+            }
+          },
+          "additionalProperties": false,
+          "title": "logging"
+        },
+        "name": {
+          "type": "string",
+          "title": "name",
+          "default": "selfhosted"
+        },
+        "oauth2": {
+          "type": "object",
+          "properties": {
+            "auth_url": {
+              "type": "string",
+              "title": "auth_url"
+            },
+            "client_id": {
+              "type": "string",
+              "title": "client_id"
+            },
+            "client_secret": {
+              "type": "string",
+              "title": "client_secret",
+              "description": "The DT_OAUTH2_CLIENT_SECRET environment variable should be used instead of this field."
+            },
+            "name": {
+              "type": "string",
+              "title": "name"
+            },
+            "redirect_url": {
+              "type": "string",
+              "title": "redirect_url"
+            },
+            "token_url": {
+              "type": "string",
+              "title": "token_url"
+            },
+            "user_info_url": {
+              "type": "string",
+              "title": "user_info_url"
+            }
+          },
+          "additionalProperties": false,
+          "title": "oauth2"
+        },
+        "pushover": {
+          "type": "object",
+          "properties": {
+            "token": {
+              "type": "string",
+              "title": "token"
+            }
+          },
+          "additionalProperties": false,
+          "title": "pushover"
+        },
+        "realtime": {
+          "type": "object",
+          "properties": {
+            "allowed_origins": {
+              "type": "array",
+              "title": "allowed_origins"
+            },
+            "cleanup_interval": {
+              "type": "string",
+              "title": "cleanup_interval",
+              "default": "2m"
+            },
+            "connection_timeout": {
+              "type": "string",
+              "title": "connection_timeout",
+              "default": "120s"
+            },
+            "enable_compression": {
+              "type": "boolean",
+              "title": "enable_compression",
+              "default": true
+            },
+            "enable_stats": {
+              "type": "boolean",
+              "title": "enable_stats",
+              "default": true
+            },
+            "enabled": {
+              "type": "boolean",
+              "title": "enabled",
+              "default": true
+            },
+            "event_queue_size": {
+              "type": "number",
+              "title": "event_queue_size",
+              "default": 2048
+            },
+            "heartbeat_interval": {
+              "type": "string",
+              "title": "heartbeat_interval",
+              "default": "60s"
+            },
+            "max_connections": {
+              "type": "number",
+              "title": "max_connections",
+              "default": 1000
+            },
+            "max_connections_per_user": {
+              "type": "number",
+              "title": "max_connections_per_user",
+              "default": 5
+            },
+            "sse_enabled": {
+              "type": "boolean",
+              "title": "sse_enabled",
+              "default": true
+            },
+            "stale_threshold": {
+              "type": "string",
+              "title": "stale_threshold",
+              "default": "5m"
+            }
+          },
+          "additionalProperties": false,
+          "title": "realtime",
+          "description": "Real-time configuration"
+        },
+        "scheduler_jobs": {
+          "type": "object",
+          "properties": {
+            "due_job": {
+              "type": "string",
+              "title": "due_job",
+              "default": "30m"
+            },
+            "overdue_job": {
+              "type": "string",
+              "title": "overdue_job",
+              "default": "3h"
+            },
+            "pre_due_job": {
+              "type": "string",
+              "title": "pre_due_job",
+              "default": "3h"
+            }
+          },
+          "additionalProperties": false,
+          "title": "scheduler_jobs"
+        },
+        "server": {
+          "type": "object",
+          "properties": {
+            "cors_allow_origins": {
+              "type": "array",
+              "title": "cors_allow_origins"
+            },
+            "port": {
+              "type": "number",
+              "title": "port",
+              "default": 2021
+            },
+            "rate_limit": {
+              "type": "number",
+              "title": "rate_limit",
+              "default": 300
+            },
+            "rate_period": {
+              "type": "string",
+              "title": "rate_period",
+              "default": "60s"
+            },
+            "read_timeout": {
+              "type": "string",
+              "title": "read_timeout",
+              "default": "10s"
+            },
+            "serve_frontend": {
+              "type": "boolean",
+              "title": "serve_frontend",
+              "default": true
+            },
+            "write_timeout": {
+              "type": "string",
+              "title": "write_timeout",
+              "default": "10s"
+            }
+          },
+          "additionalProperties": false,
+          "title": "server"
+        },
+        "telegram": {
+          "type": "object",
+          "properties": {
+            "token": {
+              "type": "string",
+              "title": "token"
+            }
+          },
+          "additionalProperties": false,
+          "title": "telegram"
+        }
+      },
+      "additionalProperties": false,
+      "title": "config"
+    },
+    "env": {
+      "type": "array",
+      "items": {
+        "$ref": "https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/refs/heads/master/v1.18.1/_definitions.json#/definitions/io.k8s.api.core.v1.EnvVar"
+      },
+      "title": "env",
+      "description": "environment variables on the container",
+      "examples": [
+        "- name: DT_JWT_SECRET\n  valueFrom:\n    secretKeyRef:\n      name: donetick-jwt-secret\n      key: jwt-secret\n- name: DT_TELEGRAM_TOKEN\n  valueFrom:\n    secretKeyRef:\n      name: donetick-telegram-token\n      key: token\n- name: DT_PUSHOVER_TOKEN\n  valueFrom:\n    secretKeyRef:\n      name: donetick-pushover-token\n      key: token\n- name: DT_DATABASE_PASSWORD\n  valueFrom:\n    secretKeyRef:\n      name: donetick-database-password\n      key: password\n- name: DT_EMAIL_KEY\n  valueFrom:\n    secretKeyRef:\n      name: donetick-email-key\n      key: key\n- name: DT_OAUTH2_CLIENT_SECRET\n  valueFrom:\n    secretKeyRef:\n      name: donetick-oauth2-client-secret\n      key: secret"
+      ]
+    },
+    "fullnameOverride": {
+      "type": "string",
+      "title": "fullnameOverride"
+    },
+    "httpRoute": {
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true,
+          "title": "annotations",
+          "description": "HTTPRoute annotations."
+        },
+        "enabled": {
+          "type": "boolean",
+          "title": "enabled",
+          "description": "HTTPRoute enabled.",
+          "default": false
+        },
+        "hostnames": {
+          "type": "array",
+          "title": "hostnames",
+          "description": "Hostnames matching HTTP header."
+        },
+        "parentRefs": {
+          "type": "array",
+          "title": "parentRefs",
+          "description": "Which Gateways this Route is attached to."
+        },
+        "rules": {
+          "type": "array",
+          "title": "rules",
+          "description": "List of rules and filters applied.",
+          "examples": [
+            "filters:\n  - type: RequestHeaderModifier\n    requestHeaderModifier:\n      set:\n      - name: My-Overwrite-Header\n        value: this-is-the-only-value\n      remove:\n      - User-Agent\n- matches:\n  - path:\n      type: PathPrefix\n      value: /echo\n    headers:\n    - name: version\n      value: v2"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "httpRoute"
+    },
+    "image": {
+      "type": "object",
+      "properties": {
+        "pullPolicy": {
+          "type": "string",
+          "title": "pullPolicy",
+          "description": "This sets the pull policy for images.",
+          "default": "IfNotPresent"
+        },
+        "repository": {
+          "type": "string",
+          "title": "repository",
+          "default": "donetick/donetick"
+        },
+        "tag": {
+          "type": "string",
+          "title": "tag",
+          "description": "Overrides the image tag whose default is the chart appVersion."
+        }
+      },
+      "additionalProperties": false,
+      "title": "image"
+    },
+    "imagePullSecrets": {
+      "type": "array",
+      "title": "imagePullSecrets"
+    },
+    "ingress": {
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true,
+          "title": "annotations",
+          "examples": [
+            "kubernetes.io/ingress.class: nginx\nkubernetes.io/tls-acme: \"true\""
+          ]
+        },
+        "className": {
+          "type": "string",
+          "title": "className"
+        },
+        "enabled": {
+          "type": "boolean",
+          "title": "enabled",
+          "default": false
+        },
+        "hosts": {
+          "type": "array",
+          "title": "hosts"
+        },
+        "tls": {
+          "type": "array",
+          "title": "tls",
+          "examples": [
+            "- secretName: chart-example-tls\n  hosts:\n    - chart-example.local"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "ingress"
+    },
+    "nameOverride": {
+      "type": "string",
+      "title": "nameOverride",
+      "description": "This is to override the chart name."
+    },
+    "nodeSelector": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true,
+      "title": "nodeSelector"
+    },
+    "podAnnotations": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true,
+      "title": "podAnnotations"
+    },
+    "podLabels": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true,
+      "title": "podLabels"
+    },
+    "podSecurityContext": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true,
+      "title": "podSecurityContext",
+      "examples": [
+        "fsGroup: 2000"
+      ]
+    },
+    "replicaCount": {
+      "type": "number",
+      "title": "replicaCount",
+      "default": 1
+    },
+    "resources": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true,
+      "title": "resources",
+      "description": "We usually recommend not to specify default resources and to leave this as a conscious\nchoice for the user. This also increases chances charts run on environments with little\nresources, such as Minikube. If you do want to specify resources, uncomment the following\nlines, adjust them as necessary, and remove the curly braces after 'resources:'.",
+      "examples": [
+        "limits:\n  cpu: 100m\n  memory: 128Mi\nrequests:\n  cpu: 100m\n  memory: 128Mi"
+      ]
+    },
+    "securityContext": {
+      "$ref": "https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/refs/heads/master/v1.18.1/_definitions.json#/definitions/io.k8s.api.core.v1.SecurityContext",
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true,
+      "title": "securityContext",
+      "examples": [
+        "capabilities:\n  drop:\n  - ALL\nreadOnlyRootFilesystem: true\nrunAsNonRoot: true\nrunAsUser: 1000"
+      ]
+    },
+    "service": {
+      "type": "object",
+      "properties": {
+        "port": {
+          "type": "number",
+          "title": "port",
+          "default": 80
+        },
+        "type": {
+          "type": "string",
+          "title": "type",
+          "default": "ClusterIP"
+        }
+      },
+      "additionalProperties": false,
+      "title": "service"
+    },
+    "serviceAccount": {
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true,
+          "title": "annotations",
+          "description": "Annotations to add to the service account."
+        },
+        "automount": {
+          "type": "boolean",
+          "title": "automount",
+          "description": "Automatically mount a ServiceAccount's API credentials?",
+          "default": true
+        },
+        "create": {
+          "type": "boolean",
+          "title": "create",
+          "description": "Specifies whether a service account should be created.",
+          "default": true
+        },
+        "name": {
+          "type": "string",
+          "title": "name",
+          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template."
+        }
+      },
+      "additionalProperties": false,
+      "title": "serviceAccount"
+    },
+    "tolerations": {
+      "type": "array",
+      "title": "tolerations"
+    },
+    "volumeMounts": {
+      "type": "array",
+      "title": "volumeMounts",
+      "description": "Additional volumeMounts on the output Deployment definition.",
+      "examples": [
+        "- name: foo\n  mountPath: \"/etc/foo\"\n  readOnly: true"
+      ]
+    },
+    "volumes": {
+      "type": "array",
+      "title": "volumes",
+      "description": "Additional volumes on the output Deployment definition.",
+      "examples": [
+        "- name: foo\n  secret:\n    secretName: mysecret\n    optional: false"
+      ]
+    }
+  }
+}

@@ -1,0 +1,33 @@
+
+volumeMounts:
+- name: kiwix-data
+  mountPath: "/data/zims"
+  readOnly: true
+
+volumes:
+- name: kiwix-data
+  persistentVolumeClaim:
+    claimName: kiwix-data
+
+volumeClaimTemplates:
+- metadata:
+    name: kiwix-data
+  spec:
+    storageClassName: my-storage-class
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 3Gi
+
+ingress:
+  enabled: true
+  hosts:
+    - host: kiwix.example.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: kiwix
+      hosts:
+        - kiwix.example.com

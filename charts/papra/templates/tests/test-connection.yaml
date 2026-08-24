@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "papra.fullname" . }}-test-connection"
+  labels:
+    {{- include "papra.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "papra.fullname" . }}:{{ .Values.service.port }}/api/health']
+  restartPolicy: Never

@@ -1,0 +1,432 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "affinity": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true,
+      "title": "affinity"
+    },
+    "autoscaling": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "enabled",
+          "default": false
+        },
+        "maxReplicas": {
+          "type": "number",
+          "title": "maxReplicas",
+          "default": 100
+        },
+        "minReplicas": {
+          "type": "number",
+          "title": "minReplicas",
+          "default": 1
+        },
+        "targetCPUUtilizationPercentage": {
+          "type": "number",
+          "title": "targetCPUUtilizationPercentage",
+          "default": 80,
+          "examples": [
+            "targetMemoryUtilizationPercentage: 80"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "autoscaling"
+    },
+    "fullnameOverride": {
+      "type": "string",
+      "title": "fullnameOverride"
+    },
+    "gluetun": {
+      "type": "object",
+      "properties": {
+        "config": {
+          "type": "object",
+          "properties": {
+            "dns_address": {
+              "type": "string",
+              "title": "dns_address",
+              "default": "127.0.0.1"
+            },
+            "dns_block_ads": {
+              "type": "string",
+              "title": "dns_block_ads",
+              "default": false
+            },
+            "dns_block_malicious": {
+              "type": "string",
+              "title": "dns_block_malicious",
+              "description": "DNS Block List Configuration - Disable if causing issues",
+              "default": true
+            },
+            "dns_block_surveillance": {
+              "type": "string",
+              "title": "dns_block_surveillance",
+              "default": true
+            },
+            "dns_keep_nameserver": {
+              "type": "string",
+              "title": "dns_keep_nameserver",
+              "description": "DNS Configuration",
+              "default": "off"
+            },
+            "firewall_input_ports": {
+              "type": "string",
+              "title": "firewall_input_ports",
+              "description": "Allow inbound to qBittorrent through Gluetun's firewall",
+              "default": "8080,6881"
+            },
+            "firewall_outbound_subnets": {
+              "type": "string",
+              "title": "firewall_outbound_subnets",
+              "description": "Allow cluster/LAN subnets outbound (DNS, updates) without leaking public traffic",
+              "default": "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,100.64.0.0/10"
+            },
+            "pgid": {
+              "type": "number",
+              "title": "pgid",
+              "default": 1000
+            },
+            "puid": {
+              "type": "number",
+              "title": "puid",
+              "default": 1000
+            },
+            "update_period": {
+              "type": "string",
+              "title": "update_period",
+              "description": "Disable problematic external checks",
+              "default": 0
+            },
+            "version_information": {
+              "type": "string",
+              "title": "version_information",
+              "default": false
+            },
+            "vpn_port_forwarding": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean",
+                  "title": "enabled",
+                  "default": false
+                },
+                "provider": {
+                  "type": "string",
+                  "title": "provider",
+                  "default": "protonvpn"
+                },
+                "status_file": {
+                  "type": "string",
+                  "title": "status_file",
+                  "default": "/tmp/gluetun/forwarded_port"
+                }
+              },
+              "additionalProperties": false,
+              "title": "vpn_port_forwarding"
+            },
+            "vpn_service_provider": {
+              "type": "string",
+              "title": "vpn_service_provider",
+              "default": "protonvpn"
+            },
+            "vpn_type": {
+              "type": "string",
+              "title": "vpn_type",
+              "default": "wireguard"
+            },
+            "wireguard_address": {
+              "type": "string",
+              "title": "wireguard_address"
+            },
+            "wireguard_mtu": {
+              "type": "string",
+              "title": "wireguard_mtu"
+            },
+            "wireguard_private_key": {
+              "type": "string",
+              "title": "wireguard_private_key",
+              "description": "wireguard specific settings"
+            }
+          },
+          "additionalProperties": false,
+          "title": "config"
+        },
+        "image": {
+          "type": "string",
+          "title": "image",
+          "default": "qmcgaw/gluetun:latest"
+        },
+        "imagePullPolicy": {
+          "type": "string",
+          "title": "imagePullPolicy",
+          "default": "IfNotPresent"
+        },
+        "resources": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true,
+          "title": "resources",
+          "examples": [
+            "limits:\n  cpu: 100m\n  memory: 128Mi\nrequests:\n  cpu: 100m\n  memory: 128Mi"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "gluetun"
+    },
+    "imagePullSecrets": {
+      "type": "array",
+      "title": "imagePullSecrets"
+    },
+    "ingress": {
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true,
+          "title": "annotations"
+        },
+        "className": {
+          "type": "string",
+          "title": "className"
+        },
+        "enabled": {
+          "type": "boolean",
+          "title": "enabled",
+          "default": false
+        },
+        "hosts": {
+          "type": "array",
+          "title": "hosts"
+        },
+        "tls": {
+          "type": "array",
+          "title": "tls",
+          "examples": [
+            "- secretName: chart-example-tls\n   hosts:\n     - chart-example.local"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "ingress"
+    },
+    "nameOverride": {
+      "type": "string",
+      "title": "nameOverride",
+      "description": "This is to override the chart name."
+    },
+    "nodeSelector": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true,
+      "title": "nodeSelector"
+    },
+    "persistence": {
+      "type": "object",
+      "properties": {
+        "configs": {
+          "type": "object",
+          "properties": {
+            "size": {
+              "type": "string",
+              "title": "size",
+              "default": "1Gi"
+            },
+            "storageClassName": {
+              "type": "string",
+              "title": "storageClassName"
+            }
+          },
+          "additionalProperties": false,
+          "title": "configs"
+        },
+        "downloads": {
+          "type": "object",
+          "properties": {
+            "size": {
+              "type": "string",
+              "title": "size",
+              "default": "100Gi"
+            },
+            "storageClassName": {
+              "type": "string",
+              "title": "storageClassName"
+            }
+          },
+          "additionalProperties": false,
+          "title": "downloads"
+        }
+      },
+      "additionalProperties": false,
+      "title": "persistence"
+    },
+    "podAnnotations": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true,
+      "title": "podAnnotations"
+    },
+    "podLabels": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true,
+      "title": "podLabels"
+    },
+    "podSecurityContext": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true,
+      "title": "podSecurityContext",
+      "examples": [
+        "fsGroup: 2000"
+      ]
+    },
+    "qbittorrent": {
+      "type": "object",
+      "properties": {
+        "config": {
+          "type": "object",
+          "properties": {
+            "pgid": {
+              "type": "number",
+              "title": "pgid",
+              "default": 1000
+            },
+            "puid": {
+              "type": "number",
+              "title": "puid",
+              "default": 1000
+            },
+            "timezone": {
+              "type": "string",
+              "title": "timezone",
+              "default": "Etc/UTC"
+            },
+            "torrent_port": {
+              "type": "number",
+              "title": "torrent_port",
+              "default": 6881
+            },
+            "webui_port": {
+              "type": "number",
+              "title": "webui_port",
+              "default": 8080
+            }
+          },
+          "additionalProperties": false,
+          "title": "config"
+        },
+        "image": {
+          "type": "string",
+          "title": "image",
+          "description": "linuxserver based image required to bind interface to the gluetun tunnel",
+          "default": "lscr.io/linuxserver/qbittorrent:latest"
+        },
+        "imagePullPolicy": {
+          "type": "string",
+          "title": "imagePullPolicy",
+          "default": "IfNotPresent"
+        },
+        "resources": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true,
+          "title": "resources",
+          "examples": [
+            "We usually recommend not to specify default resources and to leave this as a conscious\nchoice for the user. This also increases chances charts run on environments with little\nresources, such as Minikube. If you do want to specify resources, uncomment the following\nlines, adjust them as necessary, and remove the curly braces after 'resources:'.\nlimits:\n  cpu: 100m\n  memory: 128Mi\nrequests:\n  cpu: 100m\n  memory: 128Mi"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "qbittorrent"
+    },
+    "replicaCount": {
+      "type": "number",
+      "title": "replicaCount",
+      "default": 1
+    },
+    "securityContext": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true,
+      "title": "securityContext",
+      "examples": [
+        "capabilities:\n  drop:\n  - ALL\nreadOnlyRootFilesystem: true\nrunAsNonRoot: true\nrunAsUser: 1000"
+      ]
+    },
+    "service": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "title": "type",
+          "default": "ClusterIP"
+        }
+      },
+      "additionalProperties": false,
+      "title": "service"
+    },
+    "serviceAccount": {
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true,
+          "title": "annotations",
+          "description": "Annotations to add to the service account"
+        },
+        "automount": {
+          "type": "boolean",
+          "title": "automount",
+          "description": "Automatically mount a ServiceAccount's API credentials?",
+          "default": true
+        },
+        "create": {
+          "type": "boolean",
+          "title": "create",
+          "description": "Specifies whether a service account should be created",
+          "default": true
+        },
+        "name": {
+          "type": "string",
+          "title": "name",
+          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template"
+        }
+      },
+      "additionalProperties": false,
+      "title": "serviceAccount"
+    },
+    "terminationGracePeriodSeconds": {
+      "type": "number",
+      "title": "terminationGracePeriodSeconds",
+      "default": 15
+    },
+    "tolerations": {
+      "type": "array",
+      "title": "tolerations"
+    },
+    "volumeMounts": {
+      "type": "array",
+      "title": "volumeMounts",
+      "description": "Additional volumeMounts on the output Deployment definition.",
+      "examples": [
+        "- name: foo\n  mountPath: \"/etc/foo\"\n  readOnly: true"
+      ]
+    },
+    "volumes": {
+      "type": "array",
+      "title": "volumes",
+      "description": "Additional volumes on the output Deployment definition.",
+      "examples": [
+        "- name: foo\n  secret:\n    secretName: mysecret\n    optional: false"
+      ]
+    }
+  }
+}

@@ -1,0 +1,292 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "affinity": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true,
+      "title": "affinity"
+    },
+    "args": {
+      "type": "array",
+      "title": "args",
+      "description": "args for the kiwix command"
+    },
+    "autoscaling": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "enabled",
+          "default": false
+        },
+        "maxReplicas": {
+          "type": "number",
+          "title": "maxReplicas",
+          "default": 100
+        },
+        "minReplicas": {
+          "type": "number",
+          "title": "minReplicas",
+          "default": 1
+        },
+        "targetCPUUtilizationPercentage": {
+          "type": "number",
+          "title": "targetCPUUtilizationPercentage",
+          "default": 80,
+          "examples": [
+            "targetMemoryUtilizationPercentage: 80"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "autoscaling"
+    },
+    "fullnameOverride": {
+      "type": "string",
+      "title": "fullnameOverride"
+    },
+    "image": {
+      "type": "object",
+      "properties": {
+        "pullPolicy": {
+          "type": "string",
+          "title": "pullPolicy",
+          "description": "This sets the pull policy for images.",
+          "default": "IfNotPresent"
+        },
+        "repository": {
+          "type": "string",
+          "title": "repository",
+          "description": "The image url",
+          "default": "ghcr.io/kiwix/kiwix-serve"
+        },
+        "tag": {
+          "type": "string",
+          "title": "tag",
+          "description": "Overrides the image tag whose default is the chart appVersion."
+        }
+      },
+      "additionalProperties": false,
+      "title": "image"
+    },
+    "imagePullSecrets": {
+      "type": "array",
+      "title": "imagePullSecrets"
+    },
+    "ingress": {
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true,
+          "title": "annotations"
+        },
+        "className": {
+          "type": "string",
+          "title": "className"
+        },
+        "enabled": {
+          "type": "boolean",
+          "title": "enabled",
+          "default": false
+        },
+        "hosts": {
+          "type": "array",
+          "title": "hosts"
+        },
+        "tls": {
+          "type": "array",
+          "title": "tls",
+          "examples": [
+            "- secretName: chart-example-tls\n   hosts:\n     - chart-example.local"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "ingress"
+    },
+    "livenessProbe": {
+      "type": "object",
+      "properties": {
+        "httpGet": {
+          "$ref": "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.34.0/_definitions.json#/definitions/io.k8s.api.core.v1.Probe",
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "title": "path",
+              "default": "/"
+            },
+            "port": {
+              "type": "string",
+              "title": "port",
+              "default": "http"
+            }
+          },
+          "additionalProperties": false,
+          "title": "httpGet"
+        }
+      },
+      "additionalProperties": false,
+      "title": "livenessProbe"
+    },
+    "nameOverride": {
+      "type": "string",
+      "title": "nameOverride",
+      "description": "This is to override the chart name."
+    },
+    "nodeSelector": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true,
+      "title": "nodeSelector"
+    },
+    "podAnnotations": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true,
+      "title": "podAnnotations"
+    },
+    "podLabels": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true,
+      "title": "podLabels"
+    },
+    "podSecurityContext": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true,
+      "title": "podSecurityContext",
+      "examples": [
+        "fsGroup: 2000"
+      ]
+    },
+    "readinessProbe": {
+      "type": "object",
+      "properties": {
+        "httpGet": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "title": "path",
+              "default": "/"
+            },
+            "port": {
+              "type": "string",
+              "title": "port",
+              "default": "http"
+            }
+          },
+          "additionalProperties": false,
+          "title": "httpGet"
+        }
+      },
+      "additionalProperties": false,
+      "title": "readinessProbe"
+    },
+    "replicaCount": {
+      "type": "number",
+      "title": "replicaCount",
+      "default": 1
+    },
+    "resources": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true,
+      "title": "resources",
+      "description": "Resource requirements for the kiwix container.\n- [reference docs](https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#resources)\n- [schema](https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.34.0/_definitions.json#/definitions/io.k8s.api.core.v1.ResourceRequirements)",
+      "examples": [
+        "We usually recommend not to specify default resources and to leave this as a conscious\nchoice for the user. This also increases chances charts run on environments with little\nresources, such as Minikube. If you do want to specify resources, uncomment the following\nlines, adjust them as necessary, and remove the curly braces after 'resources:'.\nlimits:\n  cpu: 100m\n  memory: 128Mi\nrequests:\n  cpu: 100m\n  memory: 128Mi"
+      ]
+    },
+    "securityContext": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": true,
+      "title": "securityContext",
+      "examples": [
+        "capabilities:\n  drop:\n  - ALL\nreadOnlyRootFilesystem: true\nrunAsNonRoot: true\nrunAsUser: 1000"
+      ]
+    },
+    "service": {
+      "type": "object",
+      "properties": {
+        "port": {
+          "type": "number",
+          "title": "port",
+          "default": 80
+        },
+        "type": {
+          "type": "string",
+          "title": "type",
+          "default": "ClusterIP"
+        }
+      },
+      "additionalProperties": false,
+      "title": "service"
+    },
+    "serviceAccount": {
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true,
+          "title": "annotations",
+          "description": "Annotations to add to the service account"
+        },
+        "automount": {
+          "type": "boolean",
+          "title": "automount",
+          "description": "Automatically mount a ServiceAccount's API credentials?",
+          "default": true
+        },
+        "create": {
+          "type": "boolean",
+          "title": "create",
+          "description": "Specifies whether a service account should be created",
+          "default": true
+        },
+        "name": {
+          "type": "string",
+          "title": "name",
+          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template"
+        }
+      },
+      "additionalProperties": false,
+      "title": "serviceAccount"
+    },
+    "tolerations": {
+      "type": "array",
+      "title": "tolerations"
+    },
+    "volumeClaimTemplates": {
+      "type": "array",
+      "title": "volumeClaimTemplates",
+      "description": "Additional volumeClaims to create.",
+      "examples": [
+        "- metadata:\n    name: kiwix-data\n  spec:\n    accessModes: [\"ReadWriteOnce\"]\n    resources:\n      requests:\n        storage: 1Gi\n    storageClassName: standard"
+      ]
+    },
+    "volumeMounts": {
+      "type": "array",
+      "title": "volumeMounts",
+      "description": "Additional volumeMounts on the output Deployment definition.",
+      "examples": [
+        "- name: foo\n  mountPath: \"/etc/foo\"\n  readOnly: true"
+      ]
+    },
+    "volumes": {
+      "type": "array",
+      "title": "volumes",
+      "description": "Additional volumes on the output Deployment definition.",
+      "examples": [
+        "- name: foo\n  secret:\n    secretName: mysecret\n    optional: false"
+      ]
+    }
+  }
+}
