@@ -132,6 +132,7 @@ ingress:
   main:
     enabled: false
     className: ""
+    annotations: {}
     hosts:
       - host: bookorbit.example.com
         paths:
@@ -167,6 +168,11 @@ persistence:
     storageClass: ""
     accessMode: ReadWriteOnce
     size: 5Gi
+    # forceRename pins the PVC to a specific name instead of the chart's
+    # auto-derived one. Needed when other persistence entries are added/removed,
+    # since that shifts the auto-derived name and Helm would otherwise delete and
+    # recreate the PVC under the new name (PVC names are immutable).
+    forceRename: ""
     globalMounts:
       - path: /data
   # books backs the library folder mounted at /books.
@@ -176,5 +182,6 @@ persistence:
     storageClass: ""
     accessMode: ReadWriteOnce
     size: 50Gi
+    forceRename: ""
     globalMounts:
       - path: /books

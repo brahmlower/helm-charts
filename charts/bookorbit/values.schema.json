@@ -515,6 +515,12 @@
         "main": {
           "type": "object",
           "properties": {
+            "annotations": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true,
+              "title": "annotations"
+            },
             "className": {
               "type": "string",
               "title": "className",
@@ -558,6 +564,11 @@
               "title": "existingClaim",
               "default": ""
             },
+            "forceRename": {
+              "type": "string",
+              "title": "forceRename",
+              "default": ""
+            },
             "globalMounts": {
               "type": "array",
               "title": "globalMounts"
@@ -593,6 +604,12 @@
             "existingClaim": {
               "type": "string",
               "title": "existingClaim",
+              "default": ""
+            },
+            "forceRename": {
+              "type": "string",
+              "title": "forceRename",
+              "description": "forceRename pins the PVC to a specific name instead of the chart's\nauto-derived one. Needed when other persistence entries are added/removed,\nsince that shifts the auto-derived name and Helm would otherwise delete and\nrecreate the PVC under the new name (PVC names are immutable).",
               "default": ""
             },
             "globalMounts": {

@@ -75,10 +75,12 @@ A Helm chart for BookOrbit, a self-hosted reading space for ebooks
 | persistence.data.storageClass | string | `""` |  |
 | persistence.data.accessMode | string | `"ReadWriteOnce"` |  |
 | persistence.data.size | string | `"5Gi"` |  |
+| persistence.data.forceRename | string | `""` | forceRename pins the PVC to a specific name instead of the chart's</br>auto-derived one. Needed when other persistence entries are added/removed,</br>since that shifts the auto-derived name and Helm would otherwise delete and</br>recreate the PVC under the new name (PVC names are immutable). |
 | persistence.data.globalMounts | array | `null` |  |
 | persistence.books.type | string | `"persistentVolumeClaim"` |  |
 | persistence.books.existingClaim | string | `""` |  |
 | persistence.books.storageClass | string | `""` |  |
 | persistence.books.accessMode | string | `"ReadWriteOnce"` |  |
 | persistence.books.size | string | `"50Gi"` |  |
+| persistence.books.forceRename | string | `""` |  |
 | persistence.books.globalMounts | array | `null` |  |
