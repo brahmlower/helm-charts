@@ -1,0 +1,74 @@
+version: '3'
+
+includes:
+  actual:
+    taskfile: ./charts/actual
+    dir: ./charts/actual
+  bentopdf:
+    taskfile: ./charts/bentopdf
+    dir: ./charts/bentopdf
+  bookorbit:
+    taskfile: ./charts/bookorbit
+    dir: ./charts/bookorbit
+  donetick:
+    taskfile: ./charts/donetick
+    dir: ./charts/donetick
+  kiwix:
+    taskfile: ./charts/kiwix
+    dir: ./charts/kiwix
+  papra:
+    taskfile: ./charts/papra
+    dir: ./charts/papra
+  qbittorrent:
+    taskfile: ./charts/qbittorrent
+    dir: ./charts/qbittorrent
+
+tasks:
+  deps:
+    desc: Build/update dependencies for all charts
+    cmds:
+      - task: actual:deps
+      - task: bentopdf:deps
+      - task: bookorbit:deps
+      - task: donetick:deps
+      - task: kiwix:deps
+      - task: papra:deps
+      - task: qbittorrent:deps
+
+  lint:
+    desc: Run `helm lint` on all charts
+    cmds:
+      - task: actual:lint
+      - task: bentopdf:lint
+      - task: bookorbit:lint
+      - task: donetick:lint
+      - task: kiwix:lint
+      - task: papra:lint
+      - task: qbittorrent:lint
+
+  template:
+    desc: Render all charts with `helm template` to catch templating errors
+    cmds:
+      - task: actual:template
+      - task: bentopdf:template
+      - task: bookorbit:template
+      - task: donetick:template
+      - task: kiwix:template
+      - task: papra:template
+      - task: qbittorrent:template
+
+  test:
+    desc: Lint and render all charts (static validation, no cluster required)
+    cmds:
+      - task: actual:test
+      - task: bentopdf:test
+      - task: bookorbit:test
+      - task: donetick:test
+      - task: kiwix:test
+      - task: papra:test
+      - task: qbittorrent:test
+
+  default:
+    desc: Alias for test
+    cmds:
+      - task: test

@@ -1,0 +1,9 @@
+# Dummy values satisfying required fields, used only for `helm lint`/`helm template`
+# in CI/local task runs. Not meant for real deployments.
+appUrl: https://bookorbit.example.com
+secretName: bookorbit-secret
+database:
+  host: postgres.example.com
+  user: bookorbit
+  name: bookorbit
+  existingSecret: bookorbit-db-secret

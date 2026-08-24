@@ -1,0 +1,54 @@
+version: '3'
+
+tasks:
+  repos:
+    desc: Add Helm chart repositories required by this chart's dependencies
+    run: once
+    cmds:
+      - helm repo add bjw-s https://bjw-s-labs.github.io/helm-charts
+    silent: true
+
+  deps:
+    desc: Build/update chart dependencies
+    deps: [repos]
+    cmds:
+      - helm dependency build .
+
+  lint:
+    desc: Run `helm lint` on this chart
+    deps: [deps]
+    cmds:
+      - |
+        set -e
+        extra_values=()
+        if [ -d ci ]; then
+          for f in ci/*.yaml; do
+            extra_values+=(-f "$f")
+          done
+        fi
+        helm lint "${extra_values[@]}" .
+
+  template:
+    desc: Render this chart with `helm template` to catch templating errors
+    deps: [deps]
+    cmds:
+      - |
+        set -e
+        extra_values=()
+        if [ -d ci ]; then
+          for f in ci/*.yaml; do
+            extra_values+=(-f "$f")
+          done
+        fi
+        helm template "${extra_values[@]}" "$(basename "$PWD")" . > /dev/null
+
+  test:
+    desc: Lint and render this chart (static validation, no cluster required)
+    cmds:
+      - task: lint
+      - task: template
+
+  default:
+    desc: Alias for test
+    cmds:
+      - task: test

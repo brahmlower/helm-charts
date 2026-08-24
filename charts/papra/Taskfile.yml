@@ -1,0 +1,28 @@
+version: '3'
+
+tasks:
+  deps:
+    desc: Build/update chart dependencies (none for this chart)
+
+  lint:
+    desc: Run `helm lint` on this chart
+    deps: [deps]
+    cmds:
+      - helm lint .
+
+  template:
+    desc: Render this chart with `helm template` to catch templating errors
+    deps: [deps]
+    cmds:
+      - helm template "$(basename "$PWD")" . > /dev/null
+
+  test:
+    desc: Lint and render this chart (static validation, no cluster required)
+    cmds:
+      - task: lint
+      - task: template
+
+  default:
+    desc: Alias for test
+    cmds:
+      - task: test
