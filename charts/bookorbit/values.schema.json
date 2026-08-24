@@ -1,0 +1,696 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "appUrl": {
+      "type": "string",
+      "title": "appUrl",
+      "description": "appUrl is the external/public URL of the BookOrbit instance (required). Used by\nemails and Kobo endpoints."
+    },
+    "clientUrl": {
+      "type": "string",
+      "title": "clientUrl",
+      "description": "clientUrl is the CORS origin for the frontend, when served from a different domain\nthan appUrl. Defaults to appUrl when empty."
+    },
+    "controllers": {
+      "type": "object",
+      "properties": {
+        "main": {
+          "type": "object",
+          "properties": {
+            "containers": {
+              "type": "object",
+              "properties": {
+                "main": {
+                  "type": "object",
+                  "properties": {
+                    "env": {
+                      "type": "object",
+                      "properties": {
+                        "APP_URL": {
+                          "type": "string",
+                          "title": "APP_URL",
+                          "default": "{{ .Values.appUrl }}"
+                        },
+                        "BOOKORBIT_FIX_PERMISSIONS": {
+                          "type": "string",
+                          "title": "BOOKORBIT_FIX_PERMISSIONS",
+                          "default": true
+                        },
+                        "CLIENT_URL": {
+                          "type": "string",
+                          "title": "CLIENT_URL",
+                          "default": "{{ .Values.clientUrl | default .Values.appUrl }}"
+                        },
+                        "CSP_ALLOW_CLOUDFLARE_INSIGHTS": {
+                          "type": "string",
+                          "title": "CSP_ALLOW_CLOUDFLARE_INSIGHTS",
+                          "default": false
+                        },
+                        "EMAIL_ENCRYPTION_KEY": {
+                          "type": "object",
+                          "properties": {
+                            "valueFrom": {
+                              "type": "object",
+                              "properties": {
+                                "secretKeyRef": {
+                                  "type": "object",
+                                  "properties": {
+                                    "key": {
+                                      "type": "string",
+                                      "title": "key",
+                                      "default": "email-encryption-key"
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "title": "name",
+                                      "default": "{{ .Values.secretName }}"
+                                    },
+                                    "optional": {
+                                      "type": "boolean",
+                                      "title": "optional",
+                                      "default": true
+                                    }
+                                  },
+                                  "additionalProperties": false,
+                                  "title": "secretKeyRef"
+                                }
+                              },
+                              "additionalProperties": false,
+                              "title": "valueFrom"
+                            }
+                          },
+                          "additionalProperties": false,
+                          "title": "EMAIL_ENCRYPTION_KEY"
+                        },
+                        "JWT_SECRET": {
+                          "type": "object",
+                          "properties": {
+                            "valueFrom": {
+                              "type": "object",
+                              "properties": {
+                                "secretKeyRef": {
+                                  "type": "object",
+                                  "properties": {
+                                    "key": {
+                                      "type": "string",
+                                      "title": "key",
+                                      "default": "jwt-secret"
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "title": "name",
+                                      "default": "{{ .Values.secretName }}"
+                                    }
+                                  },
+                                  "additionalProperties": false,
+                                  "title": "secretKeyRef"
+                                }
+                              },
+                              "additionalProperties": false,
+                              "title": "valueFrom"
+                            }
+                          },
+                          "additionalProperties": false,
+                          "title": "JWT_SECRET"
+                        },
+                        "MIGRATION_ENCRYPTION_KEY": {
+                          "type": "object",
+                          "properties": {
+                            "valueFrom": {
+                              "type": "object",
+                              "properties": {
+                                "secretKeyRef": {
+                                  "type": "object",
+                                  "properties": {
+                                    "key": {
+                                      "type": "string",
+                                      "title": "key",
+                                      "default": "migration-encryption-key"
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "title": "name",
+                                      "default": "{{ .Values.secretName }}"
+                                    },
+                                    "optional": {
+                                      "type": "boolean",
+                                      "title": "optional",
+                                      "default": true
+                                    }
+                                  },
+                                  "additionalProperties": false,
+                                  "title": "secretKeyRef"
+                                }
+                              },
+                              "additionalProperties": false,
+                              "title": "valueFrom"
+                            }
+                          },
+                          "additionalProperties": false,
+                          "title": "MIGRATION_ENCRYPTION_KEY"
+                        },
+                        "NODE_MAX_OLD_SPACE_SIZE": {
+                          "type": "string",
+                          "title": "NODE_MAX_OLD_SPACE_SIZE",
+                          "default": "auto"
+                        },
+                        "OIDC_ALLOW_LOCAL_ISSUERS": {
+                          "type": "string",
+                          "title": "OIDC_ALLOW_LOCAL_ISSUERS",
+                          "default": false
+                        },
+                        "PORT": {
+                          "type": "string",
+                          "title": "PORT",
+                          "default": 3000
+                        },
+                        "POSTGRES_DB": {
+                          "type": "string",
+                          "title": "POSTGRES_DB",
+                          "default": "{{ .Values.database.name }}"
+                        },
+                        "POSTGRES_HOST": {
+                          "type": "string",
+                          "title": "POSTGRES_HOST",
+                          "default": "{{ .Values.database.host }}"
+                        },
+                        "POSTGRES_PASSWORD": {
+                          "type": "object",
+                          "properties": {
+                            "valueFrom": {
+                              "type": "object",
+                              "properties": {
+                                "secretKeyRef": {
+                                  "type": "object",
+                                  "properties": {
+                                    "key": {
+                                      "type": "string",
+                                      "title": "key",
+                                      "default": "{{ .Values.database.existingSecretPasswordKey }}"
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "title": "name",
+                                      "default": "{{ .Values.database.existingSecret }}"
+                                    }
+                                  },
+                                  "additionalProperties": false,
+                                  "title": "secretKeyRef"
+                                }
+                              },
+                              "additionalProperties": false,
+                              "title": "valueFrom"
+                            }
+                          },
+                          "additionalProperties": false,
+                          "title": "POSTGRES_PASSWORD"
+                        },
+                        "POSTGRES_PORT": {
+                          "type": "string",
+                          "title": "POSTGRES_PORT",
+                          "default": "{{ .Values.database.port }}"
+                        },
+                        "POSTGRES_USER": {
+                          "type": "string",
+                          "title": "POSTGRES_USER",
+                          "default": "{{ .Values.database.user }}"
+                        },
+                        "SETUP_BOOTSTRAP_TOKEN": {
+                          "type": "object",
+                          "properties": {
+                            "valueFrom": {
+                              "type": "object",
+                              "properties": {
+                                "secretKeyRef": {
+                                  "type": "object",
+                                  "properties": {
+                                    "key": {
+                                      "type": "string",
+                                      "title": "key",
+                                      "default": "setup-bootstrap-token"
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "title": "name",
+                                      "default": "{{ .Values.secretName }}"
+                                    }
+                                  },
+                                  "additionalProperties": false,
+                                  "title": "secretKeyRef"
+                                }
+                              },
+                              "additionalProperties": false,
+                              "title": "valueFrom"
+                            }
+                          },
+                          "additionalProperties": false,
+                          "title": "SETUP_BOOTSTRAP_TOKEN"
+                        }
+                      },
+                      "additionalProperties": false,
+                      "title": "env"
+                    },
+                    "image": {
+                      "type": "object",
+                      "properties": {
+                        "pullPolicy": {
+                          "type": "string",
+                          "title": "pullPolicy",
+                          "default": "IfNotPresent"
+                        },
+                        "repository": {
+                          "type": "string",
+                          "title": "repository",
+                          "default": "ghcr.io/bookorbit/bookorbit"
+                        },
+                        "tag": {
+                          "type": "string",
+                          "title": "tag",
+                          "description": "Unlike `helm create`-based charts, app-template does not fall back to\nChart.appVersion automatically — the tag must be set explicitly.",
+                          "default": "2.7.0"
+                        }
+                      },
+                      "additionalProperties": false,
+                      "title": "image"
+                    },
+                    "probes": {
+                      "type": "object",
+                      "properties": {
+                        "liveness": {
+                          "type": "object",
+                          "properties": {
+                            "enabled": {
+                              "type": "boolean",
+                              "title": "enabled",
+                              "default": true
+                            },
+                            "path": {
+                              "type": "string",
+                              "title": "path",
+                              "default": "/api/v1/health"
+                            },
+                            "type": {
+                              "type": "string",
+                              "title": "type",
+                              "default": "HTTP"
+                            }
+                          },
+                          "additionalProperties": false,
+                          "title": "liveness"
+                        },
+                        "readiness": {
+                          "type": "object",
+                          "properties": {
+                            "enabled": {
+                              "type": "boolean",
+                              "title": "enabled",
+                              "default": true
+                            },
+                            "path": {
+                              "type": "string",
+                              "title": "path",
+                              "default": "/api/v1/health"
+                            },
+                            "type": {
+                              "type": "string",
+                              "title": "type",
+                              "default": "HTTP"
+                            }
+                          },
+                          "additionalProperties": false,
+                          "title": "readiness"
+                        }
+                      },
+                      "additionalProperties": false,
+                      "title": "probes"
+                    },
+                    "resources": {
+                      "type": "object",
+                      "properties": {
+                        "limits": {
+                          "type": "object",
+                          "properties": {
+                            "memory": {
+                              "type": "string",
+                              "title": "memory",
+                              "default": "2Gi"
+                            }
+                          },
+                          "additionalProperties": false,
+                          "title": "limits"
+                        },
+                        "requests": {
+                          "type": "object",
+                          "properties": {
+                            "cpu": {
+                              "type": "string",
+                              "title": "cpu",
+                              "default": "250m"
+                            },
+                            "memory": {
+                              "type": "string",
+                              "title": "memory",
+                              "default": "512Mi"
+                            }
+                          },
+                          "additionalProperties": false,
+                          "title": "requests"
+                        }
+                      },
+                      "additionalProperties": false,
+                      "title": "resources"
+                    },
+                    "securityContext": {
+                      "type": "object",
+                      "properties": {
+                        "allowPrivilegeEscalation": {
+                          "type": "boolean",
+                          "title": "allowPrivilegeEscalation",
+                          "default": false
+                        },
+                        "capabilities": {
+                          "type": "object",
+                          "properties": {
+                            "drop": {
+                              "type": "array",
+                              "title": "drop"
+                            }
+                          },
+                          "additionalProperties": false,
+                          "title": "capabilities"
+                        },
+                        "readOnlyRootFilesystem": {
+                          "type": "boolean",
+                          "title": "readOnlyRootFilesystem",
+                          "default": false
+                        }
+                      },
+                      "additionalProperties": false,
+                      "title": "securityContext"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "title": "main"
+                }
+              },
+              "additionalProperties": false,
+              "title": "containers"
+            },
+            "pod": {
+              "type": "object",
+              "properties": {
+                "securityContext": {
+                  "type": "object",
+                  "properties": {
+                    "fsGroup": {
+                      "type": "number",
+                      "title": "fsGroup",
+                      "default": 1000
+                    },
+                    "runAsGroup": {
+                      "type": "number",
+                      "title": "runAsGroup",
+                      "default": 1000
+                    },
+                    "runAsNonRoot": {
+                      "type": "boolean",
+                      "title": "runAsNonRoot",
+                      "default": true
+                    },
+                    "runAsUser": {
+                      "type": "number",
+                      "title": "runAsUser",
+                      "default": 1000
+                    },
+                    "seccompProfile": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "title": "type",
+                          "default": "RuntimeDefault"
+                        }
+                      },
+                      "additionalProperties": false,
+                      "title": "seccompProfile"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "title": "securityContext",
+                  "description": "The image's entrypoint chowns /data to PUID:PGID (default 1000:1000) when\nstarted as root, but runs equally well started directly as non-root, which\nis what fsGroup + runAsUser do here."
+                }
+              },
+              "additionalProperties": false,
+              "title": "pod"
+            },
+            "replicas": {
+              "type": "number",
+              "title": "replicas",
+              "description": "BookOrbit keeps book files and app data on ReadWriteOnce PVCs, so this must\nstay at 1. Scaling beyond 1 replica risks two pods writing the same library\nconcurrently.",
+              "default": 1
+            },
+            "strategy": {
+              "type": "string",
+              "title": "strategy",
+              "default": "Recreate"
+            },
+            "type": {
+              "type": "string",
+              "title": "type",
+              "default": "deployment"
+            }
+          },
+          "additionalProperties": false,
+          "title": "main"
+        }
+      },
+      "additionalProperties": false,
+      "title": "controllers"
+    },
+    "database": {
+      "type": "object",
+      "properties": {
+        "existingSecret": {
+          "type": "string",
+          "title": "existingSecret",
+          "description": "existingSecret names a pre-existing Secret holding the database password."
+        },
+        "existingSecretPasswordKey": {
+          "type": "string",
+          "title": "existingSecretPasswordKey",
+          "description": "existingSecretPasswordKey is the key within existingSecret that holds the password.",
+          "default": "postgres-password"
+        },
+        "host": {
+          "type": "string",
+          "title": "host"
+        },
+        "name": {
+          "type": "string",
+          "title": "name"
+        },
+        "port": {
+          "type": "number",
+          "title": "port",
+          "default": 5432
+        },
+        "user": {
+          "type": "string",
+          "title": "user"
+        }
+      },
+      "additionalProperties": false,
+      "title": "database",
+      "description": "database configures the connection to an external PostgreSQL instance. This chart\ndoes not deploy PostgreSQL. The instance must have the uuid-ossp, pg_trgm, and\nvector (pgvector) extensions available, e.g. pgvector/pgvector:pg18."
+    },
+    "ingress": {
+      "type": "object",
+      "properties": {
+        "main": {
+          "type": "object",
+          "properties": {
+            "className": {
+              "type": "string",
+              "title": "className"
+            },
+            "enabled": {
+              "type": "boolean",
+              "title": "enabled",
+              "default": false
+            },
+            "hosts": {
+              "type": "array",
+              "title": "hosts"
+            },
+            "tls": {
+              "type": "array",
+              "title": "tls"
+            }
+          },
+          "additionalProperties": false,
+          "title": "main"
+        }
+      },
+      "additionalProperties": false,
+      "title": "ingress",
+      "description": "ingress.main is disabled by default. See\nhttps://bjw-s-labs.github.io/helm-charts/docs/app-template/reference/ingress/"
+    },
+    "persistence": {
+      "type": "object",
+      "properties": {
+        "books": {
+          "type": "object",
+          "properties": {
+            "accessMode": {
+              "type": "string",
+              "title": "accessMode",
+              "default": "ReadWriteOnce"
+            },
+            "existingClaim": {
+              "type": "string",
+              "title": "existingClaim"
+            },
+            "globalMounts": {
+              "type": "array",
+              "title": "globalMounts"
+            },
+            "size": {
+              "type": "string",
+              "title": "size",
+              "default": "50Gi"
+            },
+            "storageClass": {
+              "type": "string",
+              "title": "storageClass"
+            },
+            "type": {
+              "type": "string",
+              "title": "type",
+              "default": "persistentVolumeClaim"
+            }
+          },
+          "additionalProperties": false,
+          "title": "books",
+          "description": "books backs the library folder mounted at /books."
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "accessMode": {
+              "type": "string",
+              "title": "accessMode",
+              "default": "ReadWriteOnce"
+            },
+            "existingClaim": {
+              "type": "string",
+              "title": "existingClaim"
+            },
+            "globalMounts": {
+              "type": "array",
+              "title": "globalMounts"
+            },
+            "size": {
+              "type": "string",
+              "title": "size",
+              "default": "5Gi"
+            },
+            "storageClass": {
+              "type": "string",
+              "title": "storageClass"
+            },
+            "type": {
+              "type": "string",
+              "title": "type",
+              "default": "persistentVolumeClaim"
+            }
+          },
+          "additionalProperties": false,
+          "title": "data"
+        }
+      },
+      "additionalProperties": false,
+      "title": "persistence"
+    },
+    "route": {
+      "type": "object",
+      "properties": {
+        "main": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "enabled",
+              "default": false
+            },
+            "hostnames": {
+              "type": "array",
+              "title": "hostnames"
+            },
+            "kind": {
+              "type": "string",
+              "title": "kind",
+              "default": "HTTPRoute"
+            },
+            "parentRefs": {
+              "type": "array",
+              "title": "parentRefs"
+            }
+          },
+          "additionalProperties": false,
+          "title": "main"
+        }
+      },
+      "additionalProperties": false,
+      "title": "route",
+      "description": "route.main is the Gateway API HTTPRoute alternative to ingress.main, disabled by\ndefault. Set parentRefs to attach to an existing Gateway (this chart does not\ncreate one — Gateways are platform infrastructure, provisioned separately). A\nReferenceGrant is generated automatically if the route ends up in a different\nnamespace than this release. See\nhttps://bjw-s-labs.github.io/helm-charts/docs/app-template/reference/route/"
+    },
+    "secretName": {
+      "type": "string",
+      "title": "secretName",
+      "description": "secretName names a pre-existing Secret (e.g. created by an ExternalSecret) holding\njwt-secret and setup-bootstrap-token, and optionally email-encryption-key /\nmigration-encryption-key."
+    },
+    "service": {
+      "type": "object",
+      "properties": {
+        "main": {
+          "type": "object",
+          "properties": {
+            "controller": {
+              "type": "string",
+              "title": "controller",
+              "default": "main"
+            },
+            "ports": {
+              "type": "object",
+              "properties": {
+                "http": {
+                  "type": "object",
+                  "properties": {
+                    "port": {
+                      "type": "number",
+                      "title": "port",
+                      "default": 3000
+                    },
+                    "primary": {
+                      "type": "boolean",
+                      "title": "primary",
+                      "default": true
+                    }
+                  },
+                  "additionalProperties": false,
+                  "title": "http"
+                }
+              },
+              "additionalProperties": false,
+              "title": "ports"
+            }
+          },
+          "additionalProperties": false,
+          "title": "main"
+        }
+      },
+      "additionalProperties": false,
+      "title": "service"
+    }
+  }
+}

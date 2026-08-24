@@ -1,0 +1,19 @@
+---
+{{- include "bjw-s.common.loader.init" . }}
+
+{{- define "bookorbit.hardcodedValues" -}}
+{{ if not .Values.global.nameOverride }}
+global:
+  nameOverride: "{{ .Release.Name }}"
+{{ end }}
+{{- end -}}
+{{- $_ := mergeOverwrite .Values (include "bookorbit.hardcodedValues" . | fromYaml) -}}
+
+{{- $_ := required "appUrl is required" .Values.appUrl -}}
+{{- $_ := required "secretName is required" .Values.secretName -}}
+{{- $_ := required "database.host is required" .Values.database.host -}}
+{{- $_ := required "database.user is required" .Values.database.user -}}
+{{- $_ := required "database.name is required" .Values.database.name -}}
+{{- $_ := required "database.existingSecret is required" .Values.database.existingSecret -}}
+
+{{ include "bjw-s.common.loader.generate" . }}

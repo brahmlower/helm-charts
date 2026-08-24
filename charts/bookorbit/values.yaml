@@ -1,0 +1,180 @@
+# yaml-language-server: $schema=values.schema.json
+
+# This chart is a thin values-only layer on top of bjw-s's `common` library chart
+# (https://github.com/bjw-s-labs/helm-charts). See its docs for the full schema of
+# controllers/service/ingress/route/persistence/secrets/etc. Only bookorbit-specific
+# values are documented below.
+
+# appUrl is the external/public URL of the BookOrbit instance (required). Used by
+# emails and Kobo endpoints.
+appUrl: ""
+# clientUrl is the CORS origin for the frontend, when served from a different domain
+# than appUrl. Defaults to appUrl when empty.
+clientUrl: ""
+# secretName names a pre-existing Secret (e.g. created by an ExternalSecret) holding
+# jwt-secret and setup-bootstrap-token, and optionally email-encryption-key /
+# migration-encryption-key.
+secretName: ""
+
+# database configures the connection to an external PostgreSQL instance. This chart
+# does not deploy PostgreSQL. The instance must have the uuid-ossp, pg_trgm, and
+# vector (pgvector) extensions available, e.g. pgvector/pgvector:pg18.
+database:
+  host: ""
+  port: 5432
+  user: ""
+  name: ""
+  # existingSecret names a pre-existing Secret holding the database password.
+  existingSecret: ""
+  # existingSecretPasswordKey is the key within existingSecret that holds the password.
+  existingSecretPasswordKey: "postgres-password"
+
+controllers:
+  main:
+    type: deployment
+    # BookOrbit keeps book files and app data on ReadWriteOnce PVCs, so this must
+    # stay at 1. Scaling beyond 1 replica risks two pods writing the same library
+    # concurrently.
+    replicas: 1
+    strategy: Recreate
+    pod:
+      # The image's entrypoint chowns /data to PUID:PGID (default 1000:1000) when
+      # started as root, but runs equally well started directly as non-root, which
+      # is what fsGroup + runAsUser do here.
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+    containers:
+      main:
+        image:
+          repository: ghcr.io/bookorbit/bookorbit
+          # Unlike `helm create`-based charts, app-template does not fall back to
+          # Chart.appVersion automatically — the tag must be set explicitly.
+          tag: "2.7.0"
+          pullPolicy: IfNotPresent
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          capabilities:
+            drop: ["ALL"]
+        env:
+          PORT: "3000"
+          APP_URL: '{{ .Values.appUrl }}'
+          CLIENT_URL: '{{ .Values.clientUrl | default .Values.appUrl }}'
+          NODE_MAX_OLD_SPACE_SIZE: "auto"
+          BOOKORBIT_FIX_PERMISSIONS: "true"
+          OIDC_ALLOW_LOCAL_ISSUERS: "false"
+          CSP_ALLOW_CLOUDFLARE_INSIGHTS: "false"
+          POSTGRES_HOST: '{{ .Values.database.host }}'
+          POSTGRES_PORT: '{{ .Values.database.port }}'
+          POSTGRES_USER: '{{ .Values.database.user }}'
+          POSTGRES_DB: '{{ .Values.database.name }}'
+          JWT_SECRET:
+            valueFrom:
+              secretKeyRef:
+                name: '{{ .Values.secretName }}'
+                key: jwt-secret
+          SETUP_BOOTSTRAP_TOKEN:
+            valueFrom:
+              secretKeyRef:
+                name: '{{ .Values.secretName }}'
+                key: setup-bootstrap-token
+          POSTGRES_PASSWORD:
+            valueFrom:
+              secretKeyRef:
+                name: '{{ .Values.database.existingSecret }}'
+                key: '{{ .Values.database.existingSecretPasswordKey }}'
+          # Optional secrets: omitted from the environment entirely (rather than failing)
+          # when the key isn't present in secretName.
+          EMAIL_ENCRYPTION_KEY:
+            valueFrom:
+              secretKeyRef:
+                name: '{{ .Values.secretName }}'
+                key: email-encryption-key
+                optional: true
+          MIGRATION_ENCRYPTION_KEY:
+            valueFrom:
+              secretKeyRef:
+                name: '{{ .Values.secretName }}'
+                key: migration-encryption-key
+                optional: true
+        probes:
+          liveness:
+            enabled: true
+            type: HTTP
+            path: /api/v1/health
+          readiness:
+            enabled: true
+            type: HTTP
+            path: /api/v1/health
+        resources:
+          requests:
+            cpu: 250m
+            memory: 512Mi
+          limits:
+            memory: 2Gi
+
+service:
+  main:
+    controller: main
+    ports:
+      http:
+        primary: true
+        port: 3000
+
+# ingress.main is disabled by default. See
+# https://bjw-s-labs.github.io/helm-charts/docs/app-template/reference/ingress/
+ingress:
+  main:
+    enabled: false
+    className: ""
+    hosts:
+      - host: bookorbit.example.com
+        paths:
+          - path: /
+            pathType: Prefix
+            service:
+              identifier: main
+              port: http
+    tls: []
+
+# route.main is the Gateway API HTTPRoute alternative to ingress.main, disabled by
+# default. Set parentRefs to attach to an existing Gateway (this chart does not
+# create one — Gateways are platform infrastructure, provisioned separately). A
+# ReferenceGrant is generated automatically if the route ends up in a different
+# namespace than this release. See
+# https://bjw-s-labs.github.io/helm-charts/docs/app-template/reference/route/
+route:
+  main:
+    enabled: false
+    kind: HTTPRoute
+    hostnames:
+      - bookorbit.example.com
+    parentRefs:
+      - name: gateway
+        sectionName: http
+        # namespace: gateway-system
+
+persistence:
+  # data backs APP_DATA_PATH (/data): covers, book-bucket, DB migration state.
+  data:
+    type: persistentVolumeClaim
+    existingClaim: ""
+    storageClass: ""
+    accessMode: ReadWriteOnce
+    size: 5Gi
+    globalMounts:
+      - path: /data
+  # books backs the library folder mounted at /books.
+  books:
+    type: persistentVolumeClaim
+    existingClaim: ""
+    storageClass: ""
+    accessMode: ReadWriteOnce
+    size: 50Gi
+    globalMounts:
+      - path: /books

@@ -1,0 +1,15 @@
+repos:
+    - repo: local
+      hooks:
+        - id: helm-values-schema
+          name: Generate Helm values schema
+          entry: helm values schema . --git-add
+          language: system
+          files: ^.*/values\.yaml$
+          pass_filenames: false
+        - id: helm-values-docs
+          name: Generate Helm values documentation
+          entry: helm values docs . --git-add
+          language: system
+          files: ^.*/values\.yaml$
+          pass_filenames: false
