@@ -1,35 +1,38 @@
 
-# BookOrbit Helm Chart
+# helm-charts
 
-A helm chart for [BookOrbit](https://github.com/bookorbit/bookorbit), a self-hosted reading space for ebooks.
+A collection of Helm charts maintained by brahmlower.
 
-This chart does not deploy PostgreSQL. Point `database.*` at an external instance with
-the `uuid-ossp`, `pg_trgm`, and `vector` (pgvector) extensions available (e.g.
-`pgvector/pgvector:pg18`).
-
-Built on [bjw-s's `common` library chart](https://github.com/bjw-s-labs/helm-charts) —
-this chart's `values.yaml` is a thin, bookorbit-specific layer over that schema
-(`controllers`, `service`, `ingress`, `route`, `persistence`, `secrets`, etc.). See its
-docs for anything not covered by the bookorbit-specific values documented below (e.g.
-HorizontalPodAutoscaler, NetworkPolicy, ServiceMonitor).
-
-## Installing the Chart
+## Installing
 
 ```
-helm repo add brahmlower-bookorbit https://brahmlower.github.io/helm-bookorbit
-helm install bookorbit brahmlower-bookorbit/bookorbit
+helm repo add brahmlower https://brahmlower.github.io/helm-charts
+helm install <chart> brahmlower/<chart>
 ```
+
+## Charts
+
+| Chart | Description |
+|-------|-------------|
+| [actual](charts/actual) | Actual Budget |
+| [bentopdf](charts/bentopdf) | BentoPDF |
+| [bookorbit](charts/bookorbit) | BookOrbit, a self-hosted reading space for ebooks |
+| [donetick](charts/donetick) | Donetick |
+| [kiwix](charts/kiwix) | Kiwix |
+| [papra](charts/papra) | Papra, a minimalistic document archiving platform |
+| [qbittorrent](charts/qbittorrent) | qBittorrent (with optional Gluetun VPN sidecar) |
+
+Each chart's `values.yaml` reference is documented in its own README, linked above.
 
 ## Contributing
 
-### Chart Dependencies
+This repo uses [Task](https://taskfile.dev) to lint, template, and test all charts:
+```
+task test
+```
 
-This chart depends on bjw-s's `common` library chart. After cloning, resolve it before
-linting/templating locally:
-```
-helm repo add bjw-s https://bjw-s-labs.github.io/helm-charts
-helm dependency update charts/bookorbit
-```
+Individual charts can be run the same way, e.g. `task bookorbit:test`. See the root
+`Taskfile.yml` for the full list of tasks.
 
 ### Values Schema Generation
 
@@ -38,8 +41,8 @@ Schema generation via [helm-values](https://github.com/brahmlower/helm-values).
 helm plugin install https://github.com/brahmlower/helm-values
 ```
 
-Update the schema and docs:
+Update the schema and docs for a chart:
 ```
-helm values schema .
-helm values docs .
+helm values schema charts/<chart>
+helm values docs charts/<chart>
 ```
