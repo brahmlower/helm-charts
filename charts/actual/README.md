@@ -19,9 +19,8 @@ Helm chart for managing [Actual](https://www.actualbudget.com/)
 | env | array | `null` |  |
 | ingress.enabled | boolean | `false` |  |
 | ingress.className | string | `"nginx"` |  |
-| ingress.annotations.kubernetes.io/ingress.class | string | `"nginx"` |  |
-| ingress.annotations.kubernetes.io/tls-acme | string | `"true"` |  |
 | ingress.hosts | array | `null` |  |
+| ingress.tls | array | `null` |  |
 | livenessProbe.httpGet.path | string | `"/"` |  |
 | livenessProbe.httpGet.port | number | `5006` |  |
 | readinessProbe.httpGet.path | string | `"/"` |  |

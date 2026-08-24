@@ -78,19 +78,8 @@
       "properties": {
         "annotations": {
           "type": "object",
-          "properties": {
-            "kubernetes.io/ingress.class": {
-              "type": "string",
-              "title": "kubernetes.io/ingress.class",
-              "default": "nginx"
-            },
-            "kubernetes.io/tls-acme": {
-              "type": "string",
-              "title": "kubernetes.io/tls-acme",
-              "default": "true"
-            }
-          },
-          "additionalProperties": false,
+          "properties": {},
+          "additionalProperties": true,
           "title": "annotations"
         },
         "className": {
@@ -105,7 +94,11 @@
         },
         "hosts": {
           "type": "array",
-          "title": "hosts",
+          "title": "hosts"
+        },
+        "tls": {
+          "type": "array",
+          "title": "tls",
           "examples": [
             "tls:\n  - secretName: actual-example-tls\n    hosts:\n      - actual-example.local"
           ]
