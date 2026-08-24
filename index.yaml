@@ -3,6 +3,16 @@ entries:
   actual:
   - apiVersion: v2
     appVersion: 25.1.0
+    created: "2026-08-24T23:40:59.236129252Z"
+    description: Helm chart for managing [Actual](https://www.actualbudget.com/)
+    digest: daadf4b6bfb56b80dbfcb45b6a9987d8ceabda567696fcc774fded2512db0b92
+    name: actual
+    type: application
+    urls:
+    - actual-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 25.1.0
     created: "2026-08-24T22:04:21.986615873Z"
     description: Helm chart for managing [Actual](https://www.actualbudget.com/)
     digest: d85694fc54e0b4588567abcfe48363cb8b7fea13580a2da99bab34e2d191964e
@@ -120,4 +130,4 @@ entries:
     urls:
     - qbittorrent-0.1.0.tgz
     version: 0.1.0
-generated: "2026-08-24T23:37:54.356270205Z"
+generated: "2026-08-24T23:40:59.236141944Z"
