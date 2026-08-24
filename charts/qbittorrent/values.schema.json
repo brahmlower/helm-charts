@@ -140,6 +140,18 @@
               "title": "vpn_type",
               "default": "wireguard"
             },
+            "wireguardPrivateKeyExistingSecret": {
+              "type": "string",
+              "title": "wireguardPrivateKeyExistingSecret",
+              "description": "wireguardPrivateKeyExistingSecret names a pre-existing Secret holding the\nwireguard private key, for use instead of the plaintext\nwireguard_private_key value above. Takes precedence when set.",
+              "default": ""
+            },
+            "wireguardPrivateKeyExistingSecretKey": {
+              "type": "string",
+              "title": "wireguardPrivateKeyExistingSecretKey",
+              "description": "wireguardPrivateKeyExistingSecretKey is the key within\nwireguardPrivateKeyExistingSecret that holds the private key.",
+              "default": "private_key"
+            },
             "wireguard_address": {
               "type": "string",
               "title": "wireguard_address",

@@ -126,7 +126,14 @@ spec:
               value: {{ .Values.gluetun.config.vpn_type | quote }}
             # Wireguard configs
             - name: WIREGUARD_PRIVATE_KEY
+            {{- if .Values.gluetun.config.wireguardPrivateKeyExistingSecret }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.gluetun.config.wireguardPrivateKeyExistingSecret | quote }}
+                  key: {{ .Values.gluetun.config.wireguardPrivateKeyExistingSecretKey | quote }}
+            {{- else }}
               value: {{ .Values.gluetun.config.wireguard_private_key | quote}}
+            {{- end }}
             - name: WIREGUARD_ADDRESSES
               value: {{ .Values.gluetun.config.wireguard_address | quote}}
             - name: WIREGUARD_MTU

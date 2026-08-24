@@ -38,6 +38,8 @@ A Helm chart for Kubernetes
 | gluetun.config.vpn_service_provider | string | `"protonvpn"` |  |
 | gluetun.config.vpn_type | string | `"wireguard"` |  |
 | gluetun.config.wireguard_private_key | string | `""` | wireguard specific settings |
+| gluetun.config.wireguardPrivateKeyExistingSecret | string | `""` | wireguardPrivateKeyExistingSecret names a pre-existing Secret holding the</br>wireguard private key, for use instead of the plaintext</br>wireguard_private_key value above. Takes precedence when set. |
+| gluetun.config.wireguardPrivateKeyExistingSecretKey | string | `"private_key"` | wireguardPrivateKeyExistingSecretKey is the key within</br>wireguardPrivateKeyExistingSecret that holds the private key. |
 | gluetun.config.wireguard_address | string | `""` |  |
 | gluetun.config.wireguard_mtu | string | `""` |  |
 | gluetun.config.firewall_input_ports | string | `"8080,6881"` | Allow inbound to qBittorrent through Gluetun's firewall |
