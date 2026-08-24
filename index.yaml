@@ -25,6 +25,27 @@ entries:
   bookorbit:
   - apiVersion: v2
     appVersion: 2.7.0
+    created: "2026-08-24T23:37:53.753109024Z"
+    dependencies:
+    - name: common
+      repository: https://bjw-s-labs.github.io/helm-charts
+      version: 5.1.0
+    description: A Helm chart for BookOrbit, a self-hosted reading space for ebooks
+    digest: 87c13dc0bb0ee4b8bb09fd277bfb11400a9b466fcc78dc32bf2daae03649591d
+    home: https://github.com/bookorbit/bookorbit
+    keywords:
+    - ebooks
+    - reading
+    - library
+    name: bookorbit
+    sources:
+    - https://github.com/bookorbit/bookorbit
+    type: application
+    urls:
+    - bookorbit-0.2.1.tgz
+    version: 0.2.1
+  - apiVersion: v2
+    appVersion: 2.7.0
     created: "2026-08-24T22:04:22.430132265Z"
     dependencies:
     - name: common
@@ -99,4 +120,4 @@ entries:
     urls:
     - qbittorrent-0.1.0.tgz
     version: 0.1.0
-generated: "2026-08-24T22:04:23.225034478Z"
+generated: "2026-08-24T23:37:54.356270205Z"
