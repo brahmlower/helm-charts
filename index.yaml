@@ -1,0 +1,102 @@
+apiVersion: v1
+entries:
+  actual:
+  - apiVersion: v2
+    appVersion: 25.1.0
+    created: "2026-08-24T22:04:21.986615873Z"
+    description: Helm chart for managing [Actual](https://www.actualbudget.com/)
+    digest: d85694fc54e0b4588567abcfe48363cb8b7fea13580a2da99bab34e2d191964e
+    name: actual
+    type: application
+    urls:
+    - actual-0.1.0.tgz
+    version: 0.1.0
+  bentopdf:
+  - apiVersion: v2
+    appVersion: 1.11.1
+    created: "2026-08-24T22:04:22.195790672Z"
+    description: A Helm chart for Kubernetes
+    digest: f45c5b301c4c67d7cd91af767ac5d58802153ddb2a62394d992c6bf7d12fb1f2
+    name: bentopdf
+    type: application
+    urls:
+    - bentopdf-0.1.0.tgz
+    version: 0.1.0
+  bookorbit:
+  - apiVersion: v2
+    appVersion: 2.7.0
+    created: "2026-08-24T22:04:22.430132265Z"
+    dependencies:
+    - name: common
+      repository: https://bjw-s-labs.github.io/helm-charts
+      version: 5.1.0
+    description: A Helm chart for BookOrbit, a self-hosted reading space for ebooks
+    digest: cd4e297631716b4eea2ffd35b5a44b07fe49a4841b01542d4d43acc10d5d8a5c
+    home: https://github.com/bookorbit/bookorbit
+    keywords:
+    - ebooks
+    - reading
+    - library
+    name: bookorbit
+    sources:
+    - https://github.com/bookorbit/bookorbit
+    type: application
+    urls:
+    - bookorbit-0.2.0.tgz
+    version: 0.2.0
+  donetick:
+  - apiVersion: v2
+    appVersion: v0.1.64
+    created: "2026-08-24T22:04:22.621010307Z"
+    description: A Helm chart for donetick
+    digest: c6b5aadb9a4107492639e93f11b9d7c00813f9b17b5d2d1691a32995c78388b8
+    name: donetick
+    type: application
+    urls:
+    - donetick-0.1.0.tgz
+    version: 0.1.0
+  kiwix:
+  - annotations:
+      values-schema: https://example.com/chart-metadata-schema.json
+    apiVersion: v2
+    appVersion: 3.7.0
+    created: "2026-08-24T22:04:22.841458027Z"
+    description: 'A helm chart for [kiwix](https://kiwix.org/en/).  ``` helm repo
+      add brahmlower-kiwix https://brahmlower.github.io/helm-kiwix helm install kiwix
+      brahmlower-kiwix/kiwix ``` '
+    digest: 3571564d4610be917edacbc1c64925b5943851b1a22c72f45a686204c6634ed1
+    name: kiwix
+    type: application
+    urls:
+    - kiwix-0.1.1.tgz
+    version: 0.1.1
+  papra:
+  - apiVersion: v2
+    appVersion: 26.6.1
+    created: "2026-08-24T22:04:23.02429007Z"
+    description: A Helm chart for Papra, a minimalistic document archiving platform
+    digest: 2418b7122e2cd90e1e7efe8c1538f0b36020a06e14457e068f87862fe726f700
+    home: https://papra.app
+    keywords:
+    - document-management
+    - paperless
+    name: papra
+    sources:
+    - https://github.com/papra-hq/papra
+    - https://github.com/rintaun/homelab-charts/tree/main/charts/papra
+    type: application
+    urls:
+    - papra-0.1.0.tgz
+    version: 0.1.0
+  qbittorrent:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-08-24T22:04:23.225028647Z"
+    description: A Helm chart for Kubernetes
+    digest: 441d9a53401380d081c7c7bdec86d1170af8b8087a8eb08c4867d7e6678a107a
+    name: qbittorrent
+    type: application
+    urls:
+    - qbittorrent-0.1.0.tgz
+    version: 0.1.0
+generated: "2026-08-24T22:04:23.225034478Z"
