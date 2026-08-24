@@ -122,6 +122,16 @@ entries:
   qbittorrent:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2026-08-24T23:44:12.841934938Z"
+    description: A Helm chart for Kubernetes
+    digest: 8299c3ace591023cb1bf810326cd19a2e58427938a4219cc582381b99e0640dc
+    name: qbittorrent
+    type: application
+    urls:
+    - qbittorrent-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2026-08-24T22:04:23.225028647Z"
     description: A Helm chart for Kubernetes
     digest: 441d9a53401380d081c7c7bdec86d1170af8b8087a8eb08c4867d7e6678a107a
@@ -130,4 +140,4 @@ entries:
     urls:
     - qbittorrent-0.1.0.tgz
     version: 0.1.0
-generated: "2026-08-24T23:40:59.236141944Z"
+generated: "2026-08-24T23:44:12.841949911Z"
