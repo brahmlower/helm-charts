@@ -4,12 +4,14 @@
     "appUrl": {
       "type": "string",
       "title": "appUrl",
-      "description": "appUrl is the external/public URL of the BookOrbit instance (required). Used by\nemails and Kobo endpoints."
+      "description": "appUrl is the external/public URL of the BookOrbit instance (required). Used by\nemails and Kobo endpoints.",
+      "default": ""
     },
     "clientUrl": {
       "type": "string",
       "title": "clientUrl",
-      "description": "clientUrl is the CORS origin for the frontend, when served from a different domain\nthan appUrl. Defaults to appUrl when empty."
+      "description": "clientUrl is the CORS origin for the frontend, when served from a different domain\nthan appUrl. Defaults to appUrl when empty.",
+      "default": ""
     },
     "controllers": {
       "type": "object",
@@ -34,7 +36,7 @@
                         "BOOKORBIT_FIX_PERMISSIONS": {
                           "type": "string",
                           "title": "BOOKORBIT_FIX_PERMISSIONS",
-                          "default": true
+                          "default": "true"
                         },
                         "CLIENT_URL": {
                           "type": "string",
@@ -44,7 +46,7 @@
                         "CSP_ALLOW_CLOUDFLARE_INSIGHTS": {
                           "type": "string",
                           "title": "CSP_ALLOW_CLOUDFLARE_INSIGHTS",
-                          "default": false
+                          "default": "false"
                         },
                         "EMAIL_ENCRYPTION_KEY": {
                           "type": "object",
@@ -157,12 +159,12 @@
                         "OIDC_ALLOW_LOCAL_ISSUERS": {
                           "type": "string",
                           "title": "OIDC_ALLOW_LOCAL_ISSUERS",
-                          "default": false
+                          "default": "false"
                         },
                         "PORT": {
                           "type": "string",
                           "title": "PORT",
-                          "default": 3000
+                          "default": "3000"
                         },
                         "POSTGRES_DB": {
                           "type": "string",
@@ -473,7 +475,8 @@
         "existingSecret": {
           "type": "string",
           "title": "existingSecret",
-          "description": "existingSecret names a pre-existing Secret holding the database password."
+          "description": "existingSecret names a pre-existing Secret holding the database password.",
+          "default": ""
         },
         "existingSecretPasswordKey": {
           "type": "string",
@@ -483,11 +486,13 @@
         },
         "host": {
           "type": "string",
-          "title": "host"
+          "title": "host",
+          "default": ""
         },
         "name": {
           "type": "string",
-          "title": "name"
+          "title": "name",
+          "default": ""
         },
         "port": {
           "type": "number",
@@ -496,7 +501,8 @@
         },
         "user": {
           "type": "string",
-          "title": "user"
+          "title": "user",
+          "default": ""
         }
       },
       "additionalProperties": false,
@@ -511,7 +517,8 @@
           "properties": {
             "className": {
               "type": "string",
-              "title": "className"
+              "title": "className",
+              "default": ""
             },
             "enabled": {
               "type": "boolean",
@@ -548,7 +555,8 @@
             },
             "existingClaim": {
               "type": "string",
-              "title": "existingClaim"
+              "title": "existingClaim",
+              "default": ""
             },
             "globalMounts": {
               "type": "array",
@@ -561,7 +569,8 @@
             },
             "storageClass": {
               "type": "string",
-              "title": "storageClass"
+              "title": "storageClass",
+              "default": ""
             },
             "type": {
               "type": "string",
@@ -583,7 +592,8 @@
             },
             "existingClaim": {
               "type": "string",
-              "title": "existingClaim"
+              "title": "existingClaim",
+              "default": ""
             },
             "globalMounts": {
               "type": "array",
@@ -596,7 +606,8 @@
             },
             "storageClass": {
               "type": "string",
-              "title": "storageClass"
+              "title": "storageClass",
+              "default": ""
             },
             "type": {
               "type": "string",
@@ -647,7 +658,8 @@
     "secretName": {
       "type": "string",
       "title": "secretName",
-      "description": "secretName names a pre-existing Secret (e.g. created by an ExternalSecret) holding\njwt-secret and setup-bootstrap-token, and optionally email-encryption-key /\nmigration-encryption-key."
+      "description": "secretName names a pre-existing Secret (e.g. created by an ExternalSecret) holding\njwt-secret and setup-bootstrap-token, and optionally email-encryption-key /\nmigration-encryption-key.",
+      "default": ""
     },
     "service": {
       "type": "object",

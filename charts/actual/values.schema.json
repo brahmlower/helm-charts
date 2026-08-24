@@ -43,7 +43,8 @@
     },
     "fullnameOverride": {
       "type": "string",
-      "title": "fullnameOverride"
+      "title": "fullnameOverride",
+      "default": ""
     },
     "image": {
       "type": "object",
@@ -86,7 +87,7 @@
             "kubernetes.io/tls-acme": {
               "type": "string",
               "title": "kubernetes.io/tls-acme",
-              "default": true
+              "default": "true"
             }
           },
           "additionalProperties": false,
@@ -139,7 +140,8 @@
     },
     "nameOverride": {
       "type": "string",
-      "title": "nameOverride"
+      "title": "nameOverride",
+      "default": ""
     },
     "nodeSelector": {
       "type": "object",
@@ -276,7 +278,8 @@
         "name": {
           "type": "string",
           "title": "name",
-          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template"
+          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template",
+          "default": ""
         }
       },
       "additionalProperties": false,
