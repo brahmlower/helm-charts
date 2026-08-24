@@ -39,7 +39,8 @@
     },
     "fullnameOverride": {
       "type": "string",
-      "title": "fullnameOverride"
+      "title": "fullnameOverride",
+      "default": ""
     },
     "gluetun": {
       "type": "object",
@@ -55,18 +56,18 @@
             "dns_block_ads": {
               "type": "string",
               "title": "dns_block_ads",
-              "default": false
+              "default": "false"
             },
             "dns_block_malicious": {
               "type": "string",
               "title": "dns_block_malicious",
               "description": "DNS Block List Configuration - Disable if causing issues",
-              "default": true
+              "default": "true"
             },
             "dns_block_surveillance": {
               "type": "string",
               "title": "dns_block_surveillance",
-              "default": true
+              "default": "true"
             },
             "dns_keep_nameserver": {
               "type": "string",
@@ -100,12 +101,12 @@
               "type": "string",
               "title": "update_period",
               "description": "Disable problematic external checks",
-              "default": 0
+              "default": "0"
             },
             "version_information": {
               "type": "string",
               "title": "version_information",
-              "default": false
+              "default": "false"
             },
             "vpn_port_forwarding": {
               "type": "object",
@@ -141,16 +142,19 @@
             },
             "wireguard_address": {
               "type": "string",
-              "title": "wireguard_address"
+              "title": "wireguard_address",
+              "default": ""
             },
             "wireguard_mtu": {
               "type": "string",
-              "title": "wireguard_mtu"
+              "title": "wireguard_mtu",
+              "default": ""
             },
             "wireguard_private_key": {
               "type": "string",
               "title": "wireguard_private_key",
-              "description": "wireguard specific settings"
+              "description": "wireguard specific settings",
+              "default": ""
             }
           },
           "additionalProperties": false,
@@ -194,7 +198,8 @@
         },
         "className": {
           "type": "string",
-          "title": "className"
+          "title": "className",
+          "default": ""
         },
         "enabled": {
           "type": "boolean",
@@ -219,7 +224,8 @@
     "nameOverride": {
       "type": "string",
       "title": "nameOverride",
-      "description": "This is to override the chart name."
+      "description": "This is to override the chart name.",
+      "default": ""
     },
     "nodeSelector": {
       "type": "object",
@@ -240,7 +246,8 @@
             },
             "storageClassName": {
               "type": "string",
-              "title": "storageClassName"
+              "title": "storageClassName",
+              "default": ""
             }
           },
           "additionalProperties": false,
@@ -256,7 +263,8 @@
             },
             "storageClassName": {
               "type": "string",
-              "title": "storageClassName"
+              "title": "storageClassName",
+              "default": ""
             }
           },
           "additionalProperties": false,
@@ -397,7 +405,8 @@
         "name": {
           "type": "string",
           "title": "name",
-          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template"
+          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template",
+          "default": ""
         }
       },
       "additionalProperties": false,

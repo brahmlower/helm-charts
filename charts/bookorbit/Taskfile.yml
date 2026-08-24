@@ -15,7 +15,7 @@ tasks:
       - helm dependency build .
 
   lint:
-    desc: Run `helm lint` on this chart
+    desc: Run `helm lint` and check that values.schema.json/README.md are up to date
     deps: [deps]
     cmds:
       - |
@@ -27,6 +27,16 @@ tasks:
           done
         fi
         helm lint "${extra_values[@]}" .
+      - |
+        set -e
+        if [ "$(helm values schema . --dry-run --stdout 2>/dev/null)" != "$(cat values.schema.json 2>/dev/null)" ]; then
+          echo "values.schema.json is stale — run 'helm values schema .' to regenerate" >&2
+          exit 1
+        fi
+        if [ "$(helm values docs . --dry-run --stdout 2>/dev/null)" != "$(cat README.md 2>/dev/null)" ]; then
+          echo "README.md is stale — run 'helm values docs .' to regenerate" >&2
+          exit 1
+        fi
 
   template:
     desc: Render this chart with `helm template` to catch templating errors

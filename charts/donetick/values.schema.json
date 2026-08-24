@@ -61,7 +61,8 @@
             "password": {
               "type": "string",
               "title": "password",
-              "description": "The DT_DATABASE_PASSWORD environment variable should be used instead of this field."
+              "description": "The DT_DATABASE_PASSWORD environment variable should be used instead of this field.",
+              "default": ""
             },
             "port": {
               "type": "number",
@@ -91,20 +92,24 @@
           "properties": {
             "appHost": {
               "type": "string",
-              "title": "appHost"
+              "title": "appHost",
+              "default": ""
             },
             "email": {
               "type": "string",
-              "title": "email"
+              "title": "email",
+              "default": ""
             },
             "host": {
               "type": "string",
-              "title": "host"
+              "title": "host",
+              "default": ""
             },
             "key": {
               "type": "string",
               "title": "key",
-              "description": "The DT_EMAIL_KEY environment variable should be used instead of this field."
+              "description": "The DT_EMAIL_KEY environment variable should be used instead of this field.",
+              "default": ""
             },
             "port": {
               "type": "number",
@@ -136,7 +141,8 @@
             "secret": {
               "type": "string",
               "title": "secret",
-              "description": "The DT_JWT_SECRET environment variable should be used instead of this field."
+              "description": "The DT_JWT_SECRET environment variable should be used instead of this field.",
+              "default": ""
             },
             "session_time": {
               "type": "string",
@@ -179,32 +185,39 @@
           "properties": {
             "auth_url": {
               "type": "string",
-              "title": "auth_url"
+              "title": "auth_url",
+              "default": ""
             },
             "client_id": {
               "type": "string",
-              "title": "client_id"
+              "title": "client_id",
+              "default": ""
             },
             "client_secret": {
               "type": "string",
               "title": "client_secret",
-              "description": "The DT_OAUTH2_CLIENT_SECRET environment variable should be used instead of this field."
+              "description": "The DT_OAUTH2_CLIENT_SECRET environment variable should be used instead of this field.",
+              "default": ""
             },
             "name": {
               "type": "string",
-              "title": "name"
+              "title": "name",
+              "default": ""
             },
             "redirect_url": {
               "type": "string",
-              "title": "redirect_url"
+              "title": "redirect_url",
+              "default": ""
             },
             "token_url": {
               "type": "string",
-              "title": "token_url"
+              "title": "token_url",
+              "default": ""
             },
             "user_info_url": {
               "type": "string",
-              "title": "user_info_url"
+              "title": "user_info_url",
+              "default": ""
             }
           },
           "additionalProperties": false,
@@ -215,7 +228,8 @@
           "properties": {
             "token": {
               "type": "string",
-              "title": "token"
+              "title": "token",
+              "default": ""
             }
           },
           "additionalProperties": false,
@@ -356,7 +370,8 @@
           "properties": {
             "token": {
               "type": "string",
-              "title": "token"
+              "title": "token",
+              "default": ""
             }
           },
           "additionalProperties": false,
@@ -379,7 +394,8 @@
     },
     "fullnameOverride": {
       "type": "string",
-      "title": "fullnameOverride"
+      "title": "fullnameOverride",
+      "default": ""
     },
     "httpRoute": {
       "type": "object",
@@ -436,7 +452,8 @@
         "tag": {
           "type": "string",
           "title": "tag",
-          "description": "Overrides the image tag whose default is the chart appVersion."
+          "description": "Overrides the image tag whose default is the chart appVersion.",
+          "default": ""
         }
       },
       "additionalProperties": false,
@@ -460,7 +477,8 @@
         },
         "className": {
           "type": "string",
-          "title": "className"
+          "title": "className",
+          "default": ""
         },
         "enabled": {
           "type": "boolean",
@@ -485,7 +503,8 @@
     "nameOverride": {
       "type": "string",
       "title": "nameOverride",
-      "description": "This is to override the chart name."
+      "description": "This is to override the chart name.",
+      "default": ""
     },
     "nodeSelector": {
       "type": "object",
@@ -581,7 +600,8 @@
         "name": {
           "type": "string",
           "title": "name",
-          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template."
+          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template.",
+          "default": ""
         }
       },
       "additionalProperties": false,
