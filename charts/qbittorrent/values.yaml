@@ -128,13 +128,13 @@ gluetun:
     vpn_type: "wireguard"
     # wireguard specific settings
     wireguard_private_key: ""
-    # wireguardPrivateKeyExistingSecret names a pre-existing Secret holding the
-    # wireguard private key, for use instead of the plaintext
+    # wireguard_private_key_existing_secret names a pre-existing Secret holding
+    # the wireguard private key, for use instead of the plaintext
     # wireguard_private_key value above. Takes precedence when set.
-    wireguardPrivateKeyExistingSecret: ""
-    # wireguardPrivateKeyExistingSecretKey is the key within
-    # wireguardPrivateKeyExistingSecret that holds the private key.
-    wireguardPrivateKeyExistingSecretKey: "private_key"
+    wireguard_private_key_existing_secret: ""
+    # wireguard_private_key_existing_secret_key is the key within
+    # wireguard_private_key_existing_secret that holds the private key.
+    wireguard_private_key_existing_secret_key: "private_key"
     wireguard_address: ""
     wireguard_mtu: ""
     # Allow inbound to qBittorrent through Gluetun's firewall

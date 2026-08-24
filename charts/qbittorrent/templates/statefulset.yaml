@@ -126,11 +126,11 @@ spec:
               value: {{ .Values.gluetun.config.vpn_type | quote }}
             # Wireguard configs
             - name: WIREGUARD_PRIVATE_KEY
-            {{- if .Values.gluetun.config.wireguardPrivateKeyExistingSecret }}
+            {{- if .Values.gluetun.config.wireguard_private_key_existing_secret }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.gluetun.config.wireguardPrivateKeyExistingSecret | quote }}
-                  key: {{ .Values.gluetun.config.wireguardPrivateKeyExistingSecretKey | quote }}
+                  name: {{ .Values.gluetun.config.wireguard_private_key_existing_secret | quote }}
+                  key: {{ .Values.gluetun.config.wireguard_private_key_existing_secret_key | quote }}
             {{- else }}
               value: {{ .Values.gluetun.config.wireguard_private_key | quote}}
             {{- end }}
