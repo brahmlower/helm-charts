@@ -15,7 +15,7 @@ spec:
     - metadata:
         name: configs
         labels:
-          {{- include "qbittorrent.labels" . | nindent 10 }}
+          {{- include "qbittorrent.selectorLabels" . | nindent 10 }}
       spec:
         storageClassName: {{ .Values.persistence.configs.storageClassName }}
         accessModes:
@@ -27,7 +27,7 @@ spec:
     - metadata:
         name: downloads
         labels:
-          {{- include "qbittorrent.labels" . | nindent 10 }}
+          {{- include "qbittorrent.selectorLabels" . | nindent 10 }}
       spec:
         storageClassName: {{ .Values.persistence.downloads.storageClassName }}
         accessModes:
