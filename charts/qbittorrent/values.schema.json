@@ -5,7 +5,8 @@
       "type": "object",
       "properties": {},
       "additionalProperties": true,
-      "title": "affinity"
+      "title": "affinity",
+      "description": "Affinity/anti-affinity rules used to influence pod scheduling."
     },
     "autoscaling": {
       "type": "object",
@@ -13,21 +14,25 @@
         "enabled": {
           "type": "boolean",
           "title": "enabled",
+          "description": "Whether to create a HorizontalPodAutoscaler for this workload.",
           "default": false
         },
         "maxReplicas": {
-          "type": "number",
+          "type": "integer",
           "title": "maxReplicas",
+          "description": "The maximum number of replicas to scale up to.",
           "default": 100
         },
         "minReplicas": {
-          "type": "number",
+          "type": "integer",
           "title": "minReplicas",
+          "description": "The minimum number of replicas to scale down to.",
           "default": 1
         },
         "targetCPUUtilizationPercentage": {
-          "type": "number",
+          "type": "integer",
           "title": "targetCPUUtilizationPercentage",
+          "description": "Target average CPU utilization percentage used by the autoscaler.",
           "default": 80,
           "examples": [
             "targetMemoryUtilizationPercentage: 80"
@@ -35,12 +40,13 @@
         }
       },
       "additionalProperties": false,
-      "title": "autoscaling"
+      "title": "autoscaling",
+      "description": "This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/"
     },
     "fullnameOverride": {
       "type": "string",
       "title": "fullnameOverride",
-      "default": ""
+      "description": "Overrides the full name of the release used to generate resource names."
     },
     "gluetun": {
       "type": "object",
@@ -51,23 +57,34 @@
             "dns_address": {
               "type": "string",
               "title": "dns_address",
+              "description": "The IP address Gluetun's internal DNS-over-TLS resolver listens on inside the container.",
               "default": "127.0.0.1"
             },
             "dns_block_ads": {
               "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ],
               "title": "dns_block_ads",
-              "default": "false"
+              "description": "Whether Gluetun's DNS blocklist blocks known advertising domains.",
+              "default": false
             },
             "dns_block_malicious": {
               "type": "string",
               "title": "dns_block_malicious",
               "description": "DNS Block List Configuration - Disable if causing issues",
-              "default": "true"
+              "default": true
             },
             "dns_block_surveillance": {
               "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ],
               "title": "dns_block_surveillance",
-              "default": "true"
+              "description": "Whether Gluetun's DNS blocklist blocks known surveillance/tracking domains.",
+              "default": true
             },
             "dns_keep_nameserver": {
               "type": "string",
@@ -88,25 +105,32 @@
               "default": "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,100.64.0.0/10"
             },
             "pgid": {
-              "type": "number",
+              "type": "integer",
               "title": "pgid",
+              "description": "The group ID (PGID) that the Gluetun process runs as.",
               "default": 1000
             },
             "puid": {
-              "type": "number",
+              "type": "integer",
               "title": "puid",
+              "description": "The user ID (PUID) that the Gluetun process runs as.",
               "default": 1000
             },
             "update_period": {
               "type": "string",
               "title": "update_period",
               "description": "Disable problematic external checks",
-              "default": "0"
+              "default": 0
             },
             "version_information": {
               "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ],
               "title": "version_information",
-              "default": "false"
+              "description": "Whether Gluetun checks for and logs a newer version being available. Disabled here to avoid unnecessary external requests.",
+              "default": false
             },
             "vpn_port_forwarding": {
               "type": "object",
@@ -114,53 +138,70 @@
                 "enabled": {
                   "type": "boolean",
                   "title": "enabled",
+                  "description": "Whether to enable VPN provider port forwarding.",
                   "default": false
                 },
                 "provider": {
                   "type": "string",
                   "title": "provider",
-                  "default": "protonvpn"
+                  "description": "The VPN service provider to request port forwarding from. Should match vpn_service_provider.",
+                  "default": "protonvpn",
+                  "examples": [
+                    "protonvpn"
+                  ]
                 },
                 "status_file": {
                   "type": "string",
                   "title": "status_file",
+                  "description": "The path inside the Gluetun container where the forwarded port number is written.",
                   "default": "/tmp/gluetun/forwarded_port"
                 }
               },
               "additionalProperties": false,
-              "title": "vpn_port_forwarding"
+              "title": "vpn_port_forwarding",
+              "description": "Configuration for Gluetun's VPN provider port forwarding, used to request a forwarded port for incoming BitTorrent connections."
             },
             "vpn_service_provider": {
               "type": "string",
               "title": "vpn_service_provider",
-              "default": "protonvpn"
+              "description": "The VPN service provider Gluetun connects through. See the Gluetun wiki for the list of supported providers.",
+              "default": "protonvpn",
+              "examples": [
+                "protonvpn",
+                "mullvad",
+                "nordvpn",
+                "surfshark"
+              ]
             },
             "vpn_type": {
               "type": "string",
+              "enum": [
+                "wireguard",
+                "openvpn"
+              ],
               "title": "vpn_type",
+              "description": "The VPN protocol Gluetun uses to establish the tunnel.",
               "default": "wireguard"
             },
             "wireguard_address": {
               "type": "string",
               "title": "wireguard_address",
-              "default": ""
+              "description": "The WireGuard interface address(es) (with CIDR suffix) assigned to this client by the VPN provider."
             },
             "wireguard_mtu": {
               "type": "string",
               "title": "wireguard_mtu",
-              "default": ""
+              "description": "The MTU to use for the WireGuard interface. Leave empty to use Gluetun's default."
             },
             "wireguard_private_key": {
               "type": "string",
               "title": "wireguard_private_key",
-              "description": "wireguard specific settings",
-              "default": ""
+              "description": "wireguard specific settings"
             },
             "wireguard_private_key_existing_secret": {
               "type": "string",
               "title": "wireguard_private_key_existing_secret",
-              "description": "wireguard_private_key_existing_secret names a pre-existing Secret holding\nthe wireguard private key, for use instead of the plaintext\nwireguard_private_key value above. Takes precedence when set.",
-              "default": ""
+              "description": "wireguard_private_key_existing_secret names a pre-existing Secret holding\nthe wireguard private key, for use instead of the plaintext\nwireguard_private_key value above. Takes precedence when set."
             },
             "wireguard_private_key_existing_secret_key": {
               "type": "string",
@@ -170,16 +211,24 @@
             }
           },
           "additionalProperties": false,
-          "title": "config"
+          "title": "config",
+          "description": "Environment-driven configuration passed to the Gluetun container. See the Gluetun wiki for the full list of supported environment variables."
         },
         "image": {
           "type": "string",
           "title": "image",
+          "description": "The container image to use for the Gluetun VPN sidecar.",
           "default": "qmcgaw/gluetun:latest"
         },
         "imagePullPolicy": {
           "type": "string",
+          "enum": [
+            "Always",
+            "IfNotPresent",
+            "Never"
+          ],
           "title": "imagePullPolicy",
+          "description": "The image pull policy controlling when Kubernetes re-pulls the Gluetun image.",
           "default": "IfNotPresent"
         },
         "resources": {
@@ -187,17 +236,20 @@
           "properties": {},
           "additionalProperties": true,
           "title": "resources",
+          "description": "Resource requests and limits for the Gluetun sidecar container.",
           "examples": [
             "limits:\n  cpu: 100m\n  memory: 128Mi\nrequests:\n  cpu: 100m\n  memory: 128Mi"
           ]
         }
       },
       "additionalProperties": false,
-      "title": "gluetun"
+      "title": "gluetun",
+      "description": "Configuration for the Gluetun VPN sidecar that tunnels qBittorrent's traffic."
     },
     "imagePullSecrets": {
       "type": "array",
-      "title": "imagePullSecrets"
+      "title": "imagePullSecrets",
+      "description": "This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/"
     },
     "ingress": {
       "type": "object",
@@ -206,44 +258,49 @@
           "type": "object",
           "properties": {},
           "additionalProperties": true,
-          "title": "annotations"
+          "title": "annotations",
+          "description": "Annotations to add to the Ingress resource."
         },
         "className": {
           "type": "string",
           "title": "className",
-          "default": ""
+          "description": "The IngressClass to use for the Ingress resource."
         },
         "enabled": {
           "type": "boolean",
           "title": "enabled",
+          "description": "Whether to create an Ingress resource for the qBittorrent WebUI.",
           "default": false
         },
         "hosts": {
           "type": "array",
-          "title": "hosts"
+          "title": "hosts",
+          "description": "A list of host rules used to configure the Ingress."
         },
         "tls": {
           "type": "array",
           "title": "tls",
+          "description": "TLS configuration for the Ingress, specifying secrets and the hosts they cover.",
           "examples": [
             "- secretName: chart-example-tls\n   hosts:\n     - chart-example.local"
           ]
         }
       },
       "additionalProperties": false,
-      "title": "ingress"
+      "title": "ingress",
+      "description": "This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/"
     },
     "nameOverride": {
       "type": "string",
       "title": "nameOverride",
-      "description": "This is to override the chart name.",
-      "default": ""
+      "description": "This is to override the chart name."
     },
     "nodeSelector": {
       "type": "object",
       "properties": {},
       "additionalProperties": true,
-      "title": "nodeSelector"
+      "title": "nodeSelector",
+      "description": "Node selector constraints used to schedule the pod onto specific nodes."
     },
     "persistence": {
       "type": "object",
@@ -254,16 +311,21 @@
             "size": {
               "type": "string",
               "title": "size",
-              "default": "1Gi"
+              "description": "The requested size of the configs PersistentVolumeClaim.",
+              "default": "1Gi",
+              "examples": [
+                "1Gi"
+              ]
             },
             "storageClassName": {
               "type": "string",
               "title": "storageClassName",
-              "default": ""
+              "description": "The StorageClass to use for the configs PersistentVolumeClaim. Leave empty to use the cluster default."
             }
           },
           "additionalProperties": false,
-          "title": "configs"
+          "title": "configs",
+          "description": "Persistent volume used for qBittorrent's config/state directory (mounted at /config)."
         },
         "downloads": {
           "type": "object",
@@ -271,38 +333,47 @@
             "size": {
               "type": "string",
               "title": "size",
-              "default": "100Gi"
+              "description": "The requested size of the downloads PersistentVolumeClaim.",
+              "default": "100Gi",
+              "examples": [
+                "100Gi"
+              ]
             },
             "storageClassName": {
               "type": "string",
               "title": "storageClassName",
-              "default": ""
+              "description": "The StorageClass to use for the downloads PersistentVolumeClaim. Leave empty to use the cluster default."
             }
           },
           "additionalProperties": false,
-          "title": "downloads"
+          "title": "downloads",
+          "description": "Persistent volume used for downloaded torrent data (mounted at /downloads)."
         }
       },
       "additionalProperties": false,
-      "title": "persistence"
+      "title": "persistence",
+      "description": "Persistent volume claim configuration for qBittorrent's config and downloads storage."
     },
     "podAnnotations": {
       "type": "object",
       "properties": {},
       "additionalProperties": true,
-      "title": "podAnnotations"
+      "title": "podAnnotations",
+      "description": "This is for setting Kubernetes Annotations to a Pod. For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/"
     },
     "podLabels": {
       "type": "object",
       "properties": {},
       "additionalProperties": true,
-      "title": "podLabels"
+      "title": "podLabels",
+      "description": "This is for setting Kubernetes Labels to a Pod. For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/"
     },
     "podSecurityContext": {
       "type": "object",
       "properties": {},
       "additionalProperties": true,
       "title": "podSecurityContext",
+      "description": "Security context settings applied at the pod level.",
       "examples": [
         "fsGroup: 2000"
       ]
@@ -314,33 +385,43 @@
           "type": "object",
           "properties": {
             "pgid": {
-              "type": "number",
+              "type": "integer",
               "title": "pgid",
+              "description": "The group ID (PGID) that the qBittorrent process runs as, used to match ownership of mounted volumes.",
               "default": 1000
             },
             "puid": {
-              "type": "number",
+              "type": "integer",
               "title": "puid",
+              "description": "The user ID (PUID) that the qBittorrent process runs as, used to match ownership of mounted volumes.",
               "default": 1000
             },
             "timezone": {
               "type": "string",
               "title": "timezone",
-              "default": "Etc/UTC"
+              "description": "The timezone the qBittorrent container uses for logging and scheduling.",
+              "default": "Etc/UTC",
+              "examples": [
+                "Etc/UTC",
+                "America/New_York"
+              ]
             },
             "torrent_port": {
-              "type": "number",
+              "type": "integer",
               "title": "torrent_port",
+              "description": "The TCP/UDP port qBittorrent uses for BitTorrent traffic, also opened through Gluetun's firewall and used for VPN port forwarding.",
               "default": 6881
             },
             "webui_port": {
-              "type": "number",
+              "type": "integer",
               "title": "webui_port",
+              "description": "The port qBittorrent's WebUI listens on, used for the container port, Service, and readiness probe.",
               "default": 8080
             }
           },
           "additionalProperties": false,
-          "title": "config"
+          "title": "config",
+          "description": "Environment-driven configuration passed to the linuxserver qBittorrent image."
         },
         "image": {
           "type": "string",
@@ -350,7 +431,13 @@
         },
         "imagePullPolicy": {
           "type": "string",
+          "enum": [
+            "Always",
+            "IfNotPresent",
+            "Never"
+          ],
           "title": "imagePullPolicy",
+          "description": "The image pull policy controlling when Kubernetes re-pulls the qBittorrent image.",
           "default": "IfNotPresent"
         },
         "resources": {
@@ -358,17 +445,20 @@
           "properties": {},
           "additionalProperties": true,
           "title": "resources",
+          "description": "Resource requests and limits for the qBittorrent container.",
           "examples": [
             "We usually recommend not to specify default resources and to leave this as a conscious\nchoice for the user. This also increases chances charts run on environments with little\nresources, such as Minikube. If you do want to specify resources, uncomment the following\nlines, adjust them as necessary, and remove the curly braces after 'resources:'.\nlimits:\n  cpu: 100m\n  memory: 128Mi\nrequests:\n  cpu: 100m\n  memory: 128Mi"
           ]
         }
       },
       "additionalProperties": false,
-      "title": "qbittorrent"
+      "title": "qbittorrent",
+      "description": "Configuration for the qBittorrent container."
     },
     "replicaCount": {
-      "type": "number",
+      "type": "integer",
       "title": "replicaCount",
+      "description": "This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/",
       "default": 1
     },
     "securityContext": {
@@ -376,6 +466,7 @@
       "properties": {},
       "additionalProperties": true,
       "title": "securityContext",
+      "description": "Security context settings applied at the container level.",
       "examples": [
         "capabilities:\n  drop:\n  - ALL\nreadOnlyRootFilesystem: true\nrunAsNonRoot: true\nrunAsUser: 1000"
       ]
@@ -385,12 +476,20 @@
       "properties": {
         "type": {
           "type": "string",
+          "enum": [
+            "ClusterIP",
+            "NodePort",
+            "LoadBalancer",
+            "ExternalName"
+          ],
           "title": "type",
+          "description": "The type of Kubernetes Service to create.",
           "default": "ClusterIP"
         }
       },
       "additionalProperties": false,
-      "title": "service"
+      "title": "service",
+      "description": "This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/"
     },
     "serviceAccount": {
       "type": "object",
@@ -417,21 +516,23 @@
         "name": {
           "type": "string",
           "title": "name",
-          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template",
-          "default": ""
+          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template"
         }
       },
       "additionalProperties": false,
-      "title": "serviceAccount"
+      "title": "serviceAccount",
+      "description": "This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/"
     },
     "terminationGracePeriodSeconds": {
-      "type": "number",
+      "type": "integer",
       "title": "terminationGracePeriodSeconds",
+      "description": "The number of seconds to wait for the pod to terminate gracefully, allowing the VPN tunnel and qBittorrent to shut down cleanly.",
       "default": 15
     },
     "tolerations": {
       "type": "array",
-      "title": "tolerations"
+      "title": "tolerations",
+      "description": "Tolerations allowing the pod to be scheduled onto nodes with matching taints."
     },
     "volumeMounts": {
       "type": "array",

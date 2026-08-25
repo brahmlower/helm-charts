@@ -5,7 +5,8 @@
       "type": "object",
       "properties": {},
       "additionalProperties": true,
-      "title": "affinity"
+      "title": "affinity",
+      "description": "Affinity and anti-affinity rules used to constrain pod scheduling."
     },
     "config": {
       "type": "object",
@@ -13,15 +14,30 @@
         "appBaseUrl": {
           "type": "string",
           "title": "appBaseUrl",
-          "description": "appBaseUrl is the full public URL of the Papra instance (required).",
-          "default": ""
+          "description": "appBaseUrl is the full public URL of the Papra instance (required)."
         },
         "auth": {
           "type": "object",
           "properties": {
             "customOAuthProviders": {
               "type": "array",
-              "title": "customOAuthProviders"
+              "title": "customOAuthProviders",
+              "description": "customOAuthProviders configures custom OAuth/OIDC providers (AUTH_PROVIDERS_CUSTOMS).\nClient secrets are provided via oidcSecret/oidcExternalSecret below.\nSee the better-auth generic-oauth plugin docs for field details.",
+              "examples": [
+                [
+                  {
+                    "clientId": "my-client-id",
+                    "discoveryUrl": "https://auth.example.com/.well-known/openid-configuration",
+                    "id": "my-provider",
+                    "name": "My Provider",
+                    "scopes": [
+                      "openid",
+                      "profile",
+                      "email"
+                    ]
+                  }
+                ]
+              ]
             },
             "firstUserAsAdmin": {
               "type": "boolean",
@@ -43,14 +59,20 @@
             }
           },
           "additionalProperties": false,
-          "title": "auth"
+          "title": "auth",
+          "description": "auth configures Papra's authentication and registration behavior."
         },
         "storage": {
           "type": "object",
           "properties": {
             "driver": {
               "type": "string",
+              "enum": [
+                "filesystem",
+                "s3"
+              ],
               "title": "driver",
+              "description": "driver is the document storage backend. This chart only wires up filesystem and s3.",
               "default": "filesystem"
             },
             "s3": {
@@ -59,13 +81,13 @@
                 "bucket": {
                   "type": "string",
                   "title": "bucket",
+                  "description": "bucket is the S3 bucket name used to store documents. Only used when driver=s3.",
                   "default": "papra"
                 },
                 "endpoint": {
                   "type": "string",
                   "title": "endpoint",
-                  "description": "endpoint is the S3-compatible endpoint URL. Leave empty to use the default AWS endpoint.",
-                  "default": ""
+                  "description": "endpoint is the S3-compatible endpoint URL. Leave empty to use the default AWS endpoint."
                 },
                 "forcePathStyle": {
                   "type": "boolean",
@@ -76,6 +98,7 @@
                 "region": {
                   "type": "string",
                   "title": "region",
+                  "description": "region is the AWS region of the S3 bucket. Only used when driver=s3.",
                   "default": "us-east-1"
                 }
               },
@@ -85,16 +108,18 @@
             }
           },
           "additionalProperties": false,
-          "title": "storage"
+          "title": "storage",
+          "description": "storage configures Papra's document storage backend (DOCUMENT_STORAGE_* environment variables)."
         }
       },
       "additionalProperties": false,
-      "title": "config"
+      "title": "config",
+      "description": "config holds Papra application configuration, rendered into the Deployment's environment variables."
     },
     "fullnameOverride": {
       "type": "string",
       "title": "fullnameOverride",
-      "default": ""
+      "description": "Overrides the full name of the release used to generate resource names."
     },
     "image": {
       "type": "object",
@@ -102,16 +127,23 @@
         "digest": {
           "type": "string",
           "title": "digest",
-          "default": ""
+          "description": "digest pins to an immutable image reference, overriding `tag` when set. Prepend\n`sha256:` or omit the prefix."
         },
         "pullPolicy": {
           "type": "string",
+          "enum": [
+            "Always",
+            "IfNotPresent",
+            "Never"
+          ],
           "title": "pullPolicy",
+          "description": "The image pull policy controlling when Kubernetes re-pulls the image.",
           "default": "IfNotPresent"
         },
         "repository": {
           "type": "string",
           "title": "repository",
+          "description": "The container image repository to pull the Papra image from.",
           "default": "ghcr.io/papra-hq/papra"
         },
         "tag": {
@@ -122,11 +154,13 @@
         }
       },
       "additionalProperties": false,
-      "title": "image"
+      "title": "image",
+      "description": "Container image configuration."
     },
     "imagePullSecrets": {
       "type": "array",
-      "title": "imagePullSecrets"
+      "title": "imagePullSecrets",
+      "description": "This is for the secrets for pulling an image from a private repository. More information can\nbe found at https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/"
     },
     "ingestionFolder": {
       "type": "object",
@@ -136,23 +170,24 @@
           "properties": {
             "accessModes": {
               "type": "array",
-              "title": "accessModes"
+              "title": "accessModes",
+              "description": "accessModes are the PVC access modes to request for the ingestion folder volume."
             },
             "size": {
               "type": "string",
               "title": "size",
+              "description": "size is the ingestion folder PVC capacity. Ignored when existingClaimName is set.",
               "default": "10Gi"
             },
             "storageClassName": {
               "type": "string",
               "title": "storageClassName",
-              "default": ""
+              "description": "storageClassName is the Kubernetes storage class to use for the ingestion folder PVC. Empty string uses the cluster default."
             },
             "volumeName": {
               "type": "string",
               "title": "volumeName",
-              "description": "volumeName explicitly binds the PVC to a specific PV by name.\nLeave empty for dynamic provisioning.\nAutomatically set to the chart-managed PV when volume.nfs.server is configured.",
-              "default": ""
+              "description": "volumeName explicitly binds the PVC to a specific PV by name.\nLeave empty for dynamic provisioning.\nAutomatically set to the chart-managed PV when volume.nfs.server is configured."
             }
           },
           "additionalProperties": false,
@@ -162,13 +197,13 @@
         "enabled": {
           "type": "boolean",
           "title": "enabled",
+          "description": "enabled turns on Papra's ingestion folder feature and mounts the configured volume into the container.",
           "default": false
         },
         "existingClaimName": {
           "type": "string",
           "title": "existingClaimName",
-          "description": "existingClaimName uses a pre-existing PVC instead of creating one.\nWhen set, claim and volume below are ignored entirely.",
-          "default": ""
+          "description": "existingClaimName uses a pre-existing PVC instead of creating one.\nWhen set, claim and volume below are ignored entirely."
         },
         "mountPath": {
           "type": "string",
@@ -177,13 +212,19 @@
           "default": "/app/ingestion"
         },
         "pollingIntervalMs": {
-          "type": "number",
+          "type": "integer",
           "title": "pollingIntervalMs",
+          "description": "pollingIntervalMs is the interval, in milliseconds, between polling scans of the ingestion folder. Only used when usePolling is true.",
           "default": 30000
         },
         "postProcessingStrategy": {
           "type": "string",
+          "enum": [
+            "delete",
+            "move"
+          ],
           "title": "postProcessingStrategy",
+          "description": "postProcessingStrategy controls what Papra does with a file after it has been ingested.\n\n- `delete` removes the file from the ingestion folder.\n- `move` moves the file to the post-processing move folder instead of deleting it.",
           "default": "delete"
         },
         "usePolling": {
@@ -200,22 +241,23 @@
               "properties": {
                 "mountOptions": {
                   "type": "array",
-                  "title": "mountOptions"
+                  "title": "mountOptions",
+                  "description": "mountOptions are the NFS mount options applied to the PersistentVolume."
                 },
                 "path": {
                   "type": "string",
                   "title": "path",
-                  "default": ""
+                  "description": "path is the exported path on the NFS server to mount."
                 },
                 "server": {
                   "type": "string",
                   "title": "server",
-                  "description": "server is the NFS server hostname or IP. Leave empty to skip PV creation.",
-                  "default": ""
+                  "description": "server is the NFS server hostname or IP. Leave empty to skip PV creation."
                 }
               },
               "additionalProperties": false,
-              "title": "nfs"
+              "title": "nfs",
+              "description": "nfs configures a static PersistentVolume backed by an NFS export."
             }
           },
           "additionalProperties": false,
@@ -234,44 +276,49 @@
           "type": "object",
           "properties": {},
           "additionalProperties": true,
-          "title": "annotations"
+          "title": "annotations",
+          "description": "Annotations to add to the Ingress resource."
         },
         "className": {
           "type": "string",
           "title": "className",
-          "default": ""
+          "description": "The IngressClass to use for the Ingress resource. Empty string uses the cluster default."
         },
         "enabled": {
           "type": "boolean",
           "title": "enabled",
+          "description": "Whether to create an Ingress resource for exposing Papra outside the cluster.",
           "default": false
         },
         "hosts": {
           "type": "array",
-          "title": "hosts"
+          "title": "hosts",
+          "description": "A list of host rules used to configure the Ingress."
         },
         "tls": {
           "type": "array",
           "title": "tls",
+          "description": "TLS configuration for the Ingress, specifying secrets and the hosts they cover.",
           "examples": [
             "- secretName: chart-example-tls\n   hosts:\n     - chart-example.local"
           ]
         }
       },
       "additionalProperties": false,
-      "title": "ingress"
+      "title": "ingress",
+      "description": "This block is for setting up the ingress, more information can be found at https://kubernetes.io/docs/concepts/services-networking/ingress/"
     },
     "nameOverride": {
       "type": "string",
       "title": "nameOverride",
-      "description": "This is to override the chart name.",
-      "default": ""
+      "description": "This is to override the chart name."
     },
     "nodeSelector": {
       "type": "object",
       "properties": {},
       "additionalProperties": true,
-      "title": "nodeSelector"
+      "title": "nodeSelector",
+      "description": "Node selector labels used to constrain which nodes the pod can be scheduled on."
     },
     "oidcSecret": {
       "type": "object",
@@ -292,12 +339,12 @@
         "secretName": {
           "type": "string",
           "title": "secretName",
-          "description": "secretName overrides the generated Secret name when set.\nDefaults to \u003cfullname\u003e-oidc when empty.",
-          "default": ""
+          "description": "secretName overrides the generated Secret name when set.\nDefaults to \u003cfullname\u003e-oidc when empty."
         }
       },
       "additionalProperties": false,
-      "title": "oidcSecret"
+      "title": "oidcSecret",
+      "description": "oidcSecret configures how custom OAuth provider client secrets are provided.\nThe generated Secret holds one key per provider, named \u003cproviderId\u003e-client-secret."
     },
     "persistence": {
       "type": "object",
@@ -308,8 +355,7 @@
             "existingClaimName": {
               "type": "string",
               "title": "existingClaimName",
-              "description": "existingClaimName uses a pre-existing PVC instead of creating one (e.g. one bound to a\nmanually-provisioned PV). When set, storageClassName and size below are ignored.",
-              "default": ""
+              "description": "existingClaimName uses a pre-existing PVC instead of creating one (e.g. one bound to a\nmanually-provisioned PV). When set, storageClassName and size below are ignored."
             },
             "size": {
               "type": "string",
@@ -320,12 +366,12 @@
             "storageClassName": {
               "type": "string",
               "title": "storageClassName",
-              "description": "storageClassName is the Kubernetes storage class to use. Empty string uses the cluster default.",
-              "default": ""
+              "description": "storageClassName is the Kubernetes storage class to use. Empty string uses the cluster default."
             }
           },
           "additionalProperties": false,
-          "title": "appData"
+          "title": "appData",
+          "description": "appData configures the PVC that backs Papra's /app/app-data directory (SQLite database and local document storage)."
         }
       },
       "additionalProperties": false,
@@ -336,35 +382,41 @@
       "type": "object",
       "properties": {},
       "additionalProperties": true,
-      "title": "podAnnotations"
+      "title": "podAnnotations",
+      "description": "This is for setting Kubernetes Annotations to a Pod.\nFor more information see https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/"
     },
     "podLabels": {
       "type": "object",
       "properties": {},
       "additionalProperties": true,
-      "title": "podLabels"
+      "title": "podLabels",
+      "description": "This is for setting Kubernetes Labels to a Pod.\nFor more information see https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/"
     },
     "podSecurityContext": {
       "type": "object",
       "properties": {
         "fsGroup": {
-          "type": "number",
+          "type": "integer",
           "title": "fsGroup",
+          "description": "fsGroup is the supplemental group applied to mounted volumes (e.g. the app-data PVC).",
           "default": 1000
         },
         "runAsGroup": {
-          "type": "number",
+          "type": "integer",
           "title": "runAsGroup",
+          "description": "runAsGroup is the primary GID the container process runs as.",
           "default": 1000
         },
         "runAsNonRoot": {
           "type": "boolean",
           "title": "runAsNonRoot",
+          "description": "runAsNonRoot requires the container to run as a non-root user.",
           "default": true
         },
         "runAsUser": {
-          "type": "number",
+          "type": "integer",
           "title": "runAsUser",
+          "description": "runAsUser is the UID the container process runs as.",
           "default": 1000
         },
         "seccompProfile": {
@@ -372,16 +424,24 @@
           "properties": {
             "type": {
               "type": "string",
+              "enum": [
+                "RuntimeDefault",
+                "Unconfined",
+                "Localhost"
+              ],
               "title": "type",
+              "description": "type selects which seccomp profile to apply to the pod.",
               "default": "RuntimeDefault"
             }
           },
           "additionalProperties": false,
-          "title": "seccompProfile"
+          "title": "seccompProfile",
+          "description": "seccompProfile configures the seccomp profile applied to the pod."
         }
       },
       "additionalProperties": false,
-      "title": "podSecurityContext"
+      "title": "podSecurityContext",
+      "description": "Security context settings applied at the pod level."
     },
     "replicaCount": {
       "type": "number",
@@ -398,11 +458,13 @@
             "memory": {
               "type": "string",
               "title": "memory",
+              "description": "memory is the maximum memory amount the container may use (e.g. 512Mi).",
               "default": "512Mi"
             }
           },
           "additionalProperties": false,
-          "title": "limits"
+          "title": "limits",
+          "description": "limits are the maximum CPU/memory resources the container may use."
         },
         "requests": {
           "type": "object",
@@ -410,20 +472,24 @@
             "cpu": {
               "type": "string",
               "title": "cpu",
+              "description": "cpu is the requested CPU amount (e.g. 100m).",
               "default": "100m"
             },
             "memory": {
               "type": "string",
               "title": "memory",
+              "description": "memory is the requested memory amount (e.g. 256Mi).",
               "default": "256Mi"
             }
           },
           "additionalProperties": false,
-          "title": "requests"
+          "title": "requests",
+          "description": "requests are the minimum CPU/memory resources guaranteed to the container."
         }
       },
       "additionalProperties": false,
-      "title": "resources"
+      "title": "resources",
+      "description": "Resource requests and limits for the application container."
     },
     "s3Secret": {
       "type": "object",
@@ -431,7 +497,7 @@
         "accessKeyId": {
           "type": "string",
           "title": "accessKeyId",
-          "default": ""
+          "description": "accessKeyId is the S3 access key ID. Used when create=true; stored in the Secret's \"access-key-id\" field."
         },
         "create": {
           "type": "boolean",
@@ -442,13 +508,12 @@
         "secretAccessKey": {
           "type": "string",
           "title": "secretAccessKey",
-          "default": ""
+          "description": "secretAccessKey is the S3 secret access key. Used when create=true; stored in the Secret's \"secret-access-key\" field."
         },
         "secretName": {
           "type": "string",
           "title": "secretName",
-          "description": "secretName overrides the generated Secret name when set.\nDefaults to \u003cfullname\u003e-s3 when empty.",
-          "default": ""
+          "description": "secretName overrides the generated Secret name when set.\nDefaults to \u003cfullname\u003e-s3 when empty."
         }
       },
       "additionalProperties": false,
@@ -461,8 +526,7 @@
         "authSecret": {
           "type": "string",
           "title": "authSecret",
-          "description": "authSecret is used when create=true. Must be at least 32 characters.",
-          "default": ""
+          "description": "authSecret is used when create=true. Must be at least 32 characters."
         },
         "create": {
           "type": "boolean",
@@ -473,19 +537,18 @@
         "databaseEncryptionKey": {
           "type": "string",
           "title": "databaseEncryptionKey",
-          "description": "databaseEncryptionKey is used when create=true and encryptionKeyEnabled is true.",
-          "default": ""
+          "description": "databaseEncryptionKey is used when create=true and encryptionKeyEnabled is true."
         },
         "encryptionKeyEnabled": {
           "type": "boolean",
           "title": "encryptionKeyEnabled",
+          "description": "encryptionKeyEnabled wires DATABASE_ENCRYPTION_KEY from the secret's\n\"database-encryption-key\" field. Encrypts the SQLite database at rest.\nLosing this key permanently makes the database unrecoverable.",
           "default": false
         },
         "secretName": {
           "type": "string",
           "title": "secretName",
-          "description": "secretName overrides the generated Secret name when set.\nWhen create=false, this must name the pre-existing Secret to use.\nDefaults to the chart fullname when empty.",
-          "default": ""
+          "description": "secretName overrides the generated Secret name when set.\nWhen create=false, this must name the pre-existing Secret to use.\nDefaults to the chart fullname when empty."
         }
       },
       "additionalProperties": false,
@@ -498,6 +561,7 @@
         "allowPrivilegeEscalation": {
           "type": "boolean",
           "title": "allowPrivilegeEscalation",
+          "description": "allowPrivilegeEscalation controls whether a process can gain more privileges than its parent process.",
           "default": false
         },
         "capabilities": {
@@ -505,15 +569,18 @@
           "properties": {
             "drop": {
               "type": "array",
-              "title": "drop"
+              "title": "drop",
+              "description": "drop is the list of Linux capabilities to remove from the container."
             }
           },
           "additionalProperties": false,
-          "title": "capabilities"
+          "title": "capabilities",
+          "description": "capabilities configures the Linux capabilities added to or dropped from the container."
         },
         "readOnlyRootFilesystem": {
           "type": "boolean",
           "title": "readOnlyRootFilesystem",
+          "description": "readOnlyRootFilesystem mounts the container's root filesystem as read-only.",
           "default": false
         }
       },
@@ -532,12 +599,20 @@
         },
         "type": {
           "type": "string",
+          "enum": [
+            "ClusterIP",
+            "NodePort",
+            "LoadBalancer",
+            "ExternalName"
+          ],
           "title": "type",
+          "description": "The type of Kubernetes Service to create.",
           "default": "ClusterIP"
         }
       },
       "additionalProperties": false,
-      "title": "service"
+      "title": "service",
+      "description": "This is for setting up a service, more information can be found at https://kubernetes.io/docs/concepts/services-networking/service/"
     },
     "serviceAccount": {
       "type": "object",
@@ -564,16 +639,17 @@
         "name": {
           "type": "string",
           "title": "name",
-          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template",
-          "default": ""
+          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template"
         }
       },
       "additionalProperties": false,
-      "title": "serviceAccount"
+      "title": "serviceAccount",
+      "description": "This section builds out the service account. More information can be found at\nhttps://kubernetes.io/docs/concepts/security/service-accounts/"
     },
     "tolerations": {
       "type": "array",
-      "title": "tolerations"
+      "title": "tolerations",
+      "description": "Tolerations allowing the pod to be scheduled onto nodes with matching taints."
     }
   }
 }

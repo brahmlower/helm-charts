@@ -5,7 +5,8 @@
       "type": "object",
       "properties": {},
       "additionalProperties": true,
-      "title": "affinity"
+      "title": "affinity",
+      "description": "Affinity and anti-affinity rules used to constrain pod scheduling."
     },
     "autoscaling": {
       "type": "object",
@@ -13,21 +14,25 @@
         "enabled": {
           "type": "boolean",
           "title": "enabled",
+          "description": "Whether to create a HorizontalPodAutoscaler for this deployment.",
           "default": false
         },
         "maxReplicas": {
-          "type": "number",
+          "type": "integer",
           "title": "maxReplicas",
+          "description": "The maximum number of replicas the autoscaler will scale up to.",
           "default": 2
         },
         "minReplicas": {
-          "type": "number",
+          "type": "integer",
           "title": "minReplicas",
+          "description": "The minimum number of replicas the autoscaler will scale down to.",
           "default": 1
         },
         "targetCPUUtilizationPercentage": {
-          "type": "number",
+          "type": "integer",
           "title": "targetCPUUtilizationPercentage",
+          "description": "The target average CPU utilization percentage used to trigger scaling.",
           "default": 80,
           "examples": [
             "targetMemoryUtilizationPercentage: 80"
@@ -35,28 +40,37 @@
         }
       },
       "additionalProperties": false,
-      "title": "autoscaling"
+      "title": "autoscaling",
+      "description": "Horizontal Pod Autoscaler configuration."
     },
     "env": {
       "type": "array",
-      "title": "env"
+      "title": "env",
+      "description": "A list of environment variables to set on the application container."
     },
     "fullnameOverride": {
       "type": "string",
       "title": "fullnameOverride",
-      "default": ""
+      "description": "Overrides the full name of the release used to generate resource names."
     },
     "image": {
       "type": "object",
       "properties": {
         "pullPolicy": {
           "type": "string",
+          "enum": [
+            "Always",
+            "IfNotPresent",
+            "Never"
+          ],
           "title": "pullPolicy",
+          "description": "The image pull policy controlling when Kubernetes re-pulls the image.",
           "default": "IfNotPresent"
         },
         "repository": {
           "type": "string",
           "title": "repository",
+          "description": "The container image repository to pull the Actual Budget server image from.",
           "default": "docker.io/actualbudget/actual-server"
         },
         "tag": {
@@ -67,11 +81,13 @@
         }
       },
       "additionalProperties": false,
-      "title": "image"
+      "title": "image",
+      "description": "Container image configuration."
     },
     "imagePullSecrets": {
       "type": "array",
-      "title": "imagePullSecrets"
+      "title": "imagePullSecrets",
+      "description": "A list of secrets used for pulling the image from a private container registry."
     },
     "ingress": {
       "type": "object",
@@ -80,32 +96,38 @@
           "type": "object",
           "properties": {},
           "additionalProperties": true,
-          "title": "annotations"
+          "title": "annotations",
+          "description": "Annotations to add to the Ingress resource."
         },
         "className": {
           "type": "string",
           "title": "className",
+          "description": "The IngressClass to use for the Ingress resource.",
           "default": "nginx"
         },
         "enabled": {
           "type": "boolean",
           "title": "enabled",
+          "description": "Whether to create an Ingress resource.",
           "default": false
         },
         "hosts": {
           "type": "array",
-          "title": "hosts"
+          "title": "hosts",
+          "description": "A list of host rules used to configure the Ingress."
         },
         "tls": {
           "type": "array",
           "title": "tls",
+          "description": "TLS configuration for the Ingress, specifying secrets and the hosts they cover.",
           "examples": [
             "tls:\n  - secretName: actual-example-tls\n    hosts:\n      - actual-example.local"
           ]
         }
       },
       "additionalProperties": false,
-      "title": "ingress"
+      "title": "ingress",
+      "description": "Ingress configuration for exposing the application outside the cluster."
     },
     "livenessProbe": {
       "type": "object",
@@ -116,31 +138,36 @@
             "path": {
               "type": "string",
               "title": "path",
+              "description": "The HTTP path the liveness probe requests.",
               "default": "/"
             },
             "port": {
-              "type": "number",
+              "type": "integer",
               "title": "port",
+              "description": "The port the liveness probe connects to.",
               "default": 5006
             }
           },
           "additionalProperties": false,
-          "title": "httpGet"
+          "title": "httpGet",
+          "description": "HTTP GET probe configuration for the liveness check."
         }
       },
       "additionalProperties": false,
-      "title": "livenessProbe"
+      "title": "livenessProbe",
+      "description": "Liveness probe configuration used by Kubernetes to determine if the container needs to be restarted."
     },
     "nameOverride": {
       "type": "string",
       "title": "nameOverride",
-      "default": ""
+      "description": "Overrides the name of the chart used to generate resource names."
     },
     "nodeSelector": {
       "type": "object",
       "properties": {},
       "additionalProperties": true,
-      "title": "nodeSelector"
+      "title": "nodeSelector",
+      "description": "Node selector labels used to constrain which nodes the pod can be scheduled on."
     },
     "persistence": {
       "type": "object",
@@ -151,33 +178,39 @@
             "persistentVolumeClaim": {
               "type": "string",
               "title": "persistentVolumeClaim",
+              "description": "The name of an existing PersistentVolumeClaim to use for storing application data.",
               "default": "actual-data"
             }
           },
           "additionalProperties": false,
-          "title": "data"
+          "title": "data",
+          "description": "Configuration for the data volume used to persist application data."
         }
       },
       "additionalProperties": false,
-      "title": "persistence"
+      "title": "persistence",
+      "description": "Persistent storage configuration for the application data."
     },
     "podAnnotations": {
       "type": "object",
       "properties": {},
       "additionalProperties": true,
-      "title": "podAnnotations"
+      "title": "podAnnotations",
+      "description": "Annotations to add to the pod."
     },
     "podLabels": {
       "type": "object",
       "properties": {},
       "additionalProperties": true,
-      "title": "podLabels"
+      "title": "podLabels",
+      "description": "Labels to add to the pod."
     },
     "podSecurityContext": {
       "type": "object",
       "properties": {},
       "additionalProperties": true,
       "title": "podSecurityContext",
+      "description": "Security context settings applied at the pod level.",
       "examples": [
         "fsGroup: 2000"
       ]
@@ -191,24 +224,29 @@
             "path": {
               "type": "string",
               "title": "path",
+              "description": "The HTTP path the readiness probe requests.",
               "default": "/"
             },
             "port": {
-              "type": "number",
+              "type": "integer",
               "title": "port",
+              "description": "The port the readiness probe connects to.",
               "default": 5006
             }
           },
           "additionalProperties": false,
-          "title": "httpGet"
+          "title": "httpGet",
+          "description": "HTTP GET probe configuration for the readiness check."
         }
       },
       "additionalProperties": false,
-      "title": "readinessProbe"
+      "title": "readinessProbe",
+      "description": "Readiness probe configuration used by Kubernetes to determine if the container is ready to receive traffic."
     },
     "replicaCount": {
-      "type": "number",
+      "type": "integer",
       "title": "replicaCount",
+      "description": "The number of pod replicas to run.",
       "default": 1
     },
     "resources": {
@@ -216,6 +254,7 @@
       "properties": {},
       "additionalProperties": true,
       "title": "resources",
+      "description": "Resource requests and limits for the application container.",
       "examples": [
         "We usually recommend not to specify default resources and to leave this as a conscious\nchoice for the user. This also increases chances charts run on environments with little\nresources, such as Minikube. If you do want to specify resources, uncomment the following\nlines, adjust them as necessary, and remove the curly braces after 'resources:'.\nlimits:\n  cpu: 100m\n  memory: 128Mi\nrequests:\n  cpu: 100m\n  memory: 128Mi"
       ]
@@ -225,6 +264,7 @@
       "properties": {},
       "additionalProperties": true,
       "title": "securityContext",
+      "description": "Security context settings applied at the container level.",
       "examples": [
         "capabilities:\n  drop:\n  - ALL\nreadOnlyRootFilesystem: true\nrunAsNonRoot: true\nrunAsUser: 1000"
       ]
@@ -233,18 +273,27 @@
       "type": "object",
       "properties": {
         "port": {
-          "type": "number",
+          "type": "integer",
           "title": "port",
+          "description": "The port the Service listens on.",
           "default": 80
         },
         "type": {
           "type": "string",
+          "enum": [
+            "ClusterIP",
+            "NodePort",
+            "LoadBalancer",
+            "ExternalName"
+          ],
           "title": "type",
+          "description": "The type of Kubernetes Service to create.",
           "default": "ClusterIP"
         }
       },
       "additionalProperties": false,
-      "title": "service"
+      "title": "service",
+      "description": "Kubernetes Service configuration for exposing the application."
     },
     "serviceAccount": {
       "type": "object",
@@ -271,16 +320,17 @@
         "name": {
           "type": "string",
           "title": "name",
-          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template",
-          "default": ""
+          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template"
         }
       },
       "additionalProperties": false,
-      "title": "serviceAccount"
+      "title": "serviceAccount",
+      "description": "Configuration for the Kubernetes ServiceAccount used by the pod."
     },
     "tolerations": {
       "type": "array",
-      "title": "tolerations"
+      "title": "tolerations",
+      "description": "Tolerations allowing the pod to be scheduled onto nodes with matching taints."
     }
   }
 }

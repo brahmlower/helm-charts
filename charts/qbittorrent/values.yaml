@@ -4,16 +4,21 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
+# type: integer
+# description: "This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/"
 replicaCount: 1
 
-# This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+# type: array
+# description: "This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/"
 imagePullSecrets: []
 # This is to override the chart name.
 nameOverride: ""
+# type: string
+# description: "Overrides the full name of the release used to generate resource names."
 fullnameOverride: ""
 
-# This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
+# type: object
+# description: "This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/"
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -25,16 +30,20 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
-# This is for setting Kubernetes Annotations to a Pod.
-# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+# type: object
+# description: "This is for setting Kubernetes Annotations to a Pod. For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/"
 podAnnotations: {}
-# This is for setting Kubernetes Labels to a Pod.
-# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+# type: object
+# description: "This is for setting Kubernetes Labels to a Pod. For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/"
 podLabels: {}
 
+# type: object
+# description: "Security context settings applied at the pod level."
 podSecurityContext: {}
   # fsGroup: 2000
 
+# type: object
+# description: "Security context settings applied at the container level."
 securityContext: {}
   # capabilities:
   #   drop:
@@ -43,32 +52,56 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-# This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
+# type: object
+# description: "This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/"
 service:
+  # type: string
+  # enum: [ClusterIP, NodePort, LoadBalancer, ExternalName]
+  # description: "The type of Kubernetes Service to create."
   type: ClusterIP
 
-# This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
+# type: object
+# description: "This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/"
 ingress:
+  # type: boolean
+  # description: "Whether to create an Ingress resource for the qBittorrent WebUI."
   enabled: false
+  # type: string
+  # description: "The IngressClass to use for the Ingress resource."
   className: ""
+  # type: object
+  # description: "Annotations to add to the Ingress resource."
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+  # type: array
+  # description: "A list of host rules used to configure the Ingress."
   hosts:
     - host: chart-example.local
       paths:
         - path: /
           pathType: ImplementationSpecific
+  # type: array
+  # description: "TLS configuration for the Ingress, specifying secrets and the hosts they cover."
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
 
-# This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+# type: object
+# description: "This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/"
 autoscaling:
+  # type: boolean
+  # description: "Whether to create a HorizontalPodAutoscaler for this workload."
   enabled: false
+  # type: integer
+  # description: "The minimum number of replicas to scale down to."
   minReplicas: 1
+  # type: integer
+  # description: "The maximum number of replicas to scale up to."
   maxReplicas: 100
+  # type: integer
+  # description: "Target average CPU utilization percentage used by the autoscaler."
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
@@ -85,26 +118,54 @@ volumeMounts: []
 #   mountPath: "/etc/foo"
 #   readOnly: true
 
+# type: object
+# description: "Node selector constraints used to schedule the pod onto specific nodes."
 nodeSelector: {}
 
+# type: array
+# description: "Tolerations allowing the pod to be scheduled onto nodes with matching taints."
 tolerations: []
 
+# type: object
+# description: "Affinity/anti-affinity rules used to influence pod scheduling."
 affinity: {}
 
+# type: integer
+# description: "The number of seconds to wait for the pod to terminate gracefully, allowing the VPN tunnel and qBittorrent to shut down cleanly."
 terminationGracePeriodSeconds: 15
 
+# type: object
+# description: "Configuration for the qBittorrent container."
 qbittorrent:
   # linuxserver based image required to bind interface to the gluetun tunnel
   image: lscr.io/linuxserver/qbittorrent:latest
+  # type: string
+  # enum: [Always, IfNotPresent, Never]
+  # description: "The image pull policy controlling when Kubernetes re-pulls the qBittorrent image."
   imagePullPolicy: IfNotPresent
 
+  # type: object
+  # description: "Environment-driven configuration passed to the linuxserver qBittorrent image."
   config:
+    # type: integer
+    # description: "The user ID (PUID) that the qBittorrent process runs as, used to match ownership of mounted volumes."
     puid: 1000
+    # type: integer
+    # description: "The group ID (PGID) that the qBittorrent process runs as, used to match ownership of mounted volumes."
     pgid: 1000
+    # type: string
+    # examples: ["Etc/UTC", "America/New_York"]
+    # description: "The timezone the qBittorrent container uses for logging and scheduling."
     timezone: "Etc/UTC"
+    # type: integer
+    # description: "The port qBittorrent's WebUI listens on, used for the container port, Service, and readiness probe."
     webui_port: 8080
+    # type: integer
+    # description: "The TCP/UDP port qBittorrent uses for BitTorrent traffic, also opened through Gluetun's firewall and used for VPN port forwarding."
     torrent_port: 6881
 
+  # type: object
+  # description: "Resource requests and limits for the qBittorrent container."
   resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
@@ -117,14 +178,33 @@ qbittorrent:
     #   cpu: 100m
     #   memory: 128Mi
 
+# type: object
+# description: "Configuration for the Gluetun VPN sidecar that tunnels qBittorrent's traffic."
 gluetun:
+  # type: string
+  # description: "The container image to use for the Gluetun VPN sidecar."
   image: qmcgaw/gluetun:latest
+  # type: string
+  # enum: [Always, IfNotPresent, Never]
+  # description: "The image pull policy controlling when Kubernetes re-pulls the Gluetun image."
   imagePullPolicy: IfNotPresent
 
+  # type: object
+  # description: "Environment-driven configuration passed to the Gluetun container. See the Gluetun wiki for the full list of supported environment variables."
   config:
+    # type: integer
+    # description: "The user ID (PUID) that the Gluetun process runs as."
     puid: 1000
+    # type: integer
+    # description: "The group ID (PGID) that the Gluetun process runs as."
     pgid: 1000
+    # type: string
+    # examples: ["protonvpn", "mullvad", "nordvpn", "surfshark"]
+    # description: "The VPN service provider Gluetun connects through. See the Gluetun wiki for the list of supported providers."
     vpn_service_provider: "protonvpn"
+    # type: string
+    # enum: [wireguard, openvpn]
+    # description: "The VPN protocol Gluetun uses to establish the tunnel."
     vpn_type: "wireguard"
     # wireguard specific settings
     wireguard_private_key: ""
@@ -135,7 +215,11 @@ gluetun:
     # wireguard_private_key_existing_secret_key is the key within
     # wireguard_private_key_existing_secret that holds the private key.
     wireguard_private_key_existing_secret_key: "private_key"
+    # type: string
+    # description: "The WireGuard interface address(es) (with CIDR suffix) assigned to this client by the VPN provider."
     wireguard_address: ""
+    # type: string
+    # description: "The MTU to use for the WireGuard interface. Leave empty to use Gluetun's default."
     wireguard_mtu: ""
     # Allow inbound to qBittorrent through Gluetun's firewall
     firewall_input_ports: "8080,6881"
@@ -143,20 +227,42 @@ gluetun:
     firewall_outbound_subnets: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,100.64.0.0/10"
     # DNS Configuration
     dns_keep_nameserver: "off"
+    # type: string
+    # description: "The IP address Gluetun's internal DNS-over-TLS resolver listens on inside the container."
     dns_address: "127.0.0.1"
     # Disable problematic external checks
     update_period: "0"
+    # type: string
+    # enum: ["true", "false"]
+    # description: "Whether Gluetun checks for and logs a newer version being available. Disabled here to avoid unnecessary external requests."
     version_information: "false"
     # DNS Block List Configuration - Disable if causing issues
     dns_block_malicious: "true"
+    # type: string
+    # enum: ["true", "false"]
+    # description: "Whether Gluetun's DNS blocklist blocks known surveillance/tracking domains."
     dns_block_surveillance: "true"
+    # type: string
+    # enum: ["true", "false"]
+    # description: "Whether Gluetun's DNS blocklist blocks known advertising domains."
     dns_block_ads: "false"
 
+    # type: object
+    # description: "Configuration for Gluetun's VPN provider port forwarding, used to request a forwarded port for incoming BitTorrent connections."
     vpn_port_forwarding:
+      # type: boolean
+      # description: "Whether to enable VPN provider port forwarding."
       enabled: false
+      # type: string
+      # examples: ["protonvpn"]
+      # description: "The VPN service provider to request port forwarding from. Should match vpn_service_provider."
       provider: "protonvpn"
+      # type: string
+      # description: "The path inside the Gluetun container where the forwarded port number is written."
       status_file: /tmp/gluetun/forwarded_port
 
+  # type: object
+  # description: "Resource requests and limits for the Gluetun sidecar container."
   resources: {}
     # limits:
     #   cpu: 100m
@@ -165,11 +271,27 @@ gluetun:
     #   cpu: 100m
     #   memory: 128Mi
 
+# type: object
+# description: "Persistent volume claim configuration for qBittorrent's config and downloads storage."
 persistence:
+  # type: object
+  # description: "Persistent volume used for qBittorrent's config/state directory (mounted at /config)."
   configs:
+    # type: string
+    # description: "The StorageClass to use for the configs PersistentVolumeClaim. Leave empty to use the cluster default."
     storageClassName: ""
+    # type: string
+    # examples: ["1Gi"]
+    # description: "The requested size of the configs PersistentVolumeClaim."
     size: 1Gi
 
+  # type: object
+  # description: "Persistent volume used for downloaded torrent data (mounted at /downloads)."
   downloads:
+    # type: string
+    # description: "The StorageClass to use for the downloads PersistentVolumeClaim. Leave empty to use the cluster default."
     storageClassName: ""
+    # type: string
+    # examples: ["100Gi"]
+    # description: "The requested size of the downloads PersistentVolumeClaim."
     size: 100Gi

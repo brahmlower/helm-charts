@@ -22,3 +22,6 @@ version: 0.1.0
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
 appVersion: "1.11.1"
+
+annotations:
+  values-schema: https://raw.githubusercontent.com/brahmlower/helm-charts/refs/tags/bentopdf-0.1.0/charts/bentopdf/values.schema.json

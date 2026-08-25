@@ -5,7 +5,8 @@
       "type": "object",
       "properties": {},
       "additionalProperties": true,
-      "title": "affinity"
+      "title": "affinity",
+      "description": "Node and pod affinity or anti-affinity rules for scheduling the bentopdf pod."
     },
     "autoscaling": {
       "type": "object",
@@ -13,21 +14,25 @@
         "enabled": {
           "type": "boolean",
           "title": "enabled",
+          "description": "Whether to create a HorizontalPodAutoscaler for bentopdf, replacing the static replicaCount.",
           "default": false
         },
         "maxReplicas": {
-          "type": "number",
+          "type": "integer",
           "title": "maxReplicas",
+          "description": "The maximum number of pod replicas the autoscaler is allowed to scale up to.",
           "default": 100
         },
         "minReplicas": {
-          "type": "number",
+          "type": "integer",
           "title": "minReplicas",
+          "description": "The minimum number of pod replicas the autoscaler will maintain.",
           "default": 1
         },
         "targetCPUUtilizationPercentage": {
-          "type": "number",
+          "type": "integer",
           "title": "targetCPUUtilizationPercentage",
+          "description": "The target average CPU utilization percentage the autoscaler scales towards.",
           "default": 80,
           "examples": [
             "targetMemoryUtilizationPercentage: 80"
@@ -35,12 +40,13 @@
         }
       },
       "additionalProperties": false,
-      "title": "autoscaling"
+      "title": "autoscaling",
+      "description": "HorizontalPodAutoscaler configuration for bentopdf."
     },
     "fullnameOverride": {
       "type": "string",
       "title": "fullnameOverride",
-      "default": ""
+      "description": "Overrides the fully qualified name of the release used to generate resource names."
     },
     "httpRoute": {
       "type": "object",
@@ -78,7 +84,8 @@
         }
       },
       "additionalProperties": false,
-      "title": "httpRoute"
+      "title": "httpRoute",
+      "description": "Gateway API HTTPRoute configuration for exposing bentopdf as an alternative to Ingress."
     },
     "image": {
       "type": "object",
@@ -92,21 +99,23 @@
         "repository": {
           "type": "string",
           "title": "repository",
+          "description": "The container image repository to pull the bentopdf image from.",
           "default": "bentopdf/bentopdf-simple"
         },
         "tag": {
           "type": "string",
           "title": "tag",
-          "description": "Overrides the image tag whose default is the chart appVersion.",
-          "default": ""
+          "description": "Overrides the image tag whose default is the chart appVersion."
         }
       },
       "additionalProperties": false,
-      "title": "image"
+      "title": "image",
+      "description": "Container image configuration for the bentopdf deployment."
     },
     "imagePullSecrets": {
       "type": "array",
-      "title": "imagePullSecrets"
+      "title": "imagePullSecrets",
+      "description": "A list of secrets used for pulling the bentopdf image from a private container registry."
     },
     "ingress": {
       "type": "object",
@@ -115,32 +124,37 @@
           "type": "object",
           "properties": {},
           "additionalProperties": true,
-          "title": "annotations"
+          "title": "annotations",
+          "description": "Annotations applied to the Ingress resource, such as ingress controller or TLS options."
         },
         "className": {
           "type": "string",
           "title": "className",
-          "default": ""
+          "description": "The IngressClass to use for the Ingress resource."
         },
         "enabled": {
           "type": "boolean",
           "title": "enabled",
+          "description": "Whether to create an Ingress resource for bentopdf.",
           "default": false
         },
         "hosts": {
           "type": "array",
-          "title": "hosts"
+          "title": "hosts",
+          "description": "The list of hostnames and paths routed to the bentopdf service."
         },
         "tls": {
           "type": "array",
           "title": "tls",
+          "description": "TLS configuration for the Ingress, mapping secret names to hostnames.",
           "examples": [
             "- secretName: chart-example-tls\n  hosts:\n    - chart-example.local"
           ]
         }
       },
       "additionalProperties": false,
-      "title": "ingress"
+      "title": "ingress",
+      "description": "Kubernetes Ingress configuration for exposing bentopdf outside the cluster."
     },
     "livenessProbe": {
       "type": "object",
@@ -151,50 +165,60 @@
             "path": {
               "type": "string",
               "title": "path",
+              "description": "The HTTP path the liveness probe requests.",
               "default": "/"
             },
             "port": {
               "type": "string",
               "title": "port",
+              "description": "The named container port the liveness probe targets.",
               "default": "http"
             }
           },
           "additionalProperties": false,
-          "title": "httpGet"
+          "title": "httpGet",
+          "description": "HTTP GET probe settings for the liveness check."
         }
       },
       "additionalProperties": false,
-      "title": "livenessProbe"
+      "title": "livenessProbe",
+      "description": "Liveness probe configuration used by Kubernetes to detect and restart an unhealthy bentopdf container."
     },
     "nameOverride": {
       "type": "string",
       "title": "nameOverride",
-      "description": "This is to override the chart name.",
-      "default": ""
+      "description": "This is to override the chart name."
     },
     "nodeSelector": {
       "type": "object",
       "properties": {},
       "additionalProperties": true,
-      "title": "nodeSelector"
+      "title": "nodeSelector",
+      "description": "Node labels used to constrain which nodes the bentopdf pod can be scheduled on."
     },
     "podAnnotations": {
       "type": "object",
       "properties": {},
       "additionalProperties": true,
-      "title": "podAnnotations"
+      "title": "podAnnotations",
+      "description": "Annotations applied to the bentopdf pod.",
+      "examples": [
+        "This is for setting Kubernetes Labels to a Pod.\nFor more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/"
+      ]
     },
     "podLabels": {
       "type": "object",
       "properties": {},
       "additionalProperties": true,
-      "title": "podLabels"
+      "title": "podLabels",
+      "description": "Labels applied to the bentopdf pod."
     },
     "podSecurityContext": {
       "type": "object",
       "properties": {},
       "additionalProperties": true,
       "title": "podSecurityContext",
+      "description": "Security context settings applied to the pod as a whole, such as fsGroup.",
       "examples": [
         "fsGroup: 2000"
       ]
@@ -208,24 +232,29 @@
             "path": {
               "type": "string",
               "title": "path",
+              "description": "The HTTP path the readiness probe requests.",
               "default": "/"
             },
             "port": {
               "type": "string",
               "title": "port",
+              "description": "The named container port the readiness probe targets.",
               "default": "http"
             }
           },
           "additionalProperties": false,
-          "title": "httpGet"
+          "title": "httpGet",
+          "description": "HTTP GET probe settings for the readiness check."
         }
       },
       "additionalProperties": false,
-      "title": "readinessProbe"
+      "title": "readinessProbe",
+      "description": "Readiness probe configuration used by Kubernetes to determine when the bentopdf container can receive traffic."
     },
     "replicaCount": {
-      "type": "number",
+      "type": "integer",
       "title": "replicaCount",
+      "description": "The number of pod replicas to run.",
       "default": 1
     },
     "resources": {
@@ -233,6 +262,7 @@
       "properties": {},
       "additionalProperties": true,
       "title": "resources",
+      "description": "Container resource requests and limits for the bentopdf container.",
       "examples": [
         "We usually recommend not to specify default resources and to leave this as a conscious\nchoice for the user. This also increases chances charts run on environments with little\nresources, such as Minikube. If you do want to specify resources, uncomment the following\nlines, adjust them as necessary, and remove the curly braces after 'resources:'.\nlimits:\n  cpu: 100m\n  memory: 128Mi\nrequests:\n  cpu: 100m\n  memory: 128Mi"
       ]
@@ -242,6 +272,7 @@
       "properties": {},
       "additionalProperties": true,
       "title": "securityContext",
+      "description": "Security context settings applied to the bentopdf container, such as capabilities or runAsUser.",
       "examples": [
         "capabilities:\n  drop:\n  - ALL\nreadOnlyRootFilesystem: true\nrunAsNonRoot: true\nrunAsUser: 1000"
       ]
@@ -250,18 +281,30 @@
       "type": "object",
       "properties": {
         "port": {
-          "type": "number",
+          "type": "integer",
           "title": "port",
+          "description": "The port the bentopdf Service listens on.",
           "default": 8080
         },
         "type": {
           "type": "string",
+          "enum": [
+            "ClusterIP",
+            "NodePort",
+            "LoadBalancer",
+            "ExternalName"
+          ],
           "title": "type",
-          "default": "ClusterIP"
+          "description": "The Kubernetes Service type used to expose bentopdf.",
+          "default": "ClusterIP",
+          "examples": [
+            "This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports"
+          ]
         }
       },
       "additionalProperties": false,
-      "title": "service"
+      "title": "service",
+      "description": "Kubernetes Service configuration for exposing bentopdf."
     },
     "serviceAccount": {
       "type": "object",
@@ -288,16 +331,17 @@
         "name": {
           "type": "string",
           "title": "name",
-          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template.",
-          "default": ""
+          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template."
         }
       },
       "additionalProperties": false,
-      "title": "serviceAccount"
+      "title": "serviceAccount",
+      "description": "Configuration for the Kubernetes ServiceAccount used by the bentopdf pod."
     },
     "tolerations": {
       "type": "array",
-      "title": "tolerations"
+      "title": "tolerations",
+      "description": "Tolerations allowing the bentopdf pod to be scheduled onto nodes with matching taints."
     },
     "volumeMounts": {
       "type": "array",

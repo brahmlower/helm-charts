@@ -20,119 +20,472 @@ secretName: ""
 # does not deploy PostgreSQL. The instance must have the uuid-ossp, pg_trgm, and
 # vector (pgvector) extensions available, e.g. pgvector/pgvector:pg18.
 database:
+  # type: string
+  # ---
+  # Hostname or address of the external PostgreSQL server.
   host: ""
+  # type: integer
+  # examples: [5432]
+  # ---
+  # TCP port the external PostgreSQL server listens on.
   port: 5432
+  # type: string
+  # ---
+  # Username BookOrbit uses to authenticate to PostgreSQL.
   user: ""
+  # type: string
+  # ---
+  # Name of the PostgreSQL database BookOrbit connects to.
   name: ""
   # existingSecret names a pre-existing Secret holding the database password.
   existingSecret: ""
   # existingSecretPasswordKey is the key within existingSecret that holds the password.
   existingSecretPasswordKey: "postgres-password"
 
+# type: object
+# ---
+# controllers defines the workloads (Deployments/StatefulSets/etc.) managed by the
+# bjw-s common library chart. BookOrbit runs a single controller named `main`.
 controllers:
+  # type: object
+  # ---
+  # main is the primary (and only) BookOrbit workload.
   main:
+    # type: string
+    # enum: [deployment, statefulset, daemonset, cronjob]
+    # ---
+    # Kind of Kubernetes workload controller to render for the main controller.
     type: deployment
     # BookOrbit keeps book files and app data on ReadWriteOnce PVCs, so this must
     # stay at 1. Scaling beyond 1 replica risks two pods writing the same library
     # concurrently.
     replicas: 1
+    # type: string
+    # enum: [Recreate, RollingUpdate]
+    # ---
+    # Deployment update strategy. Recreate is required because the RWO data/books
+    # PVCs cannot be attached to two pods at once during a rolling update.
     strategy: Recreate
+    # type: object
+    # ---
+    # pod holds Pod-level settings (as opposed to container-level) for the main
+    # controller, such as the shared securityContext below.
     pod:
       # The image's entrypoint chowns /data to PUID:PGID (default 1000:1000) when
       # started as root, but runs equally well started directly as non-root, which
       # is what fsGroup + runAsUser do here.
       securityContext:
+        # type: boolean
+        # ---
+        # Requires the pod's containers to run as a non-root user.
         runAsNonRoot: true
+        # type: integer
+        # ---
+        # UID the BookOrbit container process runs as.
         runAsUser: 1000
+        # type: integer
+        # ---
+        # GID the BookOrbit container process runs as.
         runAsGroup: 1000
+        # type: integer
+        # ---
+        # GID applied to mounted volumes (data/books PVCs) so the non-root process
+        # can read and write them.
         fsGroup: 1000
+        # type: object
+        # ---
+        # seccompProfile restricts the set of syscalls available to the container.
         seccompProfile:
+          # type: string
+          # enum: [RuntimeDefault, Localhost, Unconfined]
+          # ---
+          # Uses the container runtime's default seccomp profile.
           type: RuntimeDefault
+    # type: object
+    # ---
+    # containers lists the containers that make up the main controller's pod.
     containers:
+      # type: object
+      # ---
+      # main is the BookOrbit application container.
       main:
+        # type: object
+        # ---
+        # image identifies the container image to run for BookOrbit.
         image:
+          # type: string
+          # examples: [ghcr.io/bookorbit/bookorbit]
+          # ---
+          # Container image repository for the BookOrbit application.
           repository: ghcr.io/bookorbit/bookorbit
           # Unlike `helm create`-based charts, app-template does not fall back to
           # Chart.appVersion automatically — the tag must be set explicitly.
           tag: "2.7.0"
+          # type: string
+          # enum: [IfNotPresent, Always, Never]
+          # ---
+          # Kubernetes image pull policy for the BookOrbit image.
           pullPolicy: IfNotPresent
+        # type: object
+        # ---
+        # securityContext restricts the privileges available to the BookOrbit
+        # container process.
         securityContext:
+          # type: boolean
+          # ---
+          # Prevents the container process from gaining more privileges than its
+          # parent process.
           allowPrivilegeEscalation: false
+          # type: boolean
+          # ---
+          # Whether the container's root filesystem is mounted read-only. BookOrbit
+          # needs to write outside of the data/books volumes, so this stays false.
           readOnlyRootFilesystem: false
+          # type: object
+          # ---
+          # capabilities adjusts the Linux kernel capabilities granted to the
+          # container process.
           capabilities:
+            # type: array
+            # examples:
+            #   - ["ALL"]
+            # ---
+            # Linux capabilities to remove from the container process. Dropping ALL
+            # follows the principle of least privilege.
             drop: ["ALL"]
+        # type: object
+        # ---
+        # env sets environment variables passed to the BookOrbit container. Most
+        # entries below configure the application directly; a few use
+        # `valueFrom.secretKeyRef` to source sensitive values from an existing
+        # Secret (see `secretName` and `database.existingSecret` above) instead of
+        # embedding them in values.yaml.
         env:
+          # type: string
+          # examples: ["3000"]
+          # ---
+          # TCP port the BookOrbit server listens on inside the container. Must
+          # match service.main.ports.http.port when changed.
           PORT: "3000"
+          # type: string
+          # ---
+          # Public URL of the BookOrbit instance, templated from the top-level
+          # appUrl value.
           APP_URL: '{{ .Values.appUrl }}'
+          # type: string
+          # ---
+          # CORS origin for the frontend, templated from the top-level clientUrl
+          # value (falling back to appUrl).
           CLIENT_URL: '{{ .Values.clientUrl | default .Values.appUrl }}'
+          # type: string
+          # examples: ["auto", "2048"]
+          # ---
+          # Sets Node.js's --max-old-space-size for the BookOrbit process, in
+          # megabytes. "auto" lets the application derive a value from available
+          # memory.
           NODE_MAX_OLD_SPACE_SIZE: "auto"
+          # type: string
+          # enum: ["true", "false"]
+          # ---
+          # Whether the BookOrbit entrypoint fixes ownership/permissions on its
+          # data directories at startup.
           BOOKORBIT_FIX_PERMISSIONS: "true"
+          # type: string
+          # enum: ["true", "false"]
+          # ---
+          # Allows OIDC issuers that resolve to local/private network addresses.
+          # Useful for self-hosted identity providers running inside the cluster
+          # or LAN; leave disabled unless you need this.
           OIDC_ALLOW_LOCAL_ISSUERS: "false"
+          # type: string
+          # enum: ["true", "false"]
+          # ---
+          # Relaxes the Content-Security-Policy to allow loading Cloudflare
+          # Insights analytics scripts.
           CSP_ALLOW_CLOUDFLARE_INSIGHTS: "false"
+          # type: string
+          # ---
+          # PostgreSQL hostname passed to BookOrbit, templated from database.host.
           POSTGRES_HOST: '{{ .Values.database.host }}'
+          # type: string
+          # ---
+          # PostgreSQL port passed to BookOrbit, templated from database.port.
           POSTGRES_PORT: '{{ .Values.database.port }}'
+          # type: string
+          # ---
+          # PostgreSQL username passed to BookOrbit, templated from database.user.
           POSTGRES_USER: '{{ .Values.database.user }}'
+          # type: string
+          # ---
+          # PostgreSQL database name passed to BookOrbit, templated from
+          # database.name.
           POSTGRES_DB: '{{ .Values.database.name }}'
+          # type: object
+          # ---
+          # JWT_SECRET is the signing secret BookOrbit uses for session/auth
+          # tokens, sourced from the `jwt-secret` key of the Secret named by
+          # secretName.
           JWT_SECRET:
+            # type: object
+            # ---
+            # Sources the JWT signing secret from a Secret key rather than a
+            # literal value.
             valueFrom:
+              # type: object
+              # ---
+              # References a key within an existing Secret.
               secretKeyRef:
+                # type: string
+                # ---
+                # Name of the Secret holding the JWT signing secret, templated
+                # from the top-level secretName value.
                 name: '{{ .Values.secretName }}'
+                # type: string
+                # ---
+                # Key within the Secret that holds the JWT signing secret.
                 key: jwt-secret
+          # type: object
+          # ---
+          # SETUP_BOOTSTRAP_TOKEN is a one-time token used to authorize initial
+          # instance setup (e.g. creating the first admin account), sourced from
+          # the `setup-bootstrap-token` key of the Secret named by secretName.
           SETUP_BOOTSTRAP_TOKEN:
+            # type: object
+            # ---
+            # Sources the setup bootstrap token from a Secret key rather than a
+            # literal value.
             valueFrom:
+              # type: object
+              # ---
+              # References a key within an existing Secret.
               secretKeyRef:
+                # type: string
+                # ---
+                # Name of the Secret holding the setup bootstrap token, templated
+                # from the top-level secretName value.
                 name: '{{ .Values.secretName }}'
+                # type: string
+                # ---
+                # Key within the Secret that holds the setup bootstrap token.
                 key: setup-bootstrap-token
+          # type: object
+          # ---
+          # POSTGRES_PASSWORD is the password BookOrbit uses to authenticate to
+          # PostgreSQL, sourced from database.existingSecret /
+          # database.existingSecretPasswordKey.
           POSTGRES_PASSWORD:
+            # type: object
+            # ---
+            # Sources the PostgreSQL password from a Secret key rather than a
+            # literal value.
             valueFrom:
+              # type: object
+              # ---
+              # References a key within an existing Secret.
               secretKeyRef:
+                # type: string
+                # ---
+                # Name of the Secret holding the PostgreSQL password, templated
+                # from database.existingSecret.
                 name: '{{ .Values.database.existingSecret }}'
+                # type: string
+                # ---
+                # Key within the Secret that holds the PostgreSQL password,
+                # templated from database.existingSecretPasswordKey.
                 key: '{{ .Values.database.existingSecretPasswordKey }}'
           # Optional secrets: omitted from the environment entirely (rather than failing)
           # when the key isn't present in secretName.
+          # type: object
+          # ---
+          # EMAIL_ENCRYPTION_KEY encrypts stored email-related credentials (e.g.
+          # for outbound mail integrations). Optional; sourced from the
+          # `email-encryption-key` key of the Secret named by secretName, if
+          # present.
           EMAIL_ENCRYPTION_KEY:
+            # type: object
+            # ---
+            # Sources the email encryption key from a Secret key rather than a
+            # literal value.
             valueFrom:
+              # type: object
+              # ---
+              # References an optional key within an existing Secret.
               secretKeyRef:
+                # type: string
+                # ---
+                # Name of the Secret holding the email encryption key, templated
+                # from the top-level secretName value.
                 name: '{{ .Values.secretName }}'
+                # type: string
+                # ---
+                # Key within the Secret that holds the email encryption key.
                 key: email-encryption-key
+                # type: boolean
+                # ---
+                # When true, BookOrbit starts even if this key is absent from the
+                # Secret, instead of failing to schedule the pod.
                 optional: true
+          # type: object
+          # ---
+          # MIGRATION_ENCRYPTION_KEY is used when migrating/decrypting data
+          # encrypted by a previous encryption key. Optional; sourced from the
+          # `migration-encryption-key` key of the Secret named by secretName, if
+          # present.
           MIGRATION_ENCRYPTION_KEY:
+            # type: object
+            # ---
+            # Sources the migration encryption key from a Secret key rather than
+            # a literal value.
             valueFrom:
+              # type: object
+              # ---
+              # References an optional key within an existing Secret.
               secretKeyRef:
+                # type: string
+                # ---
+                # Name of the Secret holding the migration encryption key,
+                # templated from the top-level secretName value.
                 name: '{{ .Values.secretName }}'
+                # type: string
+                # ---
+                # Key within the Secret that holds the migration encryption key.
                 key: migration-encryption-key
+                # type: boolean
+                # ---
+                # When true, BookOrbit starts even if this key is absent from the
+                # Secret, instead of failing to schedule the pod.
                 optional: true
+        # type: object
+        # ---
+        # probes configures the liveness and readiness checks the kubelet uses to
+        # monitor the BookOrbit container.
         probes:
+          # type: object
+          # ---
+          # liveness restarts the container if BookOrbit stops responding.
           liveness:
+            # type: boolean
+            # ---
+            # Enables the liveness probe.
             enabled: true
+            # type: string
+            # enum: [HTTP, TCP, Command, gRPC]
+            # ---
+            # Probe mechanism used for the liveness check.
             type: HTTP
+            # type: string
+            # examples: ["/api/v1/health"]
+            # ---
+            # HTTP path checked for the liveness probe.
             path: /api/v1/health
+          # type: object
+          # ---
+          # readiness gates whether the pod receives traffic from the Service
+          # based on BookOrbit's health.
           readiness:
+            # type: boolean
+            # ---
+            # Enables the readiness probe.
             enabled: true
+            # type: string
+            # enum: [HTTP, TCP, Command, gRPC]
+            # ---
+            # Probe mechanism used for the readiness check.
             type: HTTP
+            # type: string
+            # examples: ["/api/v1/health"]
+            # ---
+            # HTTP path checked for the readiness probe.
             path: /api/v1/health
+        # type: object
+        # ---
+        # resources sets CPU/memory requests and limits for the BookOrbit
+        # container.
         resources:
+          # type: object
+          # ---
+          # requests are the minimum resources guaranteed to the container.
           requests:
+            # type: string
+            # examples: ["250m"]
+            # ---
+            # Minimum CPU guaranteed to the BookOrbit container.
             cpu: 250m
+            # type: string
+            # examples: ["512Mi"]
+            # ---
+            # Minimum memory guaranteed to the BookOrbit container.
             memory: 512Mi
+          # type: object
+          # ---
+          # limits cap the resources the container may consume.
           limits:
+            # type: string
+            # examples: ["2Gi"]
+            # ---
+            # Maximum memory the BookOrbit container may use before being OOM
+            # killed. No CPU limit is set, so CPU usage is not throttled.
             memory: 2Gi
 
+# type: object
+# ---
+# service defines the Kubernetes Services fronting the controllers. BookOrbit
+# exposes a single Service named `main`.
 service:
+  # type: object
+  # ---
+  # main is the primary Service, routing traffic to the main controller.
   main:
+    # type: string
+    # examples: [main]
+    # ---
+    # Name of the controller this Service routes traffic to.
     controller: main
+    # type: object
+    # ---
+    # ports lists the ports exposed by this Service.
     ports:
+      # type: object
+      # ---
+      # http is the port serving the BookOrbit web application and API.
       http:
+        # type: boolean
+        # ---
+        # Marks this as the Service's primary port, used e.g. as the default for
+        # ingress/route backends.
         primary: true
+        # type: integer
+        # examples: [3000]
+        # ---
+        # Port the Service listens on and forwards to the container's PORT env
+        # var.
         port: 3000
 
 # ingress.main is disabled by default. See
 # https://bjw-s-labs.github.io/helm-charts/docs/app-template/reference/ingress/
 ingress:
+  # type: object
+  # ---
+  # main is the Ingress resource exposing BookOrbit outside the cluster.
   main:
+    # type: boolean
+    # ---
+    # Enables creation of the Ingress resource.
     enabled: false
+    # type: string
+    # ---
+    # IngressClass to use. Leave empty to use the cluster's default
+    # IngressClass.
     className: ""
+    # type: object
+    # ---
+    # Arbitrary annotations to add to the Ingress resource, e.g. for
+    # cert-manager or ingress-controller-specific behavior.
     annotations: {}
+    # type: array
+    # ---
+    # List of hostnames (and their path routing rules) the Ingress should
+    # accept traffic for.
     hosts:
       - host: bookorbit.example.com
         paths:
@@ -141,6 +494,10 @@ ingress:
             service:
               identifier: main
               port: http
+    # type: array
+    # ---
+    # TLS configuration blocks for the Ingress, pairing hostnames with the
+    # Secret containing their certificate.
     tls: []
 
 # route.main is the Gateway API HTTPRoute alternative to ingress.main, disabled by
@@ -150,38 +507,114 @@ ingress:
 # namespace than this release. See
 # https://bjw-s-labs.github.io/helm-charts/docs/app-template/reference/route/
 route:
+  # type: object
+  # ---
+  # main is the Gateway API HTTPRoute exposing BookOrbit outside the cluster, as
+  # an alternative to ingress.main.
   main:
+    # type: boolean
+    # ---
+    # Enables creation of the HTTPRoute resource.
     enabled: false
+    # type: string
+    # enum: [HTTPRoute, GRPCRoute, TCPRoute, TLSRoute, UDPRoute]
+    # ---
+    # Gateway API route kind to create.
     kind: HTTPRoute
+    # type: array
+    # ---
+    # Hostnames the route matches incoming requests against.
     hostnames:
       - bookorbit.example.com
+    # type: array
+    # ---
+    # References to the Gateway(s) this route attaches to. This chart does not
+    # create the Gateway itself.
     parentRefs:
       - name: gateway
         sectionName: http
         # namespace: gateway-system
 
+# type: object
+# ---
+# persistence defines the PersistentVolumeClaims (or other volume sources)
+# mounted into the main controller.
 persistence:
-  # data backs APP_DATA_PATH (/data): covers, book-bucket, DB migration state.
+  # type: object
+  # ---
+  # data backs APP_DATA_PATH (/data), covering covers, book-bucket, and DB
+  # migration state.
   data:
+    # type: string
+    # enum: [persistentVolumeClaim, emptyDir, configMap, secret, nfs, hostPath, custom]
+    # ---
+    # Kind of volume source backing this persistence entry.
     type: persistentVolumeClaim
+    # type: string
+    # ---
+    # Name of a pre-existing PVC to use instead of letting the chart create one.
+    # Leave empty to have the chart provision and manage the PVC.
     existingClaim: ""
+    # type: string
+    # ---
+    # StorageClass requested for the PVC. Leave empty to use the cluster's
+    # default StorageClass.
     storageClass: ""
+    # type: string
+    # enum: [ReadWriteOnce, ReadOnlyMany, ReadWriteMany, ReadWriteOncePod]
+    # ---
+    # Access mode requested for the PVC.
     accessMode: ReadWriteOnce
+    # type: string
+    # examples: ["5Gi"]
+    # ---
+    # Size of the PVC to provision for BookOrbit's app data (covers, book
+    # bucket, DB migration state).
     size: 5Gi
     # forceRename pins the PVC to a specific name instead of the chart's
     # auto-derived one. Needed when other persistence entries are added/removed,
     # since that shifts the auto-derived name and Helm would otherwise delete and
     # recreate the PVC under the new name (PVC names are immutable).
     forceRename: ""
+    # type: array
+    # ---
+    # Paths inside the main container where this volume is mounted.
     globalMounts:
       - path: /data
   # books backs the library folder mounted at /books.
   books:
+    # type: string
+    # enum: [persistentVolumeClaim, emptyDir, configMap, secret, nfs, hostPath, custom]
+    # ---
+    # Kind of volume source backing this persistence entry.
     type: persistentVolumeClaim
+    # type: string
+    # ---
+    # Name of a pre-existing PVC to use instead of letting the chart create one.
+    # Leave empty to have the chart provision and manage the PVC.
     existingClaim: ""
+    # type: string
+    # ---
+    # StorageClass requested for the PVC. Leave empty to use the cluster's
+    # default StorageClass.
     storageClass: ""
+    # type: string
+    # enum: [ReadWriteOnce, ReadOnlyMany, ReadWriteMany, ReadWriteOncePod]
+    # ---
+    # Access mode requested for the PVC.
     accessMode: ReadWriteOnce
+    # type: string
+    # examples: ["50Gi"]
+    # ---
+    # Size of the PVC to provision for BookOrbit's book library.
     size: 50Gi
+    # type: string
+    # ---
+    # Pins the books PVC to a specific name instead of the chart's auto-derived
+    # one. See persistence.data.forceRename above for why this exists.
     forceRename: ""
+    # type: array
+    # ---
+    # Paths inside the main container where this volume is mounted.
     globalMounts:
       - path: /books

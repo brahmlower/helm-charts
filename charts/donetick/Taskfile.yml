@@ -7,6 +7,7 @@ tasks:
   lint:
     desc: Run `helm lint` and check that values.schema.json/README.md are up to date
     deps: [deps]
+    silent: true
     cmds:
       - helm lint .
       - |
@@ -17,6 +18,17 @@ tasks:
         fi
         if [ "$(helm values docs . --dry-run --stdout 2>/dev/null)" != "$(cat README.md 2>/dev/null)" ]; then
           echo "README.md is stale — run 'helm values docs .' to regenerate" >&2
+          exit 1
+        fi
+      - |
+        set -e
+        chart_info="$(helm show chart .)"
+        chart_name="$(echo "$chart_info" | grep '^name:' | awk '{print $2}')"
+        chart_version="$(echo "$chart_info" | grep '^version:' | awk '{print $2}')"
+        schema_url="$(echo "$chart_info" | grep 'values-schema:' | awk '{print $2}')"
+        expected_tag="${chart_name}-${chart_version}"
+        if [[ "$schema_url" != *"/refs/tags/${expected_tag}/"* ]]; then
+          echo "annotations.values-schema does not reference tag '${expected_tag}' (found: ${schema_url:-<unset>}) — update it to match the current chart version" >&2
           exit 1
         fi
 

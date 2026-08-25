@@ -30,4 +30,4 @@ version: 0.1.1
 appVersion: "3.7.0"
 
 annotations:
-  values-schema: https://example.com/chart-metadata-schema.json
+  values-schema: https://raw.githubusercontent.com/brahmlower/helm-charts/refs/tags/kiwix-0.1.1/charts/kiwix/values.schema.json

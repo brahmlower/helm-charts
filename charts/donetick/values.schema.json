@@ -5,7 +5,8 @@
       "type": "object",
       "properties": {},
       "additionalProperties": true,
-      "title": "affinity"
+      "title": "affinity",
+      "description": "Node/pod affinity and anti-affinity rules used to constrain pod scheduling."
     },
     "autoscaling": {
       "type": "object",
@@ -13,21 +14,25 @@
         "enabled": {
           "type": "boolean",
           "title": "enabled",
+          "description": "Whether to create a HorizontalPodAutoscaler for the deployment.",
           "default": false
         },
         "maxReplicas": {
-          "type": "number",
+          "type": "integer",
           "title": "maxReplicas",
+          "description": "The maximum number of replicas the HorizontalPodAutoscaler will scale up to.",
           "default": 100
         },
         "minReplicas": {
-          "type": "number",
+          "type": "integer",
           "title": "minReplicas",
+          "description": "The minimum number of replicas the HorizontalPodAutoscaler will scale down to.",
           "default": 1
         },
         "targetCPUUtilizationPercentage": {
-          "type": "number",
+          "type": "integer",
           "title": "targetCPUUtilizationPercentage",
+          "description": "The average CPU utilization percentage the HorizontalPodAutoscaler targets when deciding to scale.",
           "default": 80,
           "examples": [
             "targetMemoryUtilizationPercentage: 80"
@@ -35,7 +40,8 @@
         }
       },
       "additionalProperties": false,
-      "title": "autoscaling"
+      "title": "autoscaling",
+      "description": "This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/"
     },
     "config": {
       "type": "object",
@@ -46,27 +52,30 @@
             "host": {
               "type": "string",
               "title": "host",
+              "description": "Hostname of the database server. Not used when type is sqlite.",
               "default": "donetick-cnpg.default.svc.cluster.local"
             },
             "migration": {
               "type": "boolean",
               "title": "migration",
+              "description": "Whether to automatically run database schema migrations on startup.",
               "default": true
             },
             "name": {
               "type": "string",
               "title": "name",
+              "description": "Name of the database to connect to (or the sqlite database file name).",
               "default": "donetick"
             },
             "password": {
               "type": "string",
               "title": "password",
-              "description": "The DT_DATABASE_PASSWORD environment variable should be used instead of this field.",
-              "default": ""
+              "description": "The DT_DATABASE_PASSWORD environment variable should be used instead of this field."
             },
             "port": {
-              "type": "number",
+              "type": "integer",
               "title": "port",
+              "description": "Port of the database server. Not used when type is sqlite.",
               "default": 5432
             },
             "type": {
@@ -76,16 +85,22 @@
                 "postgres"
               ],
               "title": "type",
-              "default": "sqlite"
+              "description": "Which database backend Donetick connects to.\n\nWhen set to `sqlite`, the host/port/user/password fields below are ignored.",
+              "default": "sqlite",
+              "examples": [
+                "sqlite"
+              ]
             },
             "user": {
               "type": "string",
               "title": "user",
+              "description": "Username used to authenticate with the database. Not used when type is sqlite.",
               "default": "donetick"
             }
           },
           "additionalProperties": false,
-          "title": "database"
+          "title": "database",
+          "description": "Database connection settings."
         },
         "email": {
           "type": "object",
@@ -93,41 +108,44 @@
             "appHost": {
               "type": "string",
               "title": "appHost",
-              "default": ""
+              "description": "The public base URL of this Donetick instance, used to build links included in outgoing emails."
             },
             "email": {
               "type": "string",
               "title": "email",
-              "default": ""
+              "description": "The \"from\" email address used when sending emails."
             },
             "host": {
               "type": "string",
               "title": "host",
-              "default": ""
+              "description": "Hostname of the SMTP server used to send emails. Leave empty to disable email sending."
             },
             "key": {
               "type": "string",
               "title": "key",
-              "description": "The DT_EMAIL_KEY environment variable should be used instead of this field.",
-              "default": ""
+              "description": "The DT_EMAIL_KEY environment variable should be used instead of this field."
             },
             "port": {
-              "type": "number",
+              "type": "integer",
               "title": "port",
+              "description": "Port of the SMTP server used to send emails.",
               "default": 0
             }
           },
           "additionalProperties": false,
-          "title": "email"
+          "title": "email",
+          "description": "SMTP settings used to send transactional emails (e.g. password resets, notifications)."
         },
         "is_done_tick_dot_com": {
           "type": "boolean",
           "title": "is_done_tick_dot_com",
+          "description": "Marks this instance as the official donetick.com hosted service. Should remain false for self-hosted deployments.",
           "default": false
         },
         "is_user_creation_disabled": {
           "type": "boolean",
           "title": "is_user_creation_disabled",
+          "description": "When true, disables the ability for new users to sign up/register accounts.",
           "default": false
         },
         "jwt": {
@@ -136,22 +154,30 @@
             "max_refresh": {
               "type": "string",
               "title": "max_refresh",
-              "default": "168h"
+              "description": "The maximum amount of time a session can be refreshed/extended before the user must re-authenticate.\n\nExpressed as a Go duration string (e.g. `168h`).",
+              "default": "168h",
+              "examples": [
+                "168h"
+              ]
             },
             "secret": {
               "type": "string",
               "title": "secret",
-              "description": "The DT_JWT_SECRET environment variable should be used instead of this field.",
-              "default": ""
+              "description": "The DT_JWT_SECRET environment variable should be used instead of this field."
             },
             "session_time": {
               "type": "string",
               "title": "session_time",
-              "default": "168h"
+              "description": "How long an issued session token remains valid before requiring the user to log in again.\n\nExpressed as a Go duration string (e.g. `168h`).",
+              "default": "168h",
+              "examples": [
+                "168h"
+              ]
             }
           },
           "additionalProperties": false,
-          "title": "jwt"
+          "title": "jwt",
+          "description": "JSON Web Token settings used for authenticating API/session requests."
         },
         "logging": {
           "type": "object",
@@ -159,26 +185,47 @@
             "development": {
               "type": "boolean",
               "title": "development",
+              "description": "Enables development-friendly logging (more verbose, human-readable output).",
               "default": false
             },
             "encoding": {
               "type": "string",
+              "enum": [
+                "json",
+                "console"
+              ],
               "title": "encoding",
+              "description": "The log output format.",
               "default": "json"
             },
             "level": {
               "type": "string",
+              "enum": [
+                "debug",
+                "info",
+                "warn",
+                "error"
+              ],
               "title": "level",
-              "default": "info"
+              "description": "The minimum log level that will be emitted.",
+              "default": "info",
+              "examples": [
+                "info"
+              ]
             }
           },
           "additionalProperties": false,
-          "title": "logging"
+          "title": "logging",
+          "description": "Application logging settings."
         },
         "name": {
           "type": "string",
           "title": "name",
-          "default": "selfhosted"
+          "description": "The display name of this Donetick instance, and also the filename used for the rendered config (config.name.yaml).",
+          "default": "selfhosted",
+          "examples": [
+            "selfhosted"
+          ]
         },
         "oauth2": {
           "type": "object",
@@ -186,42 +233,42 @@
             "auth_url": {
               "type": "string",
               "title": "auth_url",
-              "default": ""
+              "description": "The identity provider's authorization endpoint URL."
             },
             "client_id": {
               "type": "string",
               "title": "client_id",
-              "default": ""
+              "description": "The OAuth2 client ID issued by the identity provider."
             },
             "client_secret": {
               "type": "string",
               "title": "client_secret",
-              "description": "The DT_OAUTH2_CLIENT_SECRET environment variable should be used instead of this field.",
-              "default": ""
+              "description": "The DT_OAUTH2_CLIENT_SECRET environment variable should be used instead of this field."
             },
             "name": {
               "type": "string",
               "title": "name",
-              "default": ""
+              "description": "Display name for the OAuth2 provider, shown on the login button in the UI."
             },
             "redirect_url": {
               "type": "string",
               "title": "redirect_url",
-              "default": ""
+              "description": "The URL the identity provider redirects back to after authentication, must match the provider's app configuration."
             },
             "token_url": {
               "type": "string",
               "title": "token_url",
-              "default": ""
+              "description": "The identity provider's token exchange endpoint URL."
             },
             "user_info_url": {
               "type": "string",
               "title": "user_info_url",
-              "default": ""
+              "description": "The identity provider's user info endpoint URL, used to fetch profile details after authentication."
             }
           },
           "additionalProperties": false,
-          "title": "oauth2"
+          "title": "oauth2",
+          "description": "OAuth2/OIDC settings for enabling third-party single sign-on."
         },
         "pushover": {
           "type": "object",
@@ -229,72 +276,85 @@
             "token": {
               "type": "string",
               "title": "token",
-              "default": ""
+              "description": "The Pushover application API token used to send notifications.\n\nThe DT_PUSHOVER_TOKEN environment variable should be used instead of this field."
             }
           },
           "additionalProperties": false,
-          "title": "pushover"
+          "title": "pushover",
+          "description": "Pushover integration used for sending notifications."
         },
         "realtime": {
           "type": "object",
           "properties": {
             "allowed_origins": {
               "type": "array",
-              "title": "allowed_origins"
+              "title": "allowed_origins",
+              "description": "List of origins allowed to open real-time (WebSocket/SSE) connections.\n\n`\"*\"` allows any origin."
             },
             "cleanup_interval": {
               "type": "string",
               "title": "cleanup_interval",
+              "description": "How often the server scans for and removes stale/dead real-time connections, expressed as a Go duration string.",
               "default": "2m"
             },
             "connection_timeout": {
               "type": "string",
               "title": "connection_timeout",
+              "description": "How long a real-time connection may remain idle before being closed, expressed as a Go duration string.",
               "default": "120s"
             },
             "enable_compression": {
               "type": "boolean",
               "title": "enable_compression",
+              "description": "Enables compression of real-time messages sent to clients.",
               "default": true
             },
             "enable_stats": {
               "type": "boolean",
               "title": "enable_stats",
+              "description": "Enables collection of real-time connection statistics/metrics.",
               "default": true
             },
             "enabled": {
               "type": "boolean",
               "title": "enabled",
+              "description": "Enables the real-time update feature (WebSocket/SSE push updates to connected clients).",
               "default": true
             },
             "event_queue_size": {
-              "type": "number",
+              "type": "integer",
               "title": "event_queue_size",
+              "description": "Size of the internal queue used to buffer outgoing real-time events before they are delivered to clients.",
               "default": 2048
             },
             "heartbeat_interval": {
               "type": "string",
               "title": "heartbeat_interval",
+              "description": "How often the server sends a heartbeat/ping to connected real-time clients, expressed as a Go duration string.",
               "default": "60s"
             },
             "max_connections": {
-              "type": "number",
+              "type": "integer",
               "title": "max_connections",
+              "description": "Maximum number of concurrent real-time connections allowed across all users.",
               "default": 1000
             },
             "max_connections_per_user": {
-              "type": "number",
+              "type": "integer",
               "title": "max_connections_per_user",
+              "description": "Maximum number of concurrent real-time connections allowed per individual user.",
               "default": 5
             },
             "sse_enabled": {
               "type": "boolean",
               "title": "sse_enabled",
+              "description": "Enables Server-Sent Events (SSE) as a transport for real-time updates, in addition to WebSockets.",
               "default": true
             },
             "stale_threshold": {
               "type": "string",
               "title": "stale_threshold",
+              "description": "How long a real-time connection may go without activity before being considered stale, expressed as a Go duration string.",
               "default": "5m"
             }
           },
@@ -308,62 +368,74 @@
             "due_job": {
               "type": "string",
               "title": "due_job",
+              "description": "How often the job that checks for tasks that just became due runs.",
               "default": "30m"
             },
             "overdue_job": {
               "type": "string",
               "title": "overdue_job",
+              "description": "How often the job that checks for overdue tasks runs.",
               "default": "3h"
             },
             "pre_due_job": {
               "type": "string",
               "title": "pre_due_job",
+              "description": "How often the job that checks for tasks that are about to become due runs.",
               "default": "3h"
             }
           },
           "additionalProperties": false,
-          "title": "scheduler_jobs"
+          "title": "scheduler_jobs",
+          "description": "Intervals at which the background jobs that scan for due/overdue tasks run. Expressed as Go duration strings."
         },
         "server": {
           "type": "object",
           "properties": {
             "cors_allow_origins": {
               "type": "array",
-              "title": "cors_allow_origins"
+              "title": "cors_allow_origins",
+              "description": "List of origins allowed to make cross-origin (CORS) requests to the API."
             },
             "port": {
-              "type": "number",
+              "type": "integer",
               "title": "port",
+              "description": "The TCP port the Donetick HTTP server listens on inside the container.",
               "default": 2021
             },
             "rate_limit": {
-              "type": "number",
+              "type": "integer",
               "title": "rate_limit",
+              "description": "Maximum number of requests allowed per client within server.rate_period.",
               "default": 300
             },
             "rate_period": {
               "type": "string",
               "title": "rate_period",
+              "description": "The time window over which server.rate_limit is enforced, expressed as a Go duration string.",
               "default": "60s"
             },
             "read_timeout": {
               "type": "string",
               "title": "read_timeout",
+              "description": "Maximum duration for reading the entire request, expressed as a Go duration string.",
               "default": "10s"
             },
             "serve_frontend": {
               "type": "boolean",
               "title": "serve_frontend",
+              "description": "Whether the server also serves the built frontend web assets, in addition to the API.",
               "default": true
             },
             "write_timeout": {
               "type": "string",
               "title": "write_timeout",
+              "description": "Maximum duration before timing out writes of the response, expressed as a Go duration string.",
               "default": "10s"
             }
           },
           "additionalProperties": false,
-          "title": "server"
+          "title": "server",
+          "description": "HTTP server settings."
         },
         "telegram": {
           "type": "object",
@@ -371,15 +443,17 @@
             "token": {
               "type": "string",
               "title": "token",
-              "default": ""
+              "description": "The Telegram bot API token used to send notifications.\n\nThe DT_TELEGRAM_TOKEN environment variable should be used instead of this field."
             }
           },
           "additionalProperties": false,
-          "title": "telegram"
+          "title": "telegram",
+          "description": "Telegram bot integration used for sending notifications."
         }
       },
       "additionalProperties": false,
-      "title": "config"
+      "title": "config",
+      "description": "This is the donetick configuration: https://docs.donetick.com/getting-started/configration"
     },
     "env": {
       "type": "array",
@@ -395,7 +469,7 @@
     "fullnameOverride": {
       "type": "string",
       "title": "fullnameOverride",
-      "default": ""
+      "description": "Overrides the fully qualified name of the release used to generate resource names."
     },
     "httpRoute": {
       "type": "object",
@@ -433,7 +507,8 @@
         }
       },
       "additionalProperties": false,
-      "title": "httpRoute"
+      "title": "httpRoute",
+      "description": "Expose the service via gateway-api HTTPRoute\nRequires Gateway API resources and suitable controller installed within the cluster\n(see https://gateway-api.sigs.k8s.io/guides/)"
     },
     "image": {
       "type": "object",
@@ -447,21 +522,26 @@
         "repository": {
           "type": "string",
           "title": "repository",
-          "default": "donetick/donetick"
+          "description": "The container image repository to pull the donetick image from.",
+          "default": "donetick/donetick",
+          "examples": [
+            "donetick/donetick"
+          ]
         },
         "tag": {
           "type": "string",
           "title": "tag",
-          "description": "Overrides the image tag whose default is the chart appVersion.",
-          "default": ""
+          "description": "Overrides the image tag whose default is the chart appVersion."
         }
       },
       "additionalProperties": false,
-      "title": "image"
+      "title": "image",
+      "description": "This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/"
     },
     "imagePullSecrets": {
       "type": "array",
-      "title": "imagePullSecrets"
+      "title": "imagePullSecrets",
+      "description": "This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/"
     },
     "ingress": {
       "type": "object",
@@ -471,6 +551,7 @@
           "properties": {},
           "additionalProperties": true,
           "title": "annotations",
+          "description": "Annotations to add to the Ingress resource.",
           "examples": [
             "kubernetes.io/ingress.class: nginx\nkubernetes.io/tls-acme: \"true\""
           ]
@@ -478,64 +559,72 @@
         "className": {
           "type": "string",
           "title": "className",
-          "default": ""
+          "description": "The name of the IngressClass to use for the Ingress resource."
         },
         "enabled": {
           "type": "boolean",
           "title": "enabled",
+          "description": "Whether to create an Ingress resource for the application.",
           "default": false
         },
         "hosts": {
           "type": "array",
-          "title": "hosts"
+          "title": "hosts",
+          "description": "List of hostnames and path rules to route to the application."
         },
         "tls": {
           "type": "array",
           "title": "tls",
+          "description": "TLS configuration for the Ingress resource.",
           "examples": [
             "- secretName: chart-example-tls\n  hosts:\n    - chart-example.local"
           ]
         }
       },
       "additionalProperties": false,
-      "title": "ingress"
+      "title": "ingress",
+      "description": "This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/"
     },
     "nameOverride": {
       "type": "string",
       "title": "nameOverride",
-      "description": "This is to override the chart name.",
-      "default": ""
+      "description": "This is to override the chart name."
     },
     "nodeSelector": {
       "type": "object",
       "properties": {},
       "additionalProperties": true,
-      "title": "nodeSelector"
+      "title": "nodeSelector",
+      "description": "Node labels for pod assignment, used to constrain which nodes the pod can be scheduled on."
     },
     "podAnnotations": {
       "type": "object",
       "properties": {},
       "additionalProperties": true,
-      "title": "podAnnotations"
+      "title": "podAnnotations",
+      "description": "This is for setting Kubernetes Annotations to a Pod. For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/"
     },
     "podLabels": {
       "type": "object",
       "properties": {},
       "additionalProperties": true,
-      "title": "podLabels"
+      "title": "podLabels",
+      "description": "This is for setting Kubernetes Labels to a Pod. For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/"
     },
     "podSecurityContext": {
       "type": "object",
       "properties": {},
       "additionalProperties": true,
       "title": "podSecurityContext",
+      "description": "Security context settings applied at the pod level.",
       "examples": [
         "fsGroup: 2000"
       ]
     },
     "replicaCount": {
-      "type": "number",
+      "type": "integer",
       "title": "replicaCount",
+      "description": "This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/",
       "default": 1
     },
     "resources": {
@@ -562,18 +651,27 @@
       "type": "object",
       "properties": {
         "port": {
-          "type": "number",
+          "type": "integer",
           "title": "port",
+          "description": "This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports",
           "default": 80
         },
         "type": {
           "type": "string",
+          "enum": [
+            "ClusterIP",
+            "NodePort",
+            "LoadBalancer",
+            "ExternalName"
+          ],
           "title": "type",
+          "description": "This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types",
           "default": "ClusterIP"
         }
       },
       "additionalProperties": false,
-      "title": "service"
+      "title": "service",
+      "description": "This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/"
     },
     "serviceAccount": {
       "type": "object",
@@ -600,16 +698,17 @@
         "name": {
           "type": "string",
           "title": "name",
-          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template.",
-          "default": ""
+          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template."
         }
       },
       "additionalProperties": false,
-      "title": "serviceAccount"
+      "title": "serviceAccount",
+      "description": "This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/"
     },
     "tolerations": {
       "type": "array",
-      "title": "tolerations"
+      "title": "tolerations",
+      "description": "A list of tolerations that allow the pod to be scheduled onto nodes with matching taints."
     },
     "volumeMounts": {
       "type": "array",

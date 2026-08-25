@@ -4,14 +4,12 @@
     "appUrl": {
       "type": "string",
       "title": "appUrl",
-      "description": "appUrl is the external/public URL of the BookOrbit instance (required). Used by\nemails and Kobo endpoints.",
-      "default": ""
+      "description": "appUrl is the external/public URL of the BookOrbit instance (required). Used by\nemails and Kobo endpoints."
     },
     "clientUrl": {
       "type": "string",
       "title": "clientUrl",
-      "description": "clientUrl is the CORS origin for the frontend, when served from a different domain\nthan appUrl. Defaults to appUrl when empty.",
-      "default": ""
+      "description": "clientUrl is the CORS origin for the frontend, when served from a different domain\nthan appUrl. Defaults to appUrl when empty."
     },
     "controllers": {
       "type": "object",
@@ -31,22 +29,34 @@
                         "APP_URL": {
                           "type": "string",
                           "title": "APP_URL",
+                          "description": "Public URL of the BookOrbit instance, templated from the top-level\nappUrl value.",
                           "default": "{{ .Values.appUrl }}"
                         },
                         "BOOKORBIT_FIX_PERMISSIONS": {
                           "type": "string",
+                          "enum": [
+                            "true",
+                            "false"
+                          ],
                           "title": "BOOKORBIT_FIX_PERMISSIONS",
-                          "default": "true"
+                          "description": "Whether the BookOrbit entrypoint fixes ownership/permissions on its\ndata directories at startup.",
+                          "default": true
                         },
                         "CLIENT_URL": {
                           "type": "string",
                           "title": "CLIENT_URL",
+                          "description": "CORS origin for the frontend, templated from the top-level clientUrl\nvalue (falling back to appUrl).",
                           "default": "{{ .Values.clientUrl | default .Values.appUrl }}"
                         },
                         "CSP_ALLOW_CLOUDFLARE_INSIGHTS": {
                           "type": "string",
+                          "enum": [
+                            "true",
+                            "false"
+                          ],
                           "title": "CSP_ALLOW_CLOUDFLARE_INSIGHTS",
-                          "default": "false"
+                          "description": "Relaxes the Content-Security-Policy to allow loading Cloudflare\nInsights analytics scripts.",
+                          "default": false
                         },
                         "EMAIL_ENCRYPTION_KEY": {
                           "type": "object",
@@ -60,29 +70,35 @@
                                     "key": {
                                       "type": "string",
                                       "title": "key",
+                                      "description": "Key within the Secret that holds the email encryption key.",
                                       "default": "email-encryption-key"
                                     },
                                     "name": {
                                       "type": "string",
                                       "title": "name",
+                                      "description": "Name of the Secret holding the email encryption key, templated\nfrom the top-level secretName value.",
                                       "default": "{{ .Values.secretName }}"
                                     },
                                     "optional": {
                                       "type": "boolean",
                                       "title": "optional",
+                                      "description": "When true, BookOrbit starts even if this key is absent from the\nSecret, instead of failing to schedule the pod.",
                                       "default": true
                                     }
                                   },
                                   "additionalProperties": false,
-                                  "title": "secretKeyRef"
+                                  "title": "secretKeyRef",
+                                  "description": "References an optional key within an existing Secret."
                                 }
                               },
                               "additionalProperties": false,
-                              "title": "valueFrom"
+                              "title": "valueFrom",
+                              "description": "Sources the email encryption key from a Secret key rather than a\nliteral value."
                             }
                           },
                           "additionalProperties": false,
-                          "title": "EMAIL_ENCRYPTION_KEY"
+                          "title": "EMAIL_ENCRYPTION_KEY",
+                          "description": "EMAIL_ENCRYPTION_KEY encrypts stored email-related credentials (e.g.\nfor outbound mail integrations). Optional; sourced from the\n`email-encryption-key` key of the Secret named by secretName, if\npresent."
                         },
                         "JWT_SECRET": {
                           "type": "object",
@@ -96,24 +112,29 @@
                                     "key": {
                                       "type": "string",
                                       "title": "key",
+                                      "description": "Key within the Secret that holds the JWT signing secret.",
                                       "default": "jwt-secret"
                                     },
                                     "name": {
                                       "type": "string",
                                       "title": "name",
+                                      "description": "Name of the Secret holding the JWT signing secret, templated\nfrom the top-level secretName value.",
                                       "default": "{{ .Values.secretName }}"
                                     }
                                   },
                                   "additionalProperties": false,
-                                  "title": "secretKeyRef"
+                                  "title": "secretKeyRef",
+                                  "description": "References a key within an existing Secret."
                                 }
                               },
                               "additionalProperties": false,
-                              "title": "valueFrom"
+                              "title": "valueFrom",
+                              "description": "Sources the JWT signing secret from a Secret key rather than a\nliteral value."
                             }
                           },
                           "additionalProperties": false,
-                          "title": "JWT_SECRET"
+                          "title": "JWT_SECRET",
+                          "description": "JWT_SECRET is the signing secret BookOrbit uses for session/auth\ntokens, sourced from the `jwt-secret` key of the Secret named by\nsecretName."
                         },
                         "MIGRATION_ENCRYPTION_KEY": {
                           "type": "object",
@@ -127,53 +148,75 @@
                                     "key": {
                                       "type": "string",
                                       "title": "key",
+                                      "description": "Key within the Secret that holds the migration encryption key.",
                                       "default": "migration-encryption-key"
                                     },
                                     "name": {
                                       "type": "string",
                                       "title": "name",
+                                      "description": "Name of the Secret holding the migration encryption key,\ntemplated from the top-level secretName value.",
                                       "default": "{{ .Values.secretName }}"
                                     },
                                     "optional": {
                                       "type": "boolean",
                                       "title": "optional",
+                                      "description": "When true, BookOrbit starts even if this key is absent from the\nSecret, instead of failing to schedule the pod.",
                                       "default": true
                                     }
                                   },
                                   "additionalProperties": false,
-                                  "title": "secretKeyRef"
+                                  "title": "secretKeyRef",
+                                  "description": "References an optional key within an existing Secret."
                                 }
                               },
                               "additionalProperties": false,
-                              "title": "valueFrom"
+                              "title": "valueFrom",
+                              "description": "Sources the migration encryption key from a Secret key rather than\na literal value."
                             }
                           },
                           "additionalProperties": false,
-                          "title": "MIGRATION_ENCRYPTION_KEY"
+                          "title": "MIGRATION_ENCRYPTION_KEY",
+                          "description": "MIGRATION_ENCRYPTION_KEY is used when migrating/decrypting data\nencrypted by a previous encryption key. Optional; sourced from the\n`migration-encryption-key` key of the Secret named by secretName, if\npresent."
                         },
                         "NODE_MAX_OLD_SPACE_SIZE": {
                           "type": "string",
                           "title": "NODE_MAX_OLD_SPACE_SIZE",
-                          "default": "auto"
+                          "description": "Sets Node.js's --max-old-space-size for the BookOrbit process, in\nmegabytes. \"auto\" lets the application derive a value from available\nmemory.",
+                          "default": "auto",
+                          "examples": [
+                            "auto",
+                            "2048"
+                          ]
                         },
                         "OIDC_ALLOW_LOCAL_ISSUERS": {
                           "type": "string",
+                          "enum": [
+                            "true",
+                            "false"
+                          ],
                           "title": "OIDC_ALLOW_LOCAL_ISSUERS",
-                          "default": "false"
+                          "description": "Allows OIDC issuers that resolve to local/private network addresses.\nUseful for self-hosted identity providers running inside the cluster\nor LAN; leave disabled unless you need this.",
+                          "default": false
                         },
                         "PORT": {
                           "type": "string",
                           "title": "PORT",
-                          "default": "3000"
+                          "description": "TCP port the BookOrbit server listens on inside the container. Must\nmatch service.main.ports.http.port when changed.",
+                          "default": 3000,
+                          "examples": [
+                            "3000"
+                          ]
                         },
                         "POSTGRES_DB": {
                           "type": "string",
                           "title": "POSTGRES_DB",
+                          "description": "PostgreSQL database name passed to BookOrbit, templated from\ndatabase.name.",
                           "default": "{{ .Values.database.name }}"
                         },
                         "POSTGRES_HOST": {
                           "type": "string",
                           "title": "POSTGRES_HOST",
+                          "description": "PostgreSQL hostname passed to BookOrbit, templated from database.host.",
                           "default": "{{ .Values.database.host }}"
                         },
                         "POSTGRES_PASSWORD": {
@@ -188,33 +231,40 @@
                                     "key": {
                                       "type": "string",
                                       "title": "key",
+                                      "description": "Key within the Secret that holds the PostgreSQL password,\ntemplated from database.existingSecretPasswordKey.",
                                       "default": "{{ .Values.database.existingSecretPasswordKey }}"
                                     },
                                     "name": {
                                       "type": "string",
                                       "title": "name",
+                                      "description": "Name of the Secret holding the PostgreSQL password, templated\nfrom database.existingSecret.",
                                       "default": "{{ .Values.database.existingSecret }}"
                                     }
                                   },
                                   "additionalProperties": false,
-                                  "title": "secretKeyRef"
+                                  "title": "secretKeyRef",
+                                  "description": "References a key within an existing Secret."
                                 }
                               },
                               "additionalProperties": false,
-                              "title": "valueFrom"
+                              "title": "valueFrom",
+                              "description": "Sources the PostgreSQL password from a Secret key rather than a\nliteral value."
                             }
                           },
                           "additionalProperties": false,
-                          "title": "POSTGRES_PASSWORD"
+                          "title": "POSTGRES_PASSWORD",
+                          "description": "POSTGRES_PASSWORD is the password BookOrbit uses to authenticate to\nPostgreSQL, sourced from database.existingSecret /\ndatabase.existingSecretPasswordKey."
                         },
                         "POSTGRES_PORT": {
                           "type": "string",
                           "title": "POSTGRES_PORT",
+                          "description": "PostgreSQL port passed to BookOrbit, templated from database.port.",
                           "default": "{{ .Values.database.port }}"
                         },
                         "POSTGRES_USER": {
                           "type": "string",
                           "title": "POSTGRES_USER",
+                          "description": "PostgreSQL username passed to BookOrbit, templated from database.user.",
                           "default": "{{ .Values.database.user }}"
                         },
                         "SETUP_BOOTSTRAP_TOKEN": {
@@ -229,41 +279,57 @@
                                     "key": {
                                       "type": "string",
                                       "title": "key",
+                                      "description": "Key within the Secret that holds the setup bootstrap token.",
                                       "default": "setup-bootstrap-token"
                                     },
                                     "name": {
                                       "type": "string",
                                       "title": "name",
+                                      "description": "Name of the Secret holding the setup bootstrap token, templated\nfrom the top-level secretName value.",
                                       "default": "{{ .Values.secretName }}"
                                     }
                                   },
                                   "additionalProperties": false,
-                                  "title": "secretKeyRef"
+                                  "title": "secretKeyRef",
+                                  "description": "References a key within an existing Secret."
                                 }
                               },
                               "additionalProperties": false,
-                              "title": "valueFrom"
+                              "title": "valueFrom",
+                              "description": "Sources the setup bootstrap token from a Secret key rather than a\nliteral value."
                             }
                           },
                           "additionalProperties": false,
-                          "title": "SETUP_BOOTSTRAP_TOKEN"
+                          "title": "SETUP_BOOTSTRAP_TOKEN",
+                          "description": "SETUP_BOOTSTRAP_TOKEN is a one-time token used to authorize initial\ninstance setup (e.g. creating the first admin account), sourced from\nthe `setup-bootstrap-token` key of the Secret named by secretName."
                         }
                       },
                       "additionalProperties": false,
-                      "title": "env"
+                      "title": "env",
+                      "description": "env sets environment variables passed to the BookOrbit container. Most\nentries below configure the application directly; a few use\n`valueFrom.secretKeyRef` to source sensitive values from an existing\nSecret (see `secretName` and `database.existingSecret` above) instead of\nembedding them in values.yaml."
                     },
                     "image": {
                       "type": "object",
                       "properties": {
                         "pullPolicy": {
                           "type": "string",
+                          "enum": [
+                            "IfNotPresent",
+                            "Always",
+                            "Never"
+                          ],
                           "title": "pullPolicy",
+                          "description": "Kubernetes image pull policy for the BookOrbit image.",
                           "default": "IfNotPresent"
                         },
                         "repository": {
                           "type": "string",
                           "title": "repository",
-                          "default": "ghcr.io/bookorbit/bookorbit"
+                          "description": "Container image repository for the BookOrbit application.",
+                          "default": "ghcr.io/bookorbit/bookorbit",
+                          "examples": [
+                            "ghcr.io/bookorbit/bookorbit"
+                          ]
                         },
                         "tag": {
                           "type": "string",
@@ -273,7 +339,8 @@
                         }
                       },
                       "additionalProperties": false,
-                      "title": "image"
+                      "title": "image",
+                      "description": "image identifies the container image to run for BookOrbit."
                     },
                     "probes": {
                       "type": "object",
@@ -284,21 +351,34 @@
                             "enabled": {
                               "type": "boolean",
                               "title": "enabled",
+                              "description": "Enables the liveness probe.",
                               "default": true
                             },
                             "path": {
                               "type": "string",
                               "title": "path",
-                              "default": "/api/v1/health"
+                              "description": "HTTP path checked for the liveness probe.",
+                              "default": "/api/v1/health",
+                              "examples": [
+                                "/api/v1/health"
+                              ]
                             },
                             "type": {
                               "type": "string",
+                              "enum": [
+                                "HTTP",
+                                "TCP",
+                                "Command",
+                                "gRPC"
+                              ],
                               "title": "type",
+                              "description": "Probe mechanism used for the liveness check.",
                               "default": "HTTP"
                             }
                           },
                           "additionalProperties": false,
-                          "title": "liveness"
+                          "title": "liveness",
+                          "description": "liveness restarts the container if BookOrbit stops responding."
                         },
                         "readiness": {
                           "type": "object",
@@ -306,25 +386,39 @@
                             "enabled": {
                               "type": "boolean",
                               "title": "enabled",
+                              "description": "Enables the readiness probe.",
                               "default": true
                             },
                             "path": {
                               "type": "string",
                               "title": "path",
-                              "default": "/api/v1/health"
+                              "description": "HTTP path checked for the readiness probe.",
+                              "default": "/api/v1/health",
+                              "examples": [
+                                "/api/v1/health"
+                              ]
                             },
                             "type": {
                               "type": "string",
+                              "enum": [
+                                "HTTP",
+                                "TCP",
+                                "Command",
+                                "gRPC"
+                              ],
                               "title": "type",
+                              "description": "Probe mechanism used for the readiness check.",
                               "default": "HTTP"
                             }
                           },
                           "additionalProperties": false,
-                          "title": "readiness"
+                          "title": "readiness",
+                          "description": "readiness gates whether the pod receives traffic from the Service\nbased on BookOrbit's health."
                         }
                       },
                       "additionalProperties": false,
-                      "title": "probes"
+                      "title": "probes",
+                      "description": "probes configures the liveness and readiness checks the kubelet uses to\nmonitor the BookOrbit container."
                     },
                     "resources": {
                       "type": "object",
@@ -335,11 +429,16 @@
                             "memory": {
                               "type": "string",
                               "title": "memory",
-                              "default": "2Gi"
+                              "description": "Maximum memory the BookOrbit container may use before being OOM\nkilled. No CPU limit is set, so CPU usage is not throttled.",
+                              "default": "2Gi",
+                              "examples": [
+                                "2Gi"
+                              ]
                             }
                           },
                           "additionalProperties": false,
-                          "title": "limits"
+                          "title": "limits",
+                          "description": "limits cap the resources the container may consume."
                         },
                         "requests": {
                           "type": "object",
@@ -347,20 +446,30 @@
                             "cpu": {
                               "type": "string",
                               "title": "cpu",
-                              "default": "250m"
+                              "description": "Minimum CPU guaranteed to the BookOrbit container.",
+                              "default": "250m",
+                              "examples": [
+                                "250m"
+                              ]
                             },
                             "memory": {
                               "type": "string",
                               "title": "memory",
-                              "default": "512Mi"
+                              "description": "Minimum memory guaranteed to the BookOrbit container.",
+                              "default": "512Mi",
+                              "examples": [
+                                "512Mi"
+                              ]
                             }
                           },
                           "additionalProperties": false,
-                          "title": "requests"
+                          "title": "requests",
+                          "description": "requests are the minimum resources guaranteed to the container."
                         }
                       },
                       "additionalProperties": false,
-                      "title": "resources"
+                      "title": "resources",
+                      "description": "resources sets CPU/memory requests and limits for the BookOrbit\ncontainer."
                     },
                     "securityContext": {
                       "type": "object",
@@ -368,6 +477,7 @@
                         "allowPrivilegeEscalation": {
                           "type": "boolean",
                           "title": "allowPrivilegeEscalation",
+                          "description": "Prevents the container process from gaining more privileges than its\nparent process.",
                           "default": false
                         },
                         "capabilities": {
@@ -375,28 +485,39 @@
                           "properties": {
                             "drop": {
                               "type": "array",
-                              "title": "drop"
+                              "title": "drop",
+                              "description": "Linux capabilities to remove from the container process. Dropping ALL\nfollows the principle of least privilege.",
+                              "examples": [
+                                [
+                                  "ALL"
+                                ]
+                              ]
                             }
                           },
                           "additionalProperties": false,
-                          "title": "capabilities"
+                          "title": "capabilities",
+                          "description": "capabilities adjusts the Linux kernel capabilities granted to the\ncontainer process."
                         },
                         "readOnlyRootFilesystem": {
                           "type": "boolean",
                           "title": "readOnlyRootFilesystem",
+                          "description": "Whether the container's root filesystem is mounted read-only. BookOrbit\nneeds to write outside of the data/books volumes, so this stays false.",
                           "default": false
                         }
                       },
                       "additionalProperties": false,
-                      "title": "securityContext"
+                      "title": "securityContext",
+                      "description": "securityContext restricts the privileges available to the BookOrbit\ncontainer process."
                     }
                   },
                   "additionalProperties": false,
-                  "title": "main"
+                  "title": "main",
+                  "description": "main is the BookOrbit application container."
                 }
               },
               "additionalProperties": false,
-              "title": "containers"
+              "title": "containers",
+              "description": "containers lists the containers that make up the main controller's pod."
             },
             "pod": {
               "type": "object",
@@ -405,23 +526,27 @@
                   "type": "object",
                   "properties": {
                     "fsGroup": {
-                      "type": "number",
+                      "type": "integer",
                       "title": "fsGroup",
+                      "description": "GID applied to mounted volumes (data/books PVCs) so the non-root process\ncan read and write them.",
                       "default": 1000
                     },
                     "runAsGroup": {
-                      "type": "number",
+                      "type": "integer",
                       "title": "runAsGroup",
+                      "description": "GID the BookOrbit container process runs as.",
                       "default": 1000
                     },
                     "runAsNonRoot": {
                       "type": "boolean",
                       "title": "runAsNonRoot",
+                      "description": "Requires the pod's containers to run as a non-root user.",
                       "default": true
                     },
                     "runAsUser": {
-                      "type": "number",
+                      "type": "integer",
                       "title": "runAsUser",
+                      "description": "UID the BookOrbit container process runs as.",
                       "default": 1000
                     },
                     "seccompProfile": {
@@ -429,12 +554,19 @@
                       "properties": {
                         "type": {
                           "type": "string",
+                          "enum": [
+                            "RuntimeDefault",
+                            "Localhost",
+                            "Unconfined"
+                          ],
                           "title": "type",
+                          "description": "Uses the container runtime's default seccomp profile.",
                           "default": "RuntimeDefault"
                         }
                       },
                       "additionalProperties": false,
-                      "title": "seccompProfile"
+                      "title": "seccompProfile",
+                      "description": "seccompProfile restricts the set of syscalls available to the container."
                     }
                   },
                   "additionalProperties": false,
@@ -443,7 +575,8 @@
                 }
               },
               "additionalProperties": false,
-              "title": "pod"
+              "title": "pod",
+              "description": "pod holds Pod-level settings (as opposed to container-level) for the main\ncontroller, such as the shared securityContext below."
             },
             "replicas": {
               "type": "number",
@@ -453,21 +586,35 @@
             },
             "strategy": {
               "type": "string",
+              "enum": [
+                "Recreate",
+                "RollingUpdate"
+              ],
               "title": "strategy",
+              "description": "Deployment update strategy. Recreate is required because the RWO data/books\nPVCs cannot be attached to two pods at once during a rolling update.",
               "default": "Recreate"
             },
             "type": {
               "type": "string",
+              "enum": [
+                "deployment",
+                "statefulset",
+                "daemonset",
+                "cronjob"
+              ],
               "title": "type",
+              "description": "Kind of Kubernetes workload controller to render for the main controller.",
               "default": "deployment"
             }
           },
           "additionalProperties": false,
-          "title": "main"
+          "title": "main",
+          "description": "main is the primary (and only) BookOrbit workload."
         }
       },
       "additionalProperties": false,
-      "title": "controllers"
+      "title": "controllers",
+      "description": "controllers defines the workloads (Deployments/StatefulSets/etc.) managed by the\nbjw-s common library chart. BookOrbit runs a single controller named `main`."
     },
     "database": {
       "type": "object",
@@ -475,8 +622,7 @@
         "existingSecret": {
           "type": "string",
           "title": "existingSecret",
-          "description": "existingSecret names a pre-existing Secret holding the database password.",
-          "default": ""
+          "description": "existingSecret names a pre-existing Secret holding the database password."
         },
         "existingSecretPasswordKey": {
           "type": "string",
@@ -487,22 +633,26 @@
         "host": {
           "type": "string",
           "title": "host",
-          "default": ""
+          "description": "Hostname or address of the external PostgreSQL server."
         },
         "name": {
           "type": "string",
           "title": "name",
-          "default": ""
+          "description": "Name of the PostgreSQL database BookOrbit connects to."
         },
         "port": {
-          "type": "number",
+          "type": "integer",
           "title": "port",
-          "default": 5432
+          "description": "TCP port the external PostgreSQL server listens on.",
+          "default": 5432,
+          "examples": [
+            5432
+          ]
         },
         "user": {
           "type": "string",
           "title": "user",
-          "default": ""
+          "description": "Username BookOrbit uses to authenticate to PostgreSQL."
         }
       },
       "additionalProperties": false,
@@ -519,29 +669,34 @@
               "type": "object",
               "properties": {},
               "additionalProperties": true,
-              "title": "annotations"
+              "title": "annotations",
+              "description": "Arbitrary annotations to add to the Ingress resource, e.g. for\ncert-manager or ingress-controller-specific behavior."
             },
             "className": {
               "type": "string",
               "title": "className",
-              "default": ""
+              "description": "IngressClass to use. Leave empty to use the cluster's default\nIngressClass."
             },
             "enabled": {
               "type": "boolean",
               "title": "enabled",
+              "description": "Enables creation of the Ingress resource.",
               "default": false
             },
             "hosts": {
               "type": "array",
-              "title": "hosts"
+              "title": "hosts",
+              "description": "List of hostnames (and their path routing rules) the Ingress should\naccept traffic for."
             },
             "tls": {
               "type": "array",
-              "title": "tls"
+              "title": "tls",
+              "description": "TLS configuration blocks for the Ingress, pairing hostnames with the\nSecret containing their certificate."
             }
           },
           "additionalProperties": false,
-          "title": "main"
+          "title": "main",
+          "description": "main is the Ingress resource exposing BookOrbit outside the cluster."
         }
       },
       "additionalProperties": false,
@@ -556,36 +711,58 @@
           "properties": {
             "accessMode": {
               "type": "string",
+              "enum": [
+                "ReadWriteOnce",
+                "ReadOnlyMany",
+                "ReadWriteMany",
+                "ReadWriteOncePod"
+              ],
               "title": "accessMode",
+              "description": "Access mode requested for the PVC.",
               "default": "ReadWriteOnce"
             },
             "existingClaim": {
               "type": "string",
               "title": "existingClaim",
-              "default": ""
+              "description": "Name of a pre-existing PVC to use instead of letting the chart create one.\nLeave empty to have the chart provision and manage the PVC."
             },
             "forceRename": {
               "type": "string",
               "title": "forceRename",
-              "default": ""
+              "description": "Pins the books PVC to a specific name instead of the chart's auto-derived\none. See persistence.data.forceRename above for why this exists."
             },
             "globalMounts": {
               "type": "array",
-              "title": "globalMounts"
+              "title": "globalMounts",
+              "description": "Paths inside the main container where this volume is mounted."
             },
             "size": {
               "type": "string",
               "title": "size",
-              "default": "50Gi"
+              "description": "Size of the PVC to provision for BookOrbit's book library.",
+              "default": "50Gi",
+              "examples": [
+                "50Gi"
+              ]
             },
             "storageClass": {
               "type": "string",
               "title": "storageClass",
-              "default": ""
+              "description": "StorageClass requested for the PVC. Leave empty to use the cluster's\ndefault StorageClass."
             },
             "type": {
               "type": "string",
+              "enum": [
+                "persistentVolumeClaim",
+                "emptyDir",
+                "configMap",
+                "secret",
+                "nfs",
+                "hostPath",
+                "custom"
+              ],
               "title": "type",
+              "description": "Kind of volume source backing this persistence entry.",
               "default": "persistentVolumeClaim"
             }
           },
@@ -598,46 +775,69 @@
           "properties": {
             "accessMode": {
               "type": "string",
+              "enum": [
+                "ReadWriteOnce",
+                "ReadOnlyMany",
+                "ReadWriteMany",
+                "ReadWriteOncePod"
+              ],
               "title": "accessMode",
+              "description": "Access mode requested for the PVC.",
               "default": "ReadWriteOnce"
             },
             "existingClaim": {
               "type": "string",
               "title": "existingClaim",
-              "default": ""
+              "description": "Name of a pre-existing PVC to use instead of letting the chart create one.\nLeave empty to have the chart provision and manage the PVC."
             },
             "forceRename": {
               "type": "string",
               "title": "forceRename",
-              "description": "forceRename pins the PVC to a specific name instead of the chart's\nauto-derived one. Needed when other persistence entries are added/removed,\nsince that shifts the auto-derived name and Helm would otherwise delete and\nrecreate the PVC under the new name (PVC names are immutable).",
-              "default": ""
+              "description": "forceRename pins the PVC to a specific name instead of the chart's\nauto-derived one. Needed when other persistence entries are added/removed,\nsince that shifts the auto-derived name and Helm would otherwise delete and\nrecreate the PVC under the new name (PVC names are immutable)."
             },
             "globalMounts": {
               "type": "array",
-              "title": "globalMounts"
+              "title": "globalMounts",
+              "description": "Paths inside the main container where this volume is mounted."
             },
             "size": {
               "type": "string",
               "title": "size",
-              "default": "5Gi"
+              "description": "Size of the PVC to provision for BookOrbit's app data (covers, book\nbucket, DB migration state).",
+              "default": "5Gi",
+              "examples": [
+                "5Gi"
+              ]
             },
             "storageClass": {
               "type": "string",
               "title": "storageClass",
-              "default": ""
+              "description": "StorageClass requested for the PVC. Leave empty to use the cluster's\ndefault StorageClass."
             },
             "type": {
               "type": "string",
+              "enum": [
+                "persistentVolumeClaim",
+                "emptyDir",
+                "configMap",
+                "secret",
+                "nfs",
+                "hostPath",
+                "custom"
+              ],
               "title": "type",
+              "description": "Kind of volume source backing this persistence entry.",
               "default": "persistentVolumeClaim"
             }
           },
           "additionalProperties": false,
-          "title": "data"
+          "title": "data",
+          "description": "data backs APP_DATA_PATH (/data), covering covers, book-bucket, and DB\nmigration state."
         }
       },
       "additionalProperties": false,
-      "title": "persistence"
+      "title": "persistence",
+      "description": "persistence defines the PersistentVolumeClaims (or other volume sources)\nmounted into the main controller."
     },
     "route": {
       "type": "object",
@@ -648,24 +848,36 @@
             "enabled": {
               "type": "boolean",
               "title": "enabled",
+              "description": "Enables creation of the HTTPRoute resource.",
               "default": false
             },
             "hostnames": {
               "type": "array",
-              "title": "hostnames"
+              "title": "hostnames",
+              "description": "Hostnames the route matches incoming requests against."
             },
             "kind": {
               "type": "string",
+              "enum": [
+                "HTTPRoute",
+                "GRPCRoute",
+                "TCPRoute",
+                "TLSRoute",
+                "UDPRoute"
+              ],
               "title": "kind",
+              "description": "Gateway API route kind to create.",
               "default": "HTTPRoute"
             },
             "parentRefs": {
               "type": "array",
-              "title": "parentRefs"
+              "title": "parentRefs",
+              "description": "References to the Gateway(s) this route attaches to. This chart does not\ncreate the Gateway itself."
             }
           },
           "additionalProperties": false,
-          "title": "main"
+          "title": "main",
+          "description": "main is the Gateway API HTTPRoute exposing BookOrbit outside the cluster, as\nan alternative to ingress.main."
         }
       },
       "additionalProperties": false,
@@ -675,8 +887,7 @@
     "secretName": {
       "type": "string",
       "title": "secretName",
-      "description": "secretName names a pre-existing Secret (e.g. created by an ExternalSecret) holding\njwt-secret and setup-bootstrap-token, and optionally email-encryption-key /\nmigration-encryption-key.",
-      "default": ""
+      "description": "secretName names a pre-existing Secret (e.g. created by an ExternalSecret) holding\njwt-secret and setup-bootstrap-token, and optionally email-encryption-key /\nmigration-encryption-key."
     },
     "service": {
       "type": "object",
@@ -687,7 +898,11 @@
             "controller": {
               "type": "string",
               "title": "controller",
-              "default": "main"
+              "description": "Name of the controller this Service routes traffic to.",
+              "default": "main",
+              "examples": [
+                "main"
+              ]
             },
             "ports": {
               "type": "object",
@@ -696,30 +911,39 @@
                   "type": "object",
                   "properties": {
                     "port": {
-                      "type": "number",
+                      "type": "integer",
                       "title": "port",
-                      "default": 3000
+                      "description": "Port the Service listens on and forwards to the container's PORT env\nvar.",
+                      "default": 3000,
+                      "examples": [
+                        3000
+                      ]
                     },
                     "primary": {
                       "type": "boolean",
                       "title": "primary",
+                      "description": "Marks this as the Service's primary port, used e.g. as the default for\ningress/route backends.",
                       "default": true
                     }
                   },
                   "additionalProperties": false,
-                  "title": "http"
+                  "title": "http",
+                  "description": "http is the port serving the BookOrbit web application and API."
                 }
               },
               "additionalProperties": false,
-              "title": "ports"
+              "title": "ports",
+              "description": "ports lists the ports exposed by this Service."
             }
           },
           "additionalProperties": false,
-          "title": "main"
+          "title": "main",
+          "description": "main is the primary Service, routing traffic to the main controller."
         }
       },
       "additionalProperties": false,
-      "title": "service"
+      "title": "service",
+      "description": "service defines the Kubernetes Services fronting the controllers. BookOrbit\nexposes a single Service named `main`."
     }
   }
 }

@@ -5,7 +5,8 @@
       "type": "object",
       "properties": {},
       "additionalProperties": true,
-      "title": "affinity"
+      "title": "affinity",
+      "description": "Affinity and anti-affinity rules for pod assignment. See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity"
     },
     "args": {
       "type": "array",
@@ -18,21 +19,27 @@
         "enabled": {
           "type": "boolean",
           "title": "enabled",
+          "description": "Whether to create a HorizontalPodAutoscaler for kiwix. When enabled, replicaCount is ignored.",
           "default": false
         },
         "maxReplicas": {
-          "type": "number",
+          "type": "integer",
+          "minimum": 1,
           "title": "maxReplicas",
+          "description": "Maximum number of replicas the HorizontalPodAutoscaler will scale up to.",
           "default": 100
         },
         "minReplicas": {
-          "type": "number",
+          "type": "integer",
+          "minimum": 1,
           "title": "minReplicas",
+          "description": "Minimum number of replicas the HorizontalPodAutoscaler will scale down to.",
           "default": 1
         },
         "targetCPUUtilizationPercentage": {
-          "type": "number",
+          "type": "integer",
           "title": "targetCPUUtilizationPercentage",
+          "description": "Target average CPU utilization percentage used to trigger scaling.",
           "default": 80,
           "examples": [
             "targetMemoryUtilizationPercentage: 80"
@@ -40,18 +47,24 @@
         }
       },
       "additionalProperties": false,
-      "title": "autoscaling"
+      "title": "autoscaling",
+      "description": "This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/"
     },
     "fullnameOverride": {
       "type": "string",
       "title": "fullnameOverride",
-      "default": ""
+      "description": "This is to override the fully qualified app name used for resource names."
     },
     "image": {
       "type": "object",
       "properties": {
         "pullPolicy": {
           "type": "string",
+          "enum": [
+            "Always",
+            "IfNotPresent",
+            "Never"
+          ],
           "title": "pullPolicy",
           "description": "This sets the pull policy for images.",
           "default": "IfNotPresent"
@@ -65,16 +78,17 @@
         "tag": {
           "type": "string",
           "title": "tag",
-          "description": "Overrides the image tag whose default is the chart appVersion.",
-          "default": ""
+          "description": "Overrides the image tag whose default is the chart appVersion."
         }
       },
       "additionalProperties": false,
-      "title": "image"
+      "title": "image",
+      "description": "This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/"
     },
     "imagePullSecrets": {
       "type": "array",
-      "title": "imagePullSecrets"
+      "title": "imagePullSecrets",
+      "description": "This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/"
     },
     "ingress": {
       "type": "object",
@@ -83,32 +97,37 @@
           "type": "object",
           "properties": {},
           "additionalProperties": true,
-          "title": "annotations"
+          "title": "annotations",
+          "description": "Annotations to add to the Ingress resource."
         },
         "className": {
           "type": "string",
           "title": "className",
-          "default": ""
+          "description": "The name of the IngressClass to use for this Ingress."
         },
         "enabled": {
           "type": "boolean",
           "title": "enabled",
+          "description": "Whether to create an Ingress resource for kiwix.",
           "default": false
         },
         "hosts": {
           "type": "array",
-          "title": "hosts"
+          "title": "hosts",
+          "description": "List of hosts and their path rules to route to the kiwix service."
         },
         "tls": {
           "type": "array",
           "title": "tls",
+          "description": "TLS configuration for the Ingress, mapping secretNames to hosts.",
           "examples": [
             "- secretName: chart-example-tls\n   hosts:\n     - chart-example.local"
           ]
         }
       },
       "additionalProperties": false,
-      "title": "ingress"
+      "title": "ingress",
+      "description": "This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/"
     },
     "livenessProbe": {
       "type": "object",
@@ -133,37 +152,41 @@
         }
       },
       "additionalProperties": false,
-      "title": "livenessProbe"
+      "title": "livenessProbe",
+      "description": "This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/"
     },
     "nameOverride": {
       "type": "string",
       "title": "nameOverride",
-      "description": "This is to override the chart name.",
-      "default": ""
+      "description": "This is to override the chart name."
     },
     "nodeSelector": {
       "type": "object",
       "properties": {},
       "additionalProperties": true,
-      "title": "nodeSelector"
+      "title": "nodeSelector",
+      "description": "Node labels for pod assignment. See: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/"
     },
     "podAnnotations": {
       "type": "object",
       "properties": {},
       "additionalProperties": true,
-      "title": "podAnnotations"
+      "title": "podAnnotations",
+      "description": "This is for setting Kubernetes Annotations to a Pod.\nFor more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/"
     },
     "podLabels": {
       "type": "object",
       "properties": {},
       "additionalProperties": true,
-      "title": "podLabels"
+      "title": "podLabels",
+      "description": "This is for setting Kubernetes Labels to a Pod.\nFor more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/"
     },
     "podSecurityContext": {
       "type": "object",
       "properties": {},
       "additionalProperties": true,
       "title": "podSecurityContext",
+      "description": "Security context settings applied to the pod. See: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/",
       "examples": [
         "fsGroup: 2000"
       ]
@@ -177,24 +200,29 @@
             "path": {
               "type": "string",
               "title": "path",
+              "description": "The path to request on the HTTP server for the readiness check.",
               "default": "/"
             },
             "port": {
               "type": "string",
               "title": "port",
+              "description": "The named container port to probe for the readiness check.",
               "default": "http"
             }
           },
           "additionalProperties": false,
-          "title": "httpGet"
+          "title": "httpGet",
+          "description": "HTTP GET action used to perform the readiness check."
         }
       },
       "additionalProperties": false,
-      "title": "readinessProbe"
+      "title": "readinessProbe",
+      "description": "Readiness probe configuration for the kiwix container. See: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/"
     },
     "replicaCount": {
-      "type": "number",
+      "type": "integer",
       "title": "replicaCount",
+      "description": "Number of Deployment replicas to run.\n\nThis will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/",
       "default": 1
     },
     "resources": {
@@ -212,6 +240,7 @@
       "properties": {},
       "additionalProperties": true,
       "title": "securityContext",
+      "description": "Security context settings applied to the kiwix container. See: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/",
       "examples": [
         "capabilities:\n  drop:\n  - ALL\nreadOnlyRootFilesystem: true\nrunAsNonRoot: true\nrunAsUser: 1000"
       ]
@@ -220,18 +249,27 @@
       "type": "object",
       "properties": {
         "port": {
-          "type": "number",
+          "type": "integer",
           "title": "port",
+          "description": "The port the Service listens on for the Kiwix container. See https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports for more information.",
           "default": 80
         },
         "type": {
           "type": "string",
+          "enum": [
+            "ClusterIP",
+            "NodePort",
+            "LoadBalancer",
+            "ExternalName"
+          ],
           "title": "type",
+          "description": "The Kubernetes Service type to create. See https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types for more information.",
           "default": "ClusterIP"
         }
       },
       "additionalProperties": false,
-      "title": "service"
+      "title": "service",
+      "description": "This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/"
     },
     "serviceAccount": {
       "type": "object",
@@ -258,16 +296,17 @@
         "name": {
           "type": "string",
           "title": "name",
-          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template",
-          "default": ""
+          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template"
         }
       },
       "additionalProperties": false,
-      "title": "serviceAccount"
+      "title": "serviceAccount",
+      "description": "This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/"
     },
     "tolerations": {
       "type": "array",
-      "title": "tolerations"
+      "title": "tolerations",
+      "description": "Tolerations for pod assignment. See: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/"
     },
     "volumeClaimTemplates": {
       "type": "array",

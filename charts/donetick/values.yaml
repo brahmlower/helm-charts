@@ -6,21 +6,31 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
+# type: integer
+# minimum: 0
+# description: "This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/"
 replicaCount: 1
 
-# This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
+# type: object
+# description: "This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/"
 image:
+  # type: string
+  # description: The container image repository to pull the donetick image from.
+  # examples:
+  #   - donetick/donetick
   repository: donetick/donetick
   # This sets the pull policy for images.
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
-# This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+# type: array
+# description: "This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/"
 imagePullSecrets: []
 # This is to override the chart name.
 nameOverride: ""
+# type: string
+# description: Overrides the fully qualified name of the release used to generate resource names.
 fullnameOverride: ""
 
 # items:
@@ -59,86 +69,234 @@ env: []
   #       name: donetick-oauth2-client-secret
   #       key: secret
 
-# This is the donetick configuration: https://docs.donetick.com/getting-started/configration
+# type: object
+# description: "This is the donetick configuration: https://docs.donetick.com/getting-started/configration"
 config:
+  # type: string
+  # description: The display name of this Donetick instance, and also the filename used for the rendered config (config.name.yaml).
+  # examples:
+  #   - selfhosted
   name: "selfhosted"
+  # type: boolean
+  # description: Marks this instance as the official donetick.com hosted service. Should remain false for self-hosted deployments.
   is_done_tick_dot_com: false
+  # type: boolean
+  # description: When true, disables the ability for new users to sign up/register accounts.
   is_user_creation_disabled: false
+  # type: object
+  # description: Telegram bot integration used for sending notifications.
   telegram:
+    # type: string
+    # ---
+    # The Telegram bot API token used to send notifications.
+    #
+    # The DT_TELEGRAM_TOKEN environment variable should be used instead of this field.
     token: ""
+  # type: object
+  # description: Pushover integration used for sending notifications.
   pushover:
+    # type: string
+    # ---
+    # The Pushover application API token used to send notifications.
+    #
+    # The DT_PUSHOVER_TOKEN environment variable should be used instead of this field.
     token: ""
+  # type: object
+  # description: Database connection settings.
   database:
+    # type: string
     # enum: [sqlite, postgres]
+    # examples:
+    #   - sqlite
+    # ---
+    # Which database backend Donetick connects to.
+    #
+    # When set to `sqlite`, the host/port/user/password fields below are ignored.
     type: "sqlite"
+    # type: boolean
+    # description: Whether to automatically run database schema migrations on startup.
     migration: true
+    # type: string
+    # description: Hostname of the database server. Not used when type is sqlite.
     host: "donetick-cnpg.default.svc.cluster.local"
+    # type: integer
+    # description: Port of the database server. Not used when type is sqlite.
     port: 5432
+    # type: string
+    # description: Username used to authenticate with the database. Not used when type is sqlite.
     user: "donetick"
     # The DT_DATABASE_PASSWORD environment variable should be used instead of this field.
     password: ""
+    # type: string
+    # description: Name of the database to connect to (or the sqlite database file name).
     name: donetick
+  # type: object
+  # description: JSON Web Token settings used for authenticating API/session requests.
   jwt:
     # The DT_JWT_SECRET environment variable should be used instead of this field.
     secret: ""
+    # type: string
+    # examples:
+    #   - 168h
+    # ---
+    # How long an issued session token remains valid before requiring the user to log in again.
+    #
+    # Expressed as a Go duration string (e.g. `168h`).
     session_time: 168h
+    # type: string
+    # examples:
+    #   - 168h
+    # ---
+    # The maximum amount of time a session can be refreshed/extended before the user must re-authenticate.
+    #
+    # Expressed as a Go duration string (e.g. `168h`).
     max_refresh: 168h
+  # type: object
+  # description: HTTP server settings.
   server:
+    # type: integer
+    # description: The TCP port the Donetick HTTP server listens on inside the container.
     port: 2021
+    # type: string
+    # description: Maximum duration for reading the entire request, expressed as a Go duration string.
     read_timeout: 10s
+    # type: string
+    # description: Maximum duration before timing out writes of the response, expressed as a Go duration string.
     write_timeout: 10s
+    # type: string
+    # description: The time window over which server.rate_limit is enforced, expressed as a Go duration string.
     rate_period: 60s
+    # type: integer
+    # description: Maximum number of requests allowed per client within server.rate_period.
     rate_limit: 300
+    # type: array
+    # description: List of origins allowed to make cross-origin (CORS) requests to the API.
     cors_allow_origins:
       - "http://localhost:5173"
       - "http://localhost:7926"
       # the below are required for the android app to work
       - "https://localhost"
       - "capacitor://localhost"
+    # type: boolean
+    # description: Whether the server also serves the built frontend web assets, in addition to the API.
     serve_frontend: true
+  # type: object
+  # description: Application logging settings.
   logging:
+    # type: string
+    # enum: [debug, info, warn, error]
+    # examples:
+    #   - info
+    # ---
+    # The minimum log level that will be emitted.
     level: "info"
+    # type: string
+    # enum: [json, console]
+    # ---
+    # The log output format.
     encoding: "json"
+    # type: boolean
+    # description: Enables development-friendly logging (more verbose, human-readable output).
     development: false
+  # type: object
+  # description: Intervals at which the background jobs that scan for due/overdue tasks run. Expressed as Go duration strings.
   scheduler_jobs:
+    # type: string
+    # description: How often the job that checks for tasks that just became due runs.
     due_job: 30m
+    # type: string
+    # description: How often the job that checks for overdue tasks runs.
     overdue_job: 3h
+    # type: string
+    # description: How often the job that checks for tasks that are about to become due runs.
     pre_due_job: 3h
+  # type: object
+  # description: SMTP settings used to send transactional emails (e.g. password resets, notifications).
   email:
+    # type: string
+    # description: Hostname of the SMTP server used to send emails. Leave empty to disable email sending.
     host: ""
+    # type: integer
+    # description: Port of the SMTP server used to send emails.
     port: 0
     # ---
     # The DT_EMAIL_KEY environment variable should be used instead of this field.
     key: ""
+    # type: string
+    # description: The "from" email address used when sending emails.
     email: ""
+    # type: string
+    # description: The public base URL of this Donetick instance, used to build links included in outgoing emails.
     appHost: ""
+  # type: object
+  # description: OAuth2/OIDC settings for enabling third-party single sign-on.
   oauth2:
+    # type: string
+    # description: The OAuth2 client ID issued by the identity provider.
     client_id: ""
     # ---
     # The DT_OAUTH2_CLIENT_SECRET environment variable should be used instead of this field.
     client_secret: ""
+    # type: string
+    # description: The identity provider's authorization endpoint URL.
     auth_url: ""
+    # type: string
+    # description: The identity provider's token exchange endpoint URL.
     token_url: ""
+    # type: string
+    # description: The identity provider's user info endpoint URL, used to fetch profile details after authentication.
     user_info_url: ""
+    # type: string
+    # description: The URL the identity provider redirects back to after authentication, must match the provider's app configuration.
     redirect_url: ""
+    # type: string
+    # description: Display name for the OAuth2 provider, shown on the login button in the UI.
     name: ""
   # Real-time configuration
   realtime:
+    # type: boolean
+    # description: Enables the real-time update feature (WebSocket/SSE push updates to connected clients).
     enabled: true
+    # type: boolean
+    # description: Enables Server-Sent Events (SSE) as a transport for real-time updates, in addition to WebSockets.
     sse_enabled: true
+    # type: string
+    # description: How often the server sends a heartbeat/ping to connected real-time clients, expressed as a Go duration string.
     heartbeat_interval: 60s
+    # type: string
+    # description: How long a real-time connection may remain idle before being closed, expressed as a Go duration string.
     connection_timeout: 120s
+    # type: integer
+    # description: Maximum number of concurrent real-time connections allowed across all users.
     max_connections: 1000
+    # type: integer
+    # description: Maximum number of concurrent real-time connections allowed per individual user.
     max_connections_per_user: 5
+    # type: integer
+    # description: Size of the internal queue used to buffer outgoing real-time events before they are delivered to clients.
     event_queue_size: 2048
+    # type: string
+    # description: How often the server scans for and removes stale/dead real-time connections, expressed as a Go duration string.
     cleanup_interval: 2m
+    # type: string
+    # description: How long a real-time connection may go without activity before being considered stale, expressed as a Go duration string.
     stale_threshold: 5m
+    # type: boolean
+    # description: Enables compression of real-time messages sent to clients.
     enable_compression: true
+    # type: boolean
+    # description: Enables collection of real-time connection statistics/metrics.
     enable_stats: true
+    # type: array
+    # ---
+    # List of origins allowed to open real-time (WebSocket/SSE) connections.
+    #
+    # `"*"` allows any origin.
     allowed_origins:
       - "*"
 
-# This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
+# type: object
+# description: "This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/"
 serviceAccount:
   # Specifies whether a service account should be created.
   create: true
@@ -150,13 +308,15 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template.
   name: ""
 
-# This is for setting Kubernetes Annotations to a Pod.
-# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+# type: object
+# description: "This is for setting Kubernetes Annotations to a Pod. For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/"
 podAnnotations: {}
-# This is for setting Kubernetes Labels to a Pod.
-# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+# type: object
+# description: "This is for setting Kubernetes Labels to a Pod. For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/"
 podLabels: {}
 
+# type: object
+# description: Security context settings applied at the pod level.
 podSecurityContext: {}
   # fsGroup: 2000
 
@@ -169,34 +329,57 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-# This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
+# type: object
+# description: "This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/"
 service:
-  # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+  # type: string
+  # enum: [ClusterIP, NodePort, LoadBalancer, ExternalName]
+  # description: "This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types"
   type: ClusterIP
-  # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
+  # type: integer
+  # description: "This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports"
   port: 80
 
-# This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
+# type: object
+# description: "This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/"
 ingress:
+  # type: boolean
+  # description: Whether to create an Ingress resource for the application.
   enabled: false
+  # type: string
+  # description: The name of the IngressClass to use for the Ingress resource.
   className: ""
+  # type: object
+  # examples:
+  #   - "kubernetes.io/ingress.class: nginx\ntls-acme: \"true\""
+  # ---
+  # Annotations to add to the Ingress resource.
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
 
+  # type: array
+  # description: List of hostnames and path rules to route to the application.
   hosts:
     - host: chart-example.local
       paths:
         - path: /
           pathType: ImplementationSpecific
+  # type: array
+  # examples:
+  #   - "- secretName: chart-example-tls\n  hosts:\n    - chart-example.local"
+  # ---
+  # TLS configuration for the Ingress resource.
   tls: []
     # - secretName: chart-example-tls
     #   hosts:
     #     - chart-example.local
 
-# Expose the service via gateway-api HTTPRoute
-# Requires Gateway API resources and suitable controller installed within the cluster
-# (see: https://gateway-api.sigs.k8s.io/guides/)
+# type: object
+# description: |
+#   Expose the service via gateway-api HTTPRoute
+#   Requires Gateway API resources and suitable controller installed within the cluster
+#   (see https://gateway-api.sigs.k8s.io/guides/)
 httpRoute:
   # HTTPRoute enabled.
   enabled: false
@@ -256,11 +439,23 @@ resources: {}
 #     port: http
 #   initialDelaySeconds: 30
 
-# description: This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
+# type: object
+# description: "This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/"
 autoscaling:
+  # type: boolean
+  # description: Whether to create a HorizontalPodAutoscaler for the deployment.
   enabled: false
+  # type: integer
+  # description: The minimum number of replicas the HorizontalPodAutoscaler will scale down to.
   minReplicas: 1
+  # type: integer
+  # description: The maximum number of replicas the HorizontalPodAutoscaler will scale up to.
   maxReplicas: 100
+  # type: integer
+  # examples:
+  #   - "targetMemoryUtilizationPercentage: 80"
+  # ---
+  # The average CPU utilization percentage the HorizontalPodAutoscaler targets when deciding to scale.
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
@@ -277,8 +472,14 @@ volumeMounts: []
   #   mountPath: "/etc/foo"
   #   readOnly: true
 
+# type: object
+# description: Node labels for pod assignment, used to constrain which nodes the pod can be scheduled on.
 nodeSelector: {}
 
+# type: array
+# description: A list of tolerations that allow the pod to be scheduled onto nodes with matching taints.
 tolerations: []
 
+# type: object
+# description: Node/pod affinity and anti-affinity rules used to constrain pod scheduling.
 affinity: {}

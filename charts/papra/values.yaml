@@ -8,21 +8,39 @@
 # at 1. Scaling beyond 1 replica risks corrupting the database from concurrent writers.
 replicaCount: 1
 
-# This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+# type: array
+# ---
+# This is for the secrets for pulling an image from a private repository. More information can
+# be found at https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []
 # This is to override the chart name.
 nameOverride: ""
+# type: string
+# description: Overrides the full name of the release used to generate resource names.
 fullnameOverride: ""
 
+# type: object
+# description: Container image configuration.
 image:
+  # type: string
+  # description: The container image repository to pull the Papra image from.
   repository: ghcr.io/papra-hq/papra
   # rootless variant runs as a non-root user; matches podSecurityContext/securityContext below.
   tag: "26.6.1-rootless"
-  # digest pins to an immutable image reference. Prepend sha256: or omit the prefix.
+  # type: string
+  # ---
+  # digest pins to an immutable image reference, overriding `tag` when set. Prepend
+  # `sha256:` or omit the prefix.
   digest: ""
+  # type: string
+  # enum: [Always, IfNotPresent, Never]
+  # description: The image pull policy controlling when Kubernetes re-pulls the image.
   pullPolicy: IfNotPresent
 
-# This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
+# type: object
+# ---
+# This section builds out the service account. More information can be found at
+# https://kubernetes.io/docs/concepts/security/service-accounts/
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -34,66 +52,130 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
+# type: object
+# ---
 # This is for setting Kubernetes Annotations to a Pod.
-# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+# For more information see https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 podAnnotations: {}
+# type: object
+# ---
 # This is for setting Kubernetes Labels to a Pod.
-# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+# For more information see https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
 
+# type: object
+# description: Security context settings applied at the pod level.
 podSecurityContext:
+  # type: boolean
+  # description: runAsNonRoot requires the container to run as a non-root user.
   runAsNonRoot: true
+  # type: integer
+  # description: runAsUser is the UID the container process runs as.
   runAsUser: 1000
+  # type: integer
+  # description: runAsGroup is the primary GID the container process runs as.
   runAsGroup: 1000
+  # type: integer
+  # description: fsGroup is the supplemental group applied to mounted volumes (e.g. the app-data PVC).
   fsGroup: 1000
+  # type: object
+  # description: seccompProfile configures the seccomp profile applied to the pod.
   seccompProfile:
+    # type: string
+    # enum: [RuntimeDefault, Unconfined, Localhost]
+    # description: type selects which seccomp profile to apply to the pod.
     type: RuntimeDefault
 
 # readOnlyRootFilesystem is false because papra writes to /app/app-data at runtime.
 securityContext:
+  # type: boolean
+  # description: allowPrivilegeEscalation controls whether a process can gain more privileges than its parent process.
   allowPrivilegeEscalation: false
+  # type: boolean
+  # description: readOnlyRootFilesystem mounts the container's root filesystem as read-only.
   readOnlyRootFilesystem: false
+  # type: object
+  # description: capabilities configures the Linux capabilities added to or dropped from the container.
   capabilities:
+    # type: array
+    # description: drop is the list of Linux capabilities to remove from the container.
     drop: ["ALL"]
 
-# This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
+# type: object
+# ---
+# This is for setting up a service, more information can be found at https://kubernetes.io/docs/concepts/services-networking/service/
 service:
+  # type: string
+  # enum: [ClusterIP, NodePort, LoadBalancer, ExternalName]
+  # description: The type of Kubernetes Service to create.
   type: ClusterIP
   # port is the HTTP port papra listens on and the Service exposes.
   port: 1221
 
-# This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
+# type: object
+# ---
+# This block is for setting up the ingress, more information can be found at https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
+  # type: boolean
+  # description: Whether to create an Ingress resource for exposing Papra outside the cluster.
   enabled: false
+  # type: string
+  # description: The IngressClass to use for the Ingress resource. Empty string uses the cluster default.
   className: ""
+  # type: object
+  # description: Annotations to add to the Ingress resource.
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+  # type: array
+  # description: A list of host rules used to configure the Ingress.
   hosts:
     - host: chart-example.local
       paths:
         - path: /
           pathType: ImplementationSpecific
+  # type: array
+  # description: TLS configuration for the Ingress, specifying secrets and the hosts they cover.
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
 
+# type: object
+# description: Resource requests and limits for the application container.
 resources:
+  # type: object
+  # description: requests are the minimum CPU/memory resources guaranteed to the container.
   requests:
+    # type: string
+    # description: cpu is the requested CPU amount (e.g. 100m).
     cpu: 100m
+    # type: string
+    # description: memory is the requested memory amount (e.g. 256Mi).
     memory: 256Mi
+  # type: object
+  # description: limits are the maximum CPU/memory resources the container may use.
   limits:
+    # type: string
+    # description: memory is the maximum memory amount the container may use (e.g. 512Mi).
     memory: 512Mi
 
+# type: object
+# description: Node selector labels used to constrain which nodes the pod can be scheduled on.
 nodeSelector: {}
 
+# type: array
+# description: Tolerations allowing the pod to be scheduled onto nodes with matching taints.
 tolerations: []
 
+# type: object
+# description: Affinity and anti-affinity rules used to constrain pod scheduling.
 affinity: {}
 
 # persistence configures the PVC that backs /app/app-data (SQLite DB + local document storage).
 persistence:
+  # type: object
+  # description: appData configures the PVC that backs Papra's /app/app-data directory (SQLite database and local document storage).
   appData:
     # existingClaimName uses a pre-existing PVC instead of creating one (e.g. one bound to a
     # manually-provisioned PV). When set, storageClassName and size below are ignored.
@@ -103,9 +185,13 @@ persistence:
     # size is the PVC capacity. Ignored when existingClaimName is set.
     size: 20Gi
 
+# type: object
+# description: config holds Papra application configuration, rendered into the Deployment's environment variables.
 config:
   # appBaseUrl is the full public URL of the Papra instance (required).
   appBaseUrl: ""
+  # type: object
+  # description: auth configures Papra's authentication and registration behavior.
   auth:
     # isRegistrationEnabled controls whether new users can self-register.
     isRegistrationEnabled: false
@@ -113,25 +199,35 @@ config:
     firstUserAsAdmin: true
     # ipAddressHeaders lists headers used to determine the client IP (for reverse proxy setups).
     ipAddressHeaders: x-forwarded-for
+    # type: array
+    # examples:
+    #   - - id: my-provider
+    #       name: "My Provider"
+    #       clientId: "my-client-id"
+    #       discoveryUrl: "https://auth.example.com/.well-known/openid-configuration"
+    #       scopes:
+    #         - openid
+    #         - profile
+    #         - email
+    # ---
     # customOAuthProviders configures custom OAuth/OIDC providers (AUTH_PROVIDERS_CUSTOMS).
     # Client secrets are provided via oidcSecret/oidcExternalSecret below.
-    # See https://www.better-auth.com/docs/plugins/generic-oauth#configuration for field details.
-    # Example:
-    #   - id: my-provider
-    #     name: "My Provider"
-    #     clientId: "my-client-id"
-    #     discoveryUrl: "https://auth.example.com/.well-known/openid-configuration"
-    #     scopes:
-    #       - openid
-    #       - profile
-    #       - email
+    # See the better-auth generic-oauth plugin docs for field details.
     customOAuthProviders: []
+  # type: object
+  # description: storage configures Papra's document storage backend (DOCUMENT_STORAGE_* environment variables).
   storage:
-    # driver is the document storage backend. One of: "filesystem", "s3".
+    # type: string
+    # enum: [filesystem, s3]
+    # description: driver is the document storage backend. This chart only wires up filesystem and s3.
     driver: filesystem
     # s3 settings are only used when driver=s3.
     s3:
+      # type: string
+      # description: bucket is the S3 bucket name used to store documents. Only used when driver=s3.
       bucket: papra
+      # type: string
+      # description: region is the AWS region of the S3 bucket. Only used when driver=s3.
       region: us-east-1
       # endpoint is the S3-compatible endpoint URL. Leave empty to use the default AWS endpoint.
       endpoint: ""
@@ -150,9 +246,11 @@ secret:
   secretName: ""
   # authSecret is used when create=true. Must be at least 32 characters.
   authSecret: ""
+  # type: boolean
+  # ---
   # encryptionKeyEnabled wires DATABASE_ENCRYPTION_KEY from the secret's
   # "database-encryption-key" field. Encrypts the SQLite database at rest.
-  # WARNING: losing this key makes the database unrecoverable.
+  # Losing this key permanently makes the database unrecoverable.
   encryptionKeyEnabled: false
   # databaseEncryptionKey is used when create=true and encryptionKeyEnabled is true.
   databaseEncryptionKey: ""
@@ -166,11 +264,17 @@ s3Secret:
   # secretName overrides the generated Secret name when set.
   # Defaults to <fullname>-s3 when empty.
   secretName: ""
+  # type: string
+  # description: accessKeyId is the S3 access key ID. Used when create=true; stored in the Secret's "access-key-id" field.
   accessKeyId: ""
+  # type: string
+  # description: secretAccessKey is the S3 secret access key. Used when create=true; stored in the Secret's "secret-access-key" field.
   secretAccessKey: ""
 
+# type: object
+# ---
 # oidcSecret configures how custom OAuth provider client secrets are provided.
-# The generated Secret holds one key per provider: <providerId>-client-secret.
+# The generated Secret holds one key per provider, named <providerId>-client-secret.
 oidcSecret:
   # create controls whether the chart creates the OIDC Secret.
   # Defaults to false — provide a pre-existing Secret via secretName instead,
@@ -186,6 +290,8 @@ oidcSecret:
 # Papra watches <mountPath>/<org-id>/ for files to automatically ingest.
 # Find your org ID in the Papra UI under Settings -> Organization.
 ingestionFolder:
+  # type: boolean
+  # description: enabled turns on Papra's ingestion folder feature and mounts the configured volume into the container.
   enabled: false
   # mountPath is the path inside the Papra container where the share is mounted.
   mountPath: /app/ingestion
@@ -194,9 +300,15 @@ ingestionFolder:
   existingClaimName: ""
   # claim configures the PVC created by this chart. Ignored when existingClaimName is set.
   claim:
+    # type: string
+    # description: storageClassName is the Kubernetes storage class to use for the ingestion folder PVC. Empty string uses the cluster default.
     storageClassName: ""
+    # type: array
+    # description: accessModes are the PVC access modes to request for the ingestion folder volume.
     accessModes:
       - ReadWriteOnce
+    # type: string
+    # description: size is the ingestion folder PVC capacity. Ignored when existingClaimName is set.
     size: 10Gi
     # volumeName explicitly binds the PVC to a specific PV by name.
     # Leave empty for dynamic provisioning.
@@ -206,17 +318,30 @@ ingestionFolder:
   # Useful for NFS or other manually-provisioned shares.
   # Set volume.nfs.server to enable PV creation; leave empty to skip.
   volume:
+    # type: object
+    # description: nfs configures a static PersistentVolume backed by an NFS export.
     nfs:
       # server is the NFS server hostname or IP. Leave empty to skip PV creation.
       server: ""
+      # type: string
+      # description: path is the exported path on the NFS server to mount.
       path: ""
+      # type: array
+      # description: mountOptions are the NFS mount options applied to the PersistentVolume.
       mountOptions:
         - hard
         - nfsvers=4
   # usePolling enables polling-based file watching instead of inotify.
   # Must be true for NFS, SMB, and other network filesystems.
   usePolling: true
+  # type: integer
+  # description: pollingIntervalMs is the interval, in milliseconds, between polling scans of the ingestion folder. Only used when usePolling is true.
   pollingIntervalMs: 30000
-  # postProcessingStrategy controls what Papra does with files after ingestion.
-  # One of: "delete", "move"
+  # type: string
+  # enum: [delete, move]
+  # ---
+  # postProcessingStrategy controls what Papra does with a file after it has been ingested.
+  #
+  # - `delete` removes the file from the ingestion folder.
+  # - `move` moves the file to the post-processing move folder instead of deleting it.
   postProcessingStrategy: delete
