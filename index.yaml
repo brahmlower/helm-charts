@@ -1,6 +1,18 @@
 apiVersion: v1
 entries:
   actual:
+  - annotations:
+      values-schema: https://raw.githubusercontent.com/brahmlower/helm-charts/refs/tags/actual-0.1.2/charts/actual/values.schema.json
+    apiVersion: v2
+    appVersion: 25.1.0
+    created: "2026-08-25T06:26:06.447779203Z"
+    description: Helm chart for managing [Actual](https://www.actualbudget.com/)
+    digest: ef88bef1f3163e0b7832957d62a3c83db97b9095c5582d929ef63e7a1cd1f94d
+    name: actual
+    type: application
+    urls:
+    - actual-0.1.2.tgz
+    version: 0.1.2
   - apiVersion: v2
     appVersion: 25.1.0
     created: "2026-08-24T23:40:59.236129252Z"
@@ -45,6 +57,29 @@ entries:
     - bentopdf-0.1.0.tgz
     version: 0.1.0
   bookorbit:
+  - annotations:
+      values-schema: https://raw.githubusercontent.com/brahmlower/helm-charts/refs/tags/bookorbit-0.2.2/charts/bookorbit/values.schema.json
+    apiVersion: v2
+    appVersion: 2.7.0
+    created: "2026-08-25T06:26:06.590842919Z"
+    dependencies:
+    - name: common
+      repository: https://bjw-s-labs.github.io/helm-charts
+      version: 5.1.0
+    description: A Helm chart for BookOrbit, a self-hosted reading space for ebooks
+    digest: 2e6ae04dd0e72e29d181c4b15d0a5edf17b51aed2d10675c4f849f4490003aa1
+    home: https://github.com/bookorbit/bookorbit
+    keywords:
+    - ebooks
+    - reading
+    - library
+    name: bookorbit
+    sources:
+    - https://github.com/bookorbit/bookorbit
+    type: application
+    urls:
+    - bookorbit-0.2.2.tgz
+    version: 0.2.2
   - apiVersion: v2
     appVersion: 2.7.0
     created: "2026-08-24T23:37:53.753109024Z"
@@ -177,6 +212,18 @@ entries:
     - papra-0.1.0.tgz
     version: 0.1.0
   qbittorrent:
+  - annotations:
+      values-schema: https://raw.githubusercontent.com/brahmlower/helm-charts/refs/tags/qbittorrent-0.1.4/charts/qbittorrent/values.schema.json
+    apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-08-25T06:26:06.719930276Z"
+    description: A Helm chart for Kubernetes
+    digest: 221d7fa744682df1d6f62db8453a143300cfae187a7b6410ae1e9a6b6483f250
+    name: qbittorrent
+    type: application
+    urls:
+    - qbittorrent-0.1.4.tgz
+    version: 0.1.4
   - apiVersion: v2
     appVersion: 1.16.0
     created: "2026-08-25T00:01:22.470931827Z"
@@ -217,4 +264,4 @@ entries:
     urls:
     - qbittorrent-0.1.0.tgz
     version: 0.1.0
-generated: "2026-08-25T06:21:20.557688232Z"
+generated: "2026-08-25T06:26:06.719977535Z"
