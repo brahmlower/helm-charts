@@ -9,11 +9,11 @@ Helm chart for managing [Actual](https://www.actualbudget.com/)
 | image.pullPolicy | string (enum)</br>"Always", "IfNotPresent", "Never" | `"IfNotPresent"` | The image pull policy controlling when Kubernetes re-pulls the image. |
 | image.tag | string | `"latest"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | array | `null` | A list of secrets used for pulling the image from a private container registry. |
-| nameOverride | string | `null` | Overrides the name of the chart used to generate resource names. |
-| fullnameOverride | string | `null` | Overrides the full name of the release used to generate resource names. |
+| nameOverride | string | `""` | Overrides the name of the chart used to generate resource names. |
+| fullnameOverride | string | `""` | Overrides the full name of the release used to generate resource names. |
 | serviceAccount.create | boolean | `true` | Specifies whether a service account should be created |
 | serviceAccount.automount | boolean | `true` | Automatically mount a ServiceAccount's API credentials? |
-| serviceAccount.name | string | `null` | The name of the service account to use.</br>If not set and create is true, a name is generated using the fullname template |
+| serviceAccount.name | string | `""` | The name of the service account to use.</br>If not set and create is true, a name is generated using the fullname template |
 | service.type | string (enum)</br>"ClusterIP", "NodePort", "LoadBalancer", "ExternalName" | `"ClusterIP"` | The type of Kubernetes Service to create. |
 | service.port | integer | `80` | The port the Service listens on. |
 | env | array | `null` | A list of environment variables to set on the application container. |

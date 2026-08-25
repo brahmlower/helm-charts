@@ -70,7 +70,8 @@
             "password": {
               "type": "string",
               "title": "password",
-              "description": "The DT_DATABASE_PASSWORD environment variable should be used instead of this field."
+              "description": "The DT_DATABASE_PASSWORD environment variable should be used instead of this field.",
+              "default": ""
             },
             "port": {
               "type": "integer",
@@ -108,22 +109,26 @@
             "appHost": {
               "type": "string",
               "title": "appHost",
-              "description": "The public base URL of this Donetick instance, used to build links included in outgoing emails."
+              "description": "The public base URL of this Donetick instance, used to build links included in outgoing emails.",
+              "default": ""
             },
             "email": {
               "type": "string",
               "title": "email",
-              "description": "The \"from\" email address used when sending emails."
+              "description": "The \"from\" email address used when sending emails.",
+              "default": ""
             },
             "host": {
               "type": "string",
               "title": "host",
-              "description": "Hostname of the SMTP server used to send emails. Leave empty to disable email sending."
+              "description": "Hostname of the SMTP server used to send emails. Leave empty to disable email sending.",
+              "default": ""
             },
             "key": {
               "type": "string",
               "title": "key",
-              "description": "The DT_EMAIL_KEY environment variable should be used instead of this field."
+              "description": "The DT_EMAIL_KEY environment variable should be used instead of this field.",
+              "default": ""
             },
             "port": {
               "type": "integer",
@@ -163,7 +168,8 @@
             "secret": {
               "type": "string",
               "title": "secret",
-              "description": "The DT_JWT_SECRET environment variable should be used instead of this field."
+              "description": "The DT_JWT_SECRET environment variable should be used instead of this field.",
+              "default": ""
             },
             "session_time": {
               "type": "string",
@@ -233,37 +239,44 @@
             "auth_url": {
               "type": "string",
               "title": "auth_url",
-              "description": "The identity provider's authorization endpoint URL."
+              "description": "The identity provider's authorization endpoint URL.",
+              "default": ""
             },
             "client_id": {
               "type": "string",
               "title": "client_id",
-              "description": "The OAuth2 client ID issued by the identity provider."
+              "description": "The OAuth2 client ID issued by the identity provider.",
+              "default": ""
             },
             "client_secret": {
               "type": "string",
               "title": "client_secret",
-              "description": "The DT_OAUTH2_CLIENT_SECRET environment variable should be used instead of this field."
+              "description": "The DT_OAUTH2_CLIENT_SECRET environment variable should be used instead of this field.",
+              "default": ""
             },
             "name": {
               "type": "string",
               "title": "name",
-              "description": "Display name for the OAuth2 provider, shown on the login button in the UI."
+              "description": "Display name for the OAuth2 provider, shown on the login button in the UI.",
+              "default": ""
             },
             "redirect_url": {
               "type": "string",
               "title": "redirect_url",
-              "description": "The URL the identity provider redirects back to after authentication, must match the provider's app configuration."
+              "description": "The URL the identity provider redirects back to after authentication, must match the provider's app configuration.",
+              "default": ""
             },
             "token_url": {
               "type": "string",
               "title": "token_url",
-              "description": "The identity provider's token exchange endpoint URL."
+              "description": "The identity provider's token exchange endpoint URL.",
+              "default": ""
             },
             "user_info_url": {
               "type": "string",
               "title": "user_info_url",
-              "description": "The identity provider's user info endpoint URL, used to fetch profile details after authentication."
+              "description": "The identity provider's user info endpoint URL, used to fetch profile details after authentication.",
+              "default": ""
             }
           },
           "additionalProperties": false,
@@ -276,7 +289,8 @@
             "token": {
               "type": "string",
               "title": "token",
-              "description": "The Pushover application API token used to send notifications.\n\nThe DT_PUSHOVER_TOKEN environment variable should be used instead of this field."
+              "description": "The Pushover application API token used to send notifications.\n\nThe DT_PUSHOVER_TOKEN environment variable should be used instead of this field.",
+              "default": ""
             }
           },
           "additionalProperties": false,
@@ -443,7 +457,8 @@
             "token": {
               "type": "string",
               "title": "token",
-              "description": "The Telegram bot API token used to send notifications.\n\nThe DT_TELEGRAM_TOKEN environment variable should be used instead of this field."
+              "description": "The Telegram bot API token used to send notifications.\n\nThe DT_TELEGRAM_TOKEN environment variable should be used instead of this field.",
+              "default": ""
             }
           },
           "additionalProperties": false,
@@ -469,7 +484,8 @@
     "fullnameOverride": {
       "type": "string",
       "title": "fullnameOverride",
-      "description": "Overrides the fully qualified name of the release used to generate resource names."
+      "description": "Overrides the fully qualified name of the release used to generate resource names.",
+      "default": ""
     },
     "httpRoute": {
       "type": "object",
@@ -531,7 +547,8 @@
         "tag": {
           "type": "string",
           "title": "tag",
-          "description": "Overrides the image tag whose default is the chart appVersion."
+          "description": "Overrides the image tag whose default is the chart appVersion.",
+          "default": ""
         }
       },
       "additionalProperties": false,
@@ -559,7 +576,8 @@
         "className": {
           "type": "string",
           "title": "className",
-          "description": "The name of the IngressClass to use for the Ingress resource."
+          "description": "The name of the IngressClass to use for the Ingress resource.",
+          "default": ""
         },
         "enabled": {
           "type": "boolean",
@@ -588,7 +606,8 @@
     "nameOverride": {
       "type": "string",
       "title": "nameOverride",
-      "description": "This is to override the chart name."
+      "description": "This is to override the chart name.",
+      "default": ""
     },
     "nodeSelector": {
       "type": "object",
@@ -698,7 +717,8 @@
         "name": {
           "type": "string",
           "title": "name",
-          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template."
+          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template.",
+          "default": ""
         }
       },
       "additionalProperties": false,

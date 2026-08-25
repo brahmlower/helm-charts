@@ -46,7 +46,8 @@
     "fullnameOverride": {
       "type": "string",
       "title": "fullnameOverride",
-      "description": "Overrides the fully qualified name of the release used to generate resource names."
+      "description": "Overrides the fully qualified name of the release used to generate resource names.",
+      "default": ""
     },
     "httpRoute": {
       "type": "object",
@@ -105,7 +106,8 @@
         "tag": {
           "type": "string",
           "title": "tag",
-          "description": "Overrides the image tag whose default is the chart appVersion."
+          "description": "Overrides the image tag whose default is the chart appVersion.",
+          "default": ""
         }
       },
       "additionalProperties": false,
@@ -130,7 +132,8 @@
         "className": {
           "type": "string",
           "title": "className",
-          "description": "The IngressClass to use for the Ingress resource."
+          "description": "The IngressClass to use for the Ingress resource.",
+          "default": ""
         },
         "enabled": {
           "type": "boolean",
@@ -187,7 +190,8 @@
     "nameOverride": {
       "type": "string",
       "title": "nameOverride",
-      "description": "This is to override the chart name."
+      "description": "This is to override the chart name.",
+      "default": ""
     },
     "nodeSelector": {
       "type": "object",
@@ -331,7 +335,8 @@
         "name": {
           "type": "string",
           "title": "name",
-          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template."
+          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template.",
+          "default": ""
         }
       },
       "additionalProperties": false,

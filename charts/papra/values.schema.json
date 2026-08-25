@@ -14,7 +14,8 @@
         "appBaseUrl": {
           "type": "string",
           "title": "appBaseUrl",
-          "description": "appBaseUrl is the full public URL of the Papra instance (required)."
+          "description": "appBaseUrl is the full public URL of the Papra instance (required).",
+          "default": ""
         },
         "auth": {
           "type": "object",
@@ -87,7 +88,8 @@
                 "endpoint": {
                   "type": "string",
                   "title": "endpoint",
-                  "description": "endpoint is the S3-compatible endpoint URL. Leave empty to use the default AWS endpoint."
+                  "description": "endpoint is the S3-compatible endpoint URL. Leave empty to use the default AWS endpoint.",
+                  "default": ""
                 },
                 "forcePathStyle": {
                   "type": "boolean",
@@ -119,7 +121,8 @@
     "fullnameOverride": {
       "type": "string",
       "title": "fullnameOverride",
-      "description": "Overrides the full name of the release used to generate resource names."
+      "description": "Overrides the full name of the release used to generate resource names.",
+      "default": ""
     },
     "image": {
       "type": "object",
@@ -127,7 +130,8 @@
         "digest": {
           "type": "string",
           "title": "digest",
-          "description": "digest pins to an immutable image reference, overriding `tag` when set. Prepend\n`sha256:` or omit the prefix."
+          "description": "digest pins to an immutable image reference, overriding `tag` when set. Prepend\n`sha256:` or omit the prefix.",
+          "default": ""
         },
         "pullPolicy": {
           "type": "string",
@@ -182,12 +186,14 @@
             "storageClassName": {
               "type": "string",
               "title": "storageClassName",
-              "description": "storageClassName is the Kubernetes storage class to use for the ingestion folder PVC. Empty string uses the cluster default."
+              "description": "storageClassName is the Kubernetes storage class to use for the ingestion folder PVC. Empty string uses the cluster default.",
+              "default": ""
             },
             "volumeName": {
               "type": "string",
               "title": "volumeName",
-              "description": "volumeName explicitly binds the PVC to a specific PV by name.\nLeave empty for dynamic provisioning.\nAutomatically set to the chart-managed PV when volume.nfs.server is configured."
+              "description": "volumeName explicitly binds the PVC to a specific PV by name.\nLeave empty for dynamic provisioning.\nAutomatically set to the chart-managed PV when volume.nfs.server is configured.",
+              "default": ""
             }
           },
           "additionalProperties": false,
@@ -203,7 +209,8 @@
         "existingClaimName": {
           "type": "string",
           "title": "existingClaimName",
-          "description": "existingClaimName uses a pre-existing PVC instead of creating one.\nWhen set, claim and volume below are ignored entirely."
+          "description": "existingClaimName uses a pre-existing PVC instead of creating one.\nWhen set, claim and volume below are ignored entirely.",
+          "default": ""
         },
         "mountPath": {
           "type": "string",
@@ -247,12 +254,14 @@
                 "path": {
                   "type": "string",
                   "title": "path",
-                  "description": "path is the exported path on the NFS server to mount."
+                  "description": "path is the exported path on the NFS server to mount.",
+                  "default": ""
                 },
                 "server": {
                   "type": "string",
                   "title": "server",
-                  "description": "server is the NFS server hostname or IP. Leave empty to skip PV creation."
+                  "description": "server is the NFS server hostname or IP. Leave empty to skip PV creation.",
+                  "default": ""
                 }
               },
               "additionalProperties": false,
@@ -282,7 +291,8 @@
         "className": {
           "type": "string",
           "title": "className",
-          "description": "The IngressClass to use for the Ingress resource. Empty string uses the cluster default."
+          "description": "The IngressClass to use for the Ingress resource. Empty string uses the cluster default.",
+          "default": ""
         },
         "enabled": {
           "type": "boolean",
@@ -311,7 +321,8 @@
     "nameOverride": {
       "type": "string",
       "title": "nameOverride",
-      "description": "This is to override the chart name."
+      "description": "This is to override the chart name.",
+      "default": ""
     },
     "nodeSelector": {
       "type": "object",
@@ -339,7 +350,8 @@
         "secretName": {
           "type": "string",
           "title": "secretName",
-          "description": "secretName overrides the generated Secret name when set.\nDefaults to \u003cfullname\u003e-oidc when empty."
+          "description": "secretName overrides the generated Secret name when set.\nDefaults to \u003cfullname\u003e-oidc when empty.",
+          "default": ""
         }
       },
       "additionalProperties": false,
@@ -355,7 +367,8 @@
             "existingClaimName": {
               "type": "string",
               "title": "existingClaimName",
-              "description": "existingClaimName uses a pre-existing PVC instead of creating one (e.g. one bound to a\nmanually-provisioned PV). When set, storageClassName and size below are ignored."
+              "description": "existingClaimName uses a pre-existing PVC instead of creating one (e.g. one bound to a\nmanually-provisioned PV). When set, storageClassName and size below are ignored.",
+              "default": ""
             },
             "size": {
               "type": "string",
@@ -366,7 +379,8 @@
             "storageClassName": {
               "type": "string",
               "title": "storageClassName",
-              "description": "storageClassName is the Kubernetes storage class to use. Empty string uses the cluster default."
+              "description": "storageClassName is the Kubernetes storage class to use. Empty string uses the cluster default.",
+              "default": ""
             }
           },
           "additionalProperties": false,
@@ -497,7 +511,8 @@
         "accessKeyId": {
           "type": "string",
           "title": "accessKeyId",
-          "description": "accessKeyId is the S3 access key ID. Used when create=true; stored in the Secret's \"access-key-id\" field."
+          "description": "accessKeyId is the S3 access key ID. Used when create=true; stored in the Secret's \"access-key-id\" field.",
+          "default": ""
         },
         "create": {
           "type": "boolean",
@@ -508,12 +523,14 @@
         "secretAccessKey": {
           "type": "string",
           "title": "secretAccessKey",
-          "description": "secretAccessKey is the S3 secret access key. Used when create=true; stored in the Secret's \"secret-access-key\" field."
+          "description": "secretAccessKey is the S3 secret access key. Used when create=true; stored in the Secret's \"secret-access-key\" field.",
+          "default": ""
         },
         "secretName": {
           "type": "string",
           "title": "secretName",
-          "description": "secretName overrides the generated Secret name when set.\nDefaults to \u003cfullname\u003e-s3 when empty."
+          "description": "secretName overrides the generated Secret name when set.\nDefaults to \u003cfullname\u003e-s3 when empty.",
+          "default": ""
         }
       },
       "additionalProperties": false,
@@ -526,7 +543,8 @@
         "authSecret": {
           "type": "string",
           "title": "authSecret",
-          "description": "authSecret is used when create=true. Must be at least 32 characters."
+          "description": "authSecret is used when create=true. Must be at least 32 characters.",
+          "default": ""
         },
         "create": {
           "type": "boolean",
@@ -537,7 +555,8 @@
         "databaseEncryptionKey": {
           "type": "string",
           "title": "databaseEncryptionKey",
-          "description": "databaseEncryptionKey is used when create=true and encryptionKeyEnabled is true."
+          "description": "databaseEncryptionKey is used when create=true and encryptionKeyEnabled is true.",
+          "default": ""
         },
         "encryptionKeyEnabled": {
           "type": "boolean",
@@ -548,7 +567,8 @@
         "secretName": {
           "type": "string",
           "title": "secretName",
-          "description": "secretName overrides the generated Secret name when set.\nWhen create=false, this must name the pre-existing Secret to use.\nDefaults to the chart fullname when empty."
+          "description": "secretName overrides the generated Secret name when set.\nWhen create=false, this must name the pre-existing Secret to use.\nDefaults to the chart fullname when empty.",
+          "default": ""
         }
       },
       "additionalProperties": false,
@@ -639,7 +659,8 @@
         "name": {
           "type": "string",
           "title": "name",
-          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template"
+          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template",
+          "default": ""
         }
       },
       "additionalProperties": false,

@@ -46,7 +46,8 @@
     "fullnameOverride": {
       "type": "string",
       "title": "fullnameOverride",
-      "description": "Overrides the full name of the release used to generate resource names."
+      "description": "Overrides the full name of the release used to generate resource names.",
+      "default": ""
     },
     "gluetun": {
       "type": "object",
@@ -68,13 +69,13 @@
               ],
               "title": "dns_block_ads",
               "description": "Whether Gluetun's DNS blocklist blocks known advertising domains.",
-              "default": false
+              "default": "false"
             },
             "dns_block_malicious": {
               "type": "string",
               "title": "dns_block_malicious",
               "description": "DNS Block List Configuration - Disable if causing issues",
-              "default": true
+              "default": "true"
             },
             "dns_block_surveillance": {
               "type": "string",
@@ -84,7 +85,7 @@
               ],
               "title": "dns_block_surveillance",
               "description": "Whether Gluetun's DNS blocklist blocks known surveillance/tracking domains.",
-              "default": true
+              "default": "true"
             },
             "dns_keep_nameserver": {
               "type": "string",
@@ -120,7 +121,7 @@
               "type": "string",
               "title": "update_period",
               "description": "Disable problematic external checks",
-              "default": 0
+              "default": "0"
             },
             "version_information": {
               "type": "string",
@@ -130,7 +131,7 @@
               ],
               "title": "version_information",
               "description": "Whether Gluetun checks for and logs a newer version being available. Disabled here to avoid unnecessary external requests.",
-              "default": false
+              "default": "false"
             },
             "vpn_port_forwarding": {
               "type": "object",
@@ -186,22 +187,26 @@
             "wireguard_address": {
               "type": "string",
               "title": "wireguard_address",
-              "description": "The WireGuard interface address(es) (with CIDR suffix) assigned to this client by the VPN provider."
+              "description": "The WireGuard interface address(es) (with CIDR suffix) assigned to this client by the VPN provider.",
+              "default": ""
             },
             "wireguard_mtu": {
               "type": "string",
               "title": "wireguard_mtu",
-              "description": "The MTU to use for the WireGuard interface. Leave empty to use Gluetun's default."
+              "description": "The MTU to use for the WireGuard interface. Leave empty to use Gluetun's default.",
+              "default": ""
             },
             "wireguard_private_key": {
               "type": "string",
               "title": "wireguard_private_key",
-              "description": "wireguard specific settings"
+              "description": "wireguard specific settings",
+              "default": ""
             },
             "wireguard_private_key_existing_secret": {
               "type": "string",
               "title": "wireguard_private_key_existing_secret",
-              "description": "wireguard_private_key_existing_secret names a pre-existing Secret holding\nthe wireguard private key, for use instead of the plaintext\nwireguard_private_key value above. Takes precedence when set."
+              "description": "wireguard_private_key_existing_secret names a pre-existing Secret holding\nthe wireguard private key, for use instead of the plaintext\nwireguard_private_key value above. Takes precedence when set.",
+              "default": ""
             },
             "wireguard_private_key_existing_secret_key": {
               "type": "string",
@@ -264,7 +269,8 @@
         "className": {
           "type": "string",
           "title": "className",
-          "description": "The IngressClass to use for the Ingress resource."
+          "description": "The IngressClass to use for the Ingress resource.",
+          "default": ""
         },
         "enabled": {
           "type": "boolean",
@@ -293,7 +299,8 @@
     "nameOverride": {
       "type": "string",
       "title": "nameOverride",
-      "description": "This is to override the chart name."
+      "description": "This is to override the chart name.",
+      "default": ""
     },
     "nodeSelector": {
       "type": "object",
@@ -320,7 +327,8 @@
             "storageClassName": {
               "type": "string",
               "title": "storageClassName",
-              "description": "The StorageClass to use for the configs PersistentVolumeClaim. Leave empty to use the cluster default."
+              "description": "The StorageClass to use for the configs PersistentVolumeClaim. Leave empty to use the cluster default.",
+              "default": ""
             }
           },
           "additionalProperties": false,
@@ -342,7 +350,8 @@
             "storageClassName": {
               "type": "string",
               "title": "storageClassName",
-              "description": "The StorageClass to use for the downloads PersistentVolumeClaim. Leave empty to use the cluster default."
+              "description": "The StorageClass to use for the downloads PersistentVolumeClaim. Leave empty to use the cluster default.",
+              "default": ""
             }
           },
           "additionalProperties": false,
@@ -516,7 +525,8 @@
         "name": {
           "type": "string",
           "title": "name",
-          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template"
+          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template",
+          "default": ""
         }
       },
       "additionalProperties": false,

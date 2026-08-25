@@ -51,7 +51,8 @@
     "fullnameOverride": {
       "type": "string",
       "title": "fullnameOverride",
-      "description": "Overrides the full name of the release used to generate resource names."
+      "description": "Overrides the full name of the release used to generate resource names.",
+      "default": ""
     },
     "image": {
       "type": "object",
@@ -160,7 +161,8 @@
     "nameOverride": {
       "type": "string",
       "title": "nameOverride",
-      "description": "Overrides the name of the chart used to generate resource names."
+      "description": "Overrides the name of the chart used to generate resource names.",
+      "default": ""
     },
     "nodeSelector": {
       "type": "object",
@@ -320,7 +322,8 @@
         "name": {
           "type": "string",
           "title": "name",
-          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template"
+          "description": "The name of the service account to use.\nIf not set and create is true, a name is generated using the fullname template",
+          "default": ""
         }
       },
       "additionalProperties": false,

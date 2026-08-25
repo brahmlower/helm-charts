@@ -4,12 +4,14 @@
     "appUrl": {
       "type": "string",
       "title": "appUrl",
-      "description": "appUrl is the external/public URL of the BookOrbit instance (required). Used by\nemails and Kobo endpoints."
+      "description": "appUrl is the external/public URL of the BookOrbit instance (required). Used by\nemails and Kobo endpoints.",
+      "default": ""
     },
     "clientUrl": {
       "type": "string",
       "title": "clientUrl",
-      "description": "clientUrl is the CORS origin for the frontend, when served from a different domain\nthan appUrl. Defaults to appUrl when empty."
+      "description": "clientUrl is the CORS origin for the frontend, when served from a different domain\nthan appUrl. Defaults to appUrl when empty.",
+      "default": ""
     },
     "controllers": {
       "type": "object",
@@ -40,7 +42,7 @@
                           ],
                           "title": "BOOKORBIT_FIX_PERMISSIONS",
                           "description": "Whether the BookOrbit entrypoint fixes ownership/permissions on its\ndata directories at startup.",
-                          "default": true
+                          "default": "true"
                         },
                         "CLIENT_URL": {
                           "type": "string",
@@ -56,7 +58,7 @@
                           ],
                           "title": "CSP_ALLOW_CLOUDFLARE_INSIGHTS",
                           "description": "Relaxes the Content-Security-Policy to allow loading Cloudflare\nInsights analytics scripts.",
-                          "default": false
+                          "default": "false"
                         },
                         "EMAIL_ENCRYPTION_KEY": {
                           "type": "object",
@@ -196,13 +198,13 @@
                           ],
                           "title": "OIDC_ALLOW_LOCAL_ISSUERS",
                           "description": "Allows OIDC issuers that resolve to local/private network addresses.\nUseful for self-hosted identity providers running inside the cluster\nor LAN; leave disabled unless you need this.",
-                          "default": false
+                          "default": "false"
                         },
                         "PORT": {
                           "type": "string",
                           "title": "PORT",
                           "description": "TCP port the BookOrbit server listens on inside the container. Must\nmatch service.main.ports.http.port when changed.",
-                          "default": 3000,
+                          "default": "3000",
                           "examples": [
                             "3000"
                           ]
@@ -622,7 +624,8 @@
         "existingSecret": {
           "type": "string",
           "title": "existingSecret",
-          "description": "existingSecret names a pre-existing Secret holding the database password."
+          "description": "existingSecret names a pre-existing Secret holding the database password.",
+          "default": ""
         },
         "existingSecretPasswordKey": {
           "type": "string",
@@ -633,12 +636,14 @@
         "host": {
           "type": "string",
           "title": "host",
-          "description": "Hostname or address of the external PostgreSQL server."
+          "description": "Hostname or address of the external PostgreSQL server.",
+          "default": ""
         },
         "name": {
           "type": "string",
           "title": "name",
-          "description": "Name of the PostgreSQL database BookOrbit connects to."
+          "description": "Name of the PostgreSQL database BookOrbit connects to.",
+          "default": ""
         },
         "port": {
           "type": "integer",
@@ -652,7 +657,8 @@
         "user": {
           "type": "string",
           "title": "user",
-          "description": "Username BookOrbit uses to authenticate to PostgreSQL."
+          "description": "Username BookOrbit uses to authenticate to PostgreSQL.",
+          "default": ""
         }
       },
       "additionalProperties": false,
@@ -675,7 +681,8 @@
             "className": {
               "type": "string",
               "title": "className",
-              "description": "IngressClass to use. Leave empty to use the cluster's default\nIngressClass."
+              "description": "IngressClass to use. Leave empty to use the cluster's default\nIngressClass.",
+              "default": ""
             },
             "enabled": {
               "type": "boolean",
@@ -724,12 +731,14 @@
             "existingClaim": {
               "type": "string",
               "title": "existingClaim",
-              "description": "Name of a pre-existing PVC to use instead of letting the chart create one.\nLeave empty to have the chart provision and manage the PVC."
+              "description": "Name of a pre-existing PVC to use instead of letting the chart create one.\nLeave empty to have the chart provision and manage the PVC.",
+              "default": ""
             },
             "forceRename": {
               "type": "string",
               "title": "forceRename",
-              "description": "Pins the books PVC to a specific name instead of the chart's auto-derived\none. See persistence.data.forceRename above for why this exists."
+              "description": "Pins the books PVC to a specific name instead of the chart's auto-derived\none. See persistence.data.forceRename above for why this exists.",
+              "default": ""
             },
             "globalMounts": {
               "type": "array",
@@ -748,7 +757,8 @@
             "storageClass": {
               "type": "string",
               "title": "storageClass",
-              "description": "StorageClass requested for the PVC. Leave empty to use the cluster's\ndefault StorageClass."
+              "description": "StorageClass requested for the PVC. Leave empty to use the cluster's\ndefault StorageClass.",
+              "default": ""
             },
             "type": {
               "type": "string",
@@ -788,12 +798,14 @@
             "existingClaim": {
               "type": "string",
               "title": "existingClaim",
-              "description": "Name of a pre-existing PVC to use instead of letting the chart create one.\nLeave empty to have the chart provision and manage the PVC."
+              "description": "Name of a pre-existing PVC to use instead of letting the chart create one.\nLeave empty to have the chart provision and manage the PVC.",
+              "default": ""
             },
             "forceRename": {
               "type": "string",
               "title": "forceRename",
-              "description": "forceRename pins the PVC to a specific name instead of the chart's\nauto-derived one. Needed when other persistence entries are added/removed,\nsince that shifts the auto-derived name and Helm would otherwise delete and\nrecreate the PVC under the new name (PVC names are immutable)."
+              "description": "forceRename pins the PVC to a specific name instead of the chart's\nauto-derived one. Needed when other persistence entries are added/removed,\nsince that shifts the auto-derived name and Helm would otherwise delete and\nrecreate the PVC under the new name (PVC names are immutable).",
+              "default": ""
             },
             "globalMounts": {
               "type": "array",
@@ -812,7 +824,8 @@
             "storageClass": {
               "type": "string",
               "title": "storageClass",
-              "description": "StorageClass requested for the PVC. Leave empty to use the cluster's\ndefault StorageClass."
+              "description": "StorageClass requested for the PVC. Leave empty to use the cluster's\ndefault StorageClass.",
+              "default": ""
             },
             "type": {
               "type": "string",
@@ -887,7 +900,8 @@
     "secretName": {
       "type": "string",
       "title": "secretName",
-      "description": "secretName names a pre-existing Secret (e.g. created by an ExternalSecret) holding\njwt-secret and setup-bootstrap-token, and optionally email-encryption-key /\nmigration-encryption-key."
+      "description": "secretName names a pre-existing Secret (e.g. created by an ExternalSecret) holding\njwt-secret and setup-bootstrap-token, and optionally email-encryption-key /\nmigration-encryption-key.",
+      "default": ""
     },
     "service": {
       "type": "object",
