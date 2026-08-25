@@ -22,6 +22,18 @@ entries:
     - actual-0.1.0.tgz
     version: 0.1.0
   bentopdf:
+  - annotations:
+      values-schema: https://raw.githubusercontent.com/brahmlower/helm-charts/refs/tags/bentopdf-0.1.1/charts/bentopdf/values.schema.json
+    apiVersion: v2
+    appVersion: 1.11.1
+    created: "2026-08-25T06:21:19.674732918Z"
+    description: A Helm chart for Kubernetes
+    digest: 3c329addc59d6ac1af6635b7e53a80d04726a2e2ffd802e37db85060e3fe56a6
+    name: bentopdf
+    type: application
+    urls:
+    - bentopdf-0.1.1.tgz
+    version: 0.1.1
   - apiVersion: v2
     appVersion: 1.11.1
     created: "2026-08-24T22:04:22.195790672Z"
@@ -76,6 +88,18 @@ entries:
     - bookorbit-0.2.0.tgz
     version: 0.2.0
   donetick:
+  - annotations:
+      values-schema: https://raw.githubusercontent.com/brahmlower/helm-charts/refs/tags/donetick-0.1.1/charts/donetick/values.schema.json
+    apiVersion: v2
+    appVersion: v0.1.64
+    created: "2026-08-25T06:21:20.002407332Z"
+    description: A Helm chart for donetick
+    digest: d392fdb79b3a0fa1c372c34a82b3984edb0b3920086c0b6b09356135dfc85f47
+    name: donetick
+    type: application
+    urls:
+    - donetick-0.1.1.tgz
+    version: 0.1.1
   - apiVersion: v2
     appVersion: v0.1.64
     created: "2026-08-24T22:04:22.621010307Z"
@@ -87,6 +111,20 @@ entries:
     - donetick-0.1.0.tgz
     version: 0.1.0
   kiwix:
+  - annotations:
+      values-schema: https://raw.githubusercontent.com/brahmlower/helm-charts/refs/tags/kiwix-0.1.2/charts/kiwix/values.schema.json
+    apiVersion: v2
+    appVersion: 3.7.0
+    created: "2026-08-25T06:21:20.175945742Z"
+    description: 'A helm chart for [kiwix](https://kiwix.org/en/).  ``` helm repo
+      add brahmlower https://brahmlower.github.io/helm-charts helm install kiwix brahmlower/kiwix
+      ``` '
+    digest: d26c36d7fd5a3b4cc5f0e1b994a58245a60f5ae4a9ff0f55137caf1b4f94fac3
+    name: kiwix
+    type: application
+    urls:
+    - kiwix-0.1.2.tgz
+    version: 0.1.2
   - annotations:
       values-schema: https://example.com/chart-metadata-schema.json
     apiVersion: v2
@@ -102,6 +140,25 @@ entries:
     - kiwix-0.1.1.tgz
     version: 0.1.1
   papra:
+  - annotations:
+      values-schema: https://raw.githubusercontent.com/brahmlower/helm-charts/refs/tags/papra-0.1.1/charts/papra/values.schema.json
+    apiVersion: v2
+    appVersion: 26.6.1
+    created: "2026-08-25T06:21:20.377028798Z"
+    description: A Helm chart for Papra, a minimalistic document archiving platform
+    digest: a3a24b8407cc30c9718bc8d27e4727bf637251dd00acd609ed16c3ddc6903c9d
+    home: https://papra.app
+    keywords:
+    - document-management
+    - paperless
+    name: papra
+    sources:
+    - https://github.com/papra-hq/papra
+    - https://github.com/rintaun/homelab-charts/tree/main/charts/papra
+    type: application
+    urls:
+    - papra-0.1.1.tgz
+    version: 0.1.1
   - apiVersion: v2
     appVersion: 26.6.1
     created: "2026-08-24T22:04:23.02429007Z"
@@ -160,4 +217,4 @@ entries:
     urls:
     - qbittorrent-0.1.0.tgz
     version: 0.1.0
-generated: "2026-08-25T00:01:22.470960911Z"
+generated: "2026-08-25T06:21:20.557688232Z"
